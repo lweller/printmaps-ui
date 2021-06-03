@@ -1,0 +1,18 @@
+<div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
+    <button color="primary" mat-mini-fab>
+        <img (click)="createMapProject()" alt="Add Map Project"
+             src="./assets/actions/add.svg">
+    </button>
+    <button color="primary" mat-mini-fab [disabled]="isDeleteDisabled()">
+        <img (click)="deleteMapProject(currentMapProject.id)" alt="Delete Map Project"
+             src="./assets/actions/delete.svg">
+    </button>
+    <button color="primary" mat-mini-fab [disabled]="isLaunchRenderingDisabled()">
+        <img (click)="launchMapProjectRendering(currentMapProject)" alt="Launch Rendering of Map Project"
+             src="./assets/actions/launch-rendering.svg">
+    </button>
+    <button (click)="downloadRenderedMapFile(currentMapProject.id)" [disabled]="isDownloadDisabled()" color="primary"
+            mat-mini-fab>
+        <img src="./assets/actions/download.svg" alt="Launch Rendering of Map Project">
+    </button>
+</div>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg height="18" viewBox="0 0 18 18" width="18" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <marker id="a" orient="auto" overflow="visible">
+   <path d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#fff"
+         transform="matrix(-.3 0 0 -.3 .69 0)"/>
+  </marker>
+ </defs>
+ <circle cx="9" cy="9" fill="#0000c9" r="9"/>
+ <g fill="none" stroke="#fff" stroke-width="1.8" transform="matrix(.81951 0 0 .81951 1.6309 1.7863)">
+  <path d="m12.305 5.9882c1.2686 1.2072 2.006 3.0269 1.3189 4.7383-0.71551 1.7821-1.8207 1.6024-3.675 2.529"
+        marker-end="url(#a)"/>
+  <path d="m5.6792 11.617c-1.2686-1.2072-2.006-3.0269-1.3189-4.7383 0.71551-1.7821 1.8207-1.6024 3.675-2.529"
+        marker-end="url(#a)"/>
+ </g>
+</svg>
