@@ -54,4 +54,10 @@ Normally the Printmaps should now be opened in your web browser.
 
 * Initial alpha version providing simple selection of an area on a map and allowing to render it
 
+## Version 0.0.2
+
+* Fixed production build (code optimisation)
+* Extracted config into a separate modifiable file
+* Added some notes about installation and development
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
