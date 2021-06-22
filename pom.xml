@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ch.wellernet.printmaps</groupId>
     <artifactId>printmaps-ui</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
     <properties>
         <jenkins.karma-tests.reportsDirectory>target/karma-reports</jenkins.karma-tests.reportsDirectory>
@@ -31,7 +31,7 @@
         <url>https://github.com/lweller/printmaps-ui</url>
         <connection>scm:git:https://github.com/lweller/printmaps-ui.git</connection>
         <developerConnection>scm:git:https://github.com/lweller/printmaps-ui.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>printmaps-ui-0.0.2</tag>
     </scm>
     <build>
         <plugins>
