@@ -81,8 +81,8 @@ export class PrintmapsService {
     }
 
     deleteMapRenderingJob(id: string): Observable<boolean> {
-        let endpointUrl = `${this.baseUrl}/${id}`;
-        return this.http.delete(endpointUrl)
+        let endpointUrl = `${this.baseUrl}/delete/${id}`;
+        return this.http.post(endpointUrl, null, REQUEST_OPTIONS)
             .pipe(
                 mapTo(true),
                 catchError(() => of(false))
