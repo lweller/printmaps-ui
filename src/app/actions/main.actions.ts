@@ -5,8 +5,13 @@ import {MapProject} from "../model/intern/map-project";
 import {MapOptions} from "../model/intern/map-options";
 import {MapProjectReference} from "../model/intern/map-project-reference";
 import {MapProjectState} from "../model/intern/map-project-state";
+import {GeoCoordinates} from "../model/intern/geo-coordinates";
 
 const SOURCE = "Printmaps UI";
+
+export const init = createAction(
+    createActionType(SOURCE, "INIT")
+);
 
 export const loadMapProjectReferences = createAction(
     createActionType(SOURCE, "LOAD_MAP_PROJECT_REFERENCES")
@@ -19,7 +24,7 @@ export const mapProjectReferencesLoaded = createAction(
 
 export const updateCenterCoordinates = createAction(
     createActionType(SOURCE, "UPDATE_CENTER_COORDINATES"),
-    props<{ latitude: number, longitude: number }>()
+    props<{ center: GeoCoordinates }>()
 );
 
 export const updateSelectedArea = createAction(

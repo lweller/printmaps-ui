@@ -1,7 +1,6 @@
 import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {MapProject} from "./map-project";
 import {MapProjectReference} from "./map-project-reference";
-import {environment} from "../../../environments/environment";
 import {GeoCoordinates} from "./geo-coordinates";
 
 export interface PrintmapsUiState {
@@ -11,7 +10,7 @@ export interface PrintmapsUiState {
 }
 
 export const initialState: PrintmapsUiState = {
-    mapCenter: environment.defaultCoordinates,
+    mapCenter: undefined,
     mapProjectReferences: undefined,
     currentMapProject: undefined
 };

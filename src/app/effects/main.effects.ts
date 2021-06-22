@@ -18,15 +18,25 @@ import {Store} from "@ngrx/store";
 import {PrintmapsService} from "../services/printmaps.service";
 import {currentMapProject, mapProjectReferences} from "../model/intern/printmaps-ui-state";
 import * as UiActions from "../actions/main.actions";
-import {environment} from "../../environments/environment";
 import {of, timer, zip} from "rxjs";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
 import {isEqual} from "lodash";
 import {MapProjectState} from "../model/intern/map-project-state";
+import {ConfigurationService} from "../services/configuration.service";
 
 // noinspection JSUnusedGlobalSymbols
 @Injectable()
 export class MainEffects {
+
+    init = createEffect(
+        () => this.actions
+            .pipe(
+                ofType(UiActions.init),
+                map(() => UiActions.updateCenterCoordinates({
+                    center: this.configurationService.appConf.defaultCoordinates
+                }))
+            )
+    );
 
     deleteMapProject = createEffect(
         () => this.actions
@@ -125,7 +135,9 @@ export class MainEffects {
             .select(currentMapProject)
             .pipe(
                 filter(mapProject => mapProject?.modifiedLocally),
-                debounce(mapProject => mapProject.id ? timer(environment.autoUploadIntervalInSeconds * 1000) : of()),
+                debounce(mapProject => mapProject.id ?
+                    timer(this.configurationService.appConf.autoUploadIntervalInSeconds * 1000) :
+                    of()),
                 map(mapProject => UiActions.uploadMapProject({mapProject: mapProject}))
             )
     );
@@ -138,7 +150,12 @@ export class MainEffects {
                 map(group =>
                     group.pipe(
                         switchMap(action => of(action.id).pipe(
-                            expand(id => of(id).pipe(delay(environment.mapStatePollingIntervalInSeconds * 1000))),
+                            expand(id =>
+                                of(id)
+                                    .pipe(
+                                        delay(this.configurationService.appConf.mapStatePollingIntervalInSeconds * 1000)
+                                    )
+                            ),
                             switchMap(id => this.printmapsService.loadMapProjectState(id)),
                             map((mapProjectState, index) => [mapProjectState, index] as [MapProjectState, number]),
                             takeWhile(([mapProjectState, index]) =>
@@ -161,6 +178,7 @@ export class MainEffects {
     constructor(
         private store: Store<any>,
         private actions: Actions,
+        private readonly configurationService: ConfigurationService,
         private mapProjectReferenceService: MapProjectReferenceService,
         private printmapsService: PrintmapsService
     ) {

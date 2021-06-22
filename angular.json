@@ -18,7 +18,9 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/conf",
+              "src/favicon.ico",
+              "src/local"
             ],
             "styles": [
               "src/theming.scss"
@@ -46,6 +48,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "assets": [
+                "src/assets",
+                "src/conf",
+                "src/favicon.ico"
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

@@ -2,7 +2,6 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {EMPTY, Observable, of} from "rxjs";
 import {catchError, concatMap, map, mapTo} from "rxjs/operators";
-import {environment} from "../../environments/environment";
 import {MapRenderingJobDefinition} from "../model/api/map-rendering-job-definition";
 import {
     fromMapRenderingJob,
@@ -13,6 +12,7 @@ import {
 import {MapRenderingJobState} from "../model/api/map-rendering-job-state";
 import {fromMapRenderingJobState, MapProjectState} from "../model/intern/map-project-state";
 import {MapProjectReference} from "../model/intern/map-project-reference";
+import {ConfigurationService} from "./configuration.service";
 
 const REQUEST_OPTIONS = {
     headers: new HttpHeaders({
@@ -23,11 +23,15 @@ const REQUEST_OPTIONS = {
 
 @Injectable()
 export class PrintmapsService {
-    constructor(private http: HttpClient) {
+    constructor(private readonly configurationService: ConfigurationService, private http: HttpClient) {
+    }
+
+    private get baseUrl() {
+        return this.configurationService.appConf.printmapsApiBaseUri;
     }
 
     loadMapProject(mapProjectReference: MapProjectReference): Observable<MapProject> {
-        let endpointUrl = `${environment.printmapsApiBaseUri}/metadata/${mapProjectReference.id}`;
+        let endpointUrl = `${this.baseUrl}/metadata/${mapProjectReference.id}`;
         return this.http.get<MapRenderingJobDefinition>(endpointUrl)
             .pipe(
                 map(mapRenderingJob => fromMapRenderingJob(mapProjectReference.name, mapRenderingJob)),
@@ -45,7 +49,7 @@ export class PrintmapsService {
     }
 
     loadMapProjectState(id: string): Observable<MapProjectState> {
-        let endpointUrl = `${environment.printmapsApiBaseUri}/mapstate/${id}`;
+        let endpointUrl = `${this.baseUrl}/mapstate/${id}`;
         return this.http.get<MapRenderingJobState>(endpointUrl)
             .pipe(
                 map(fromMapRenderingJobState),
@@ -59,7 +63,7 @@ export class PrintmapsService {
     }
 
     createOrUpdateMapRenderingJob(mapProject: MapProject): Observable<MapProject> {
-        let endpointUrl = `${environment.printmapsApiBaseUri}/metadata${mapProject.id ? "/patch" : ""}`;
+        let endpointUrl = `${this.baseUrl}/metadata${mapProject.id ? "/patch" : ""}`;
         return this.http.post<MapRenderingJobDefinition>(endpointUrl, toMapRenderingJob(mapProject), REQUEST_OPTIONS)
             .pipe(
                 map(mapRenderingJob => fromMapRenderingJob(mapProject.name, mapRenderingJob)),
@@ -77,7 +81,7 @@ export class PrintmapsService {
     }
 
     deleteMapRenderingJob(id: string): Observable<boolean> {
-        let endpointUrl = `${environment.printmapsApiBaseUri}/${id}`;
+        let endpointUrl = `${this.baseUrl}/${id}`;
         return this.http.delete(endpointUrl)
             .pipe(
                 mapTo(true),
@@ -86,7 +90,7 @@ export class PrintmapsService {
     }
 
     launchMapRenderingJob(id: string): Observable<boolean> {
-        let endpointUrl = `${environment.printmapsApiBaseUri}/mapfile`;
+        let endpointUrl = `${this.baseUrl}/mapfile`;
         return this.http.post(endpointUrl, toMapRenderingJobExecution(id), REQUEST_OPTIONS)
             .pipe(
                 mapTo(true),

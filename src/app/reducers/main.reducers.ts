@@ -80,10 +80,10 @@ const reducer = createReducer(initialState,
         })),
 
     on(UiActions.updateCenterCoordinates,
-        (state, {latitude, longitude}) => {
+        (state, {center}) => {
             let roundedCoordinates = {
-                latitude: Math.min(Math.max(round(latitude, 9), -85), 85),
-                longitude: Math.min(Math.max(round(longitude, 9), -180), 180)
+                latitude: Math.min(Math.max(round(center.latitude, 9), -85), 85),
+                longitude: Math.min(Math.max(round(center.longitude, 9), -180), 180)
             };
             return {
                 ...state,

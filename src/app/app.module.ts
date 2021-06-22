@@ -3,7 +3,7 @@ import {HttpClientModule} from "@angular/common/http";
 import localeDe from "@angular/common/locales/de";
 import localeEn from "@angular/common/locales/en";
 import localeFr from "@angular/common/locales/fr";
-import {NgModule} from "@angular/core";
+import {APP_INITIALIZER, NgModule} from "@angular/core";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
@@ -33,6 +33,7 @@ import {ButtonBoxComponent} from "./components/button-box/button-box.component";
 import {MatIconModule} from "@angular/material/icon";
 import {MapProjectReferenceService} from "./services/map-project-reference.service";
 import {MatDialogModule} from "@angular/material/dialog";
+import {ConfigurationService, configurationServiceInitializerFactory} from "./services/configuration.service";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -77,6 +78,12 @@ export const metaReducers: MetaReducer[] = [];
         EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule
     ],
     providers: [
+        {
+            provide: APP_INITIALIZER,
+            useFactory: configurationServiceInitializerFactory,
+            multi: true,
+            deps: [ConfigurationService]
+        },
         MapProjectReferenceService,
         PrintmapsService
     ],

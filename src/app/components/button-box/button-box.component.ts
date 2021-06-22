@@ -6,7 +6,7 @@ import {cloneDeep, isEqual} from "lodash";
 import {currentMapProject} from "../../model/intern/printmaps-ui-state";
 import {MapProjectState} from "../../model/intern/map-project-state";
 import * as UiActions from "../../actions/main.actions";
-import {environment} from "../../../environments/environment";
+import {ConfigurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "app-button-box",
@@ -16,7 +16,7 @@ import {environment} from "../../../environments/environment";
 export class ButtonBoxComponent {
     currentMapProject: MapProject = undefined;
 
-    constructor(private store: Store<any>) {
+    constructor(private readonly configurationService: ConfigurationService, private store: Store<any>) {
         store
             .select(currentMapProject)
             .pipe(
@@ -56,6 +56,6 @@ export class ButtonBoxComponent {
     }
 
     downloadRenderedMapFile(id: string) {
-        window.open(`${environment.printmapsApiBaseUri}/mapfile/${id}`, "_self");
+        window.open(`${this.configurationService.appConf.printmapsApiBaseUri}/mapfile/${id}`, "_self");
     }
 }

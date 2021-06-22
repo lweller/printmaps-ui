@@ -19,8 +19,8 @@ import {
 import {Subjectize} from "subjectize";
 import * as UiActions from "../../actions/main.actions";
 import {currentMapProject} from "../../model/intern/printmaps-ui-state";
-import {environment} from "../../../environments/environment";
 import {getScaleProperties, Scale} from "../../model/intern/scale";
+import {ConfigurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "app-map",
@@ -43,7 +43,7 @@ export class MapComponent implements AfterViewInit {
     @Input() scale: Scale;
     @Subjectize("scale") scale$ = new ReplaySubject<Scale>(1);
 
-    constructor(private store: Store<any>) {
+    constructor(private readonly configurationService: ConfigurationService, private store: Store<any>) {
         this.bindToStore();
     }
 
@@ -68,8 +68,9 @@ export class MapComponent implements AfterViewInit {
                 } else {
                     this.active = false;
                     if (!this.centerCoordinates) {
+                        let defaultCoordinates = this.configurationService.appConf.defaultCoordinates;
                         this.centerCoordinates =
-                            L.latLng(environment.defaultCoordinates.latitude, environment.defaultCoordinates.longitude);
+                            L.latLng(defaultCoordinates.latitude, defaultCoordinates.longitude);
                     }
                     this.selectedArea = undefined;
                     this.scale = undefined;
@@ -82,8 +83,10 @@ export class MapComponent implements AfterViewInit {
             )
             .subscribe(nextCenterCoordinates => this.store.dispatch(
                 UiActions.updateCenterCoordinates({
-                    latitude: nextCenterCoordinates.lat,
-                    longitude: nextCenterCoordinates.lng
+                    center: {
+                        latitude: nextCenterCoordinates.lat,
+                        longitude: nextCenterCoordinates.lng
+                    }
                 })
             ));
         this.selectedAreaChange

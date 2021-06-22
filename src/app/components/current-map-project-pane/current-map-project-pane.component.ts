@@ -64,10 +64,7 @@ export class CurrentMapProjectPaneComponent {
     }
 
     dispatchCenterCoordinatesUpdate() {
-        this.store.dispatch(UiActions.updateCenterCoordinates({
-            latitude: this.mapProject.center.latitude,
-            longitude: this.mapProject.center.longitude
-        }));
+        this.store.dispatch(UiActions.updateCenterCoordinates({center: this.mapProject.center}));
     }
 
     dispatchFormatUpdate(format: PaperFormat) {
