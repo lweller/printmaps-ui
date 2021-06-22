@@ -15,13 +15,37 @@ This project aims to provide an intuitive Web UI for the printmaps service provi
 For Apache httpd this might be something like, assuming that the folder you want ot use is `/opt/printmaps`
 
 ```
-Alias "/" "/opt/printmaps"
+  Alias "/" "/opt/printmaps"
 
-<Directory "/opt/printmaps">
-  Order allow,deny
-  Allow from all
-  Require all granted
-</Directory>
+  <Directory "/opt/printmaps">
+    Order allow,deny
+    Allow from all
+    Require all granted
+  </Directory>
+
+  <LocationMatch "^/$">
+    <IfModule mod_headers.c>
+      FileETag None
+      Header unset ETag
+      Header unset Pragma
+      Header unset Cache-Control
+      Header unset Last-Modified
+      Header set Pragma "no-cache"
+      Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+      Header set Expires "Mon, 10 Apr 1972 00:00:00 GMT"
+    </IfModule>
+  </LocationMatch>
+
+  RewriteEngine on
+
+  RewriteCond %{HTTP:Accept-Language} (de|fr|en)
+  RewriteRule .? - [E=LANG:%1,S=1]
+  RewriteRule .? - [E=LANG:en]
+
+  RewriteCond %{DOCUMENT_ROOT}/%{ENV:LANG}%{REQUEST_URI} -f
+  RewriteRule ^ /%{ENV:LANG}%{REQUEST_URI} [L]
+
+  RewriteRule ^/$ /%{ENV:LANG}/index.html
 ```
 
 ## Installation Procedure

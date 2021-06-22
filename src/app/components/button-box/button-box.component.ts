@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Inject, LOCALE_ID} from "@angular/core";
 import {MapProject} from "../../model/intern/map-project";
 import {Store} from "@ngrx/store";
 import {distinctUntilChanged} from "rxjs/operators";
@@ -16,7 +16,9 @@ import {ConfigurationService} from "../../services/configuration.service";
 export class ButtonBoxComponent {
     currentMapProject: MapProject = undefined;
 
-    constructor(private readonly configurationService: ConfigurationService, private store: Store<any>) {
+    constructor(private readonly configurationService: ConfigurationService,
+                @Inject(LOCALE_ID) private readonly locale: string,
+                private store: Store<any>) {
         store
             .select(currentMapProject)
             .pipe(
@@ -41,7 +43,8 @@ export class ButtonBoxComponent {
     }
 
     createMapProject() {
-        this.store.dispatch(UiActions.createMapProject());
+        let name = $localize`New Map Project ${new Date().toLocaleString(this.locale)}`;
+        this.store.dispatch(UiActions.createMapProject({name: name}));
     }
 
     deleteMapProject(id: string) {

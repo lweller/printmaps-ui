@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import * as UiActions from "./actions/main.actions";
 import {mapProjectReferences} from "./model/intern/printmaps-ui-state";
@@ -10,7 +10,7 @@ import {filter, first} from "rxjs/operators";
 })
 export class AppComponent implements OnInit {
 
-    constructor(private store: Store<any>) {
+    constructor(private store: Store<any>, @Inject(LOCALE_ID) public readonly locale: string) {
         store.dispatch(UiActions.loadMapProjectReferences());
         store.select(mapProjectReferences)
             .pipe(filter(loadedMapProjectReferences => !!loadedMapProjectReferences), first())

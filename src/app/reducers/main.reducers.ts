@@ -15,11 +15,11 @@ const reducer = createReducer(initialState,
         })),
 
     on(UiActions.createMapProject,
-        (state) => ({
+        (state, {name}) => ({
             ...state,
             currentMapProject: {
                 id: undefined,
-                name: `New Map Project ${new Date().toLocaleString()}`,
+                name: name,
                 modifiedLocally: true,
                 state: MapProjectState.NOT_RENDERED,
                 center: state.mapCenter,

@@ -1,7 +1,26 @@
-<div fxFill fxLayout="row" style="padding: 20px">
-    <div fxFlex="450px" fxLayout="column" fxLayoutGap="20px">
-        <app-map-project-list-pane fxFlex="1 0.5"></app-map-project-list-pane>
-        <app-current-map-project-pane fxFlex="0 0.5"></app-current-map-project-pane>
+<div fxFill fxLayout="column">
+    <div fxFlex="0 0 50px" fxFlexAlign="start center" fxLayout="row" style="background: #2c7ada; padding: 10px">
+        <div fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
+            <img alt="Printmaps UI" src="assets/printmaps-ui.svg" style="margin-right: 20px">
+            <span class="mat-title" style="margin: 0; font-weight: bolder;color: white">Printmaps UI</span>
+        </div>
+        <div fxFlex="auto" fxLayoutAlign="end center">
+            <button [matMenuTriggerFor]="locales" i18n mat-stroked-button style="color: #fff">Language</button>
+            <mat-menu #locales="matMenu">
+                <!--suppress HtmlUnknownTarget -->
+                <a *ngIf="!locale.match('de.*')" href="/de" i18n mat-menu-item>German</a>
+                <!--suppress HtmlUnknownTarget -->
+                <a *ngIf="!locale.match('^fr.*')" href="/fr" i18n mat-menu-item>French</a>
+                <!--suppress HtmlUnknownTarget -->
+                <a *ngIf="!locale.match('^en.*')" href="/en" i18n mat-menu-item>English</a>
+            </mat-menu>
+        </div>
     </div>
-    <app-map-pane fxFlex="100%"></app-map-pane>
+    <div fxFlex="100%" fxLayout="row" style="padding: 10px">
+        <div fxFlex="0 0 400px" fxLayout="column" fxLayoutGap="20px">
+            <app-map-project-list-pane fxFlex="1 0.5"></app-map-project-list-pane>
+            <app-current-map-project-pane fxFlex="0 0.5"></app-current-map-project-pane>
+        </div>
+        <app-map-pane fxFlex="1 1" style="margin-left: 10px"></app-map-pane>
+    </div>
 </div>

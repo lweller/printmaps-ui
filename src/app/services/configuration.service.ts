@@ -22,7 +22,7 @@ export class ConfigurationService {
     }
 
     public load(): Promise<Configuration> {
-        let configFile = environment.production ? "conf/config.json" : "local/config.json";
+        let configFile = environment.production ? "/conf/config.json" : "/local/config.json";
         if (this.loaded) {
             return of(this.configuration).toPromise();
         } else {

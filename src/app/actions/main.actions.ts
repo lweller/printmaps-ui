@@ -43,7 +43,8 @@ export const updateMapOptions = createAction(
 );
 
 export const createMapProject = createAction(
-    createActionType(SOURCE, "CREATE_MAP_PROJECT")
+    createActionType(SOURCE, "CREATE_MAP_PROJECT"),
+    props<{ name: string }>()
 );
 
 export const loadMapProject = createAction(

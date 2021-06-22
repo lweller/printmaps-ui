@@ -7,6 +7,13 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "fr": "src/i18n/messages.fr.xlf",
+          "de": "src/i18n/messages.de.xlf"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -18,7 +25,6 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/conf",
               "src/favicon.ico",
               "src/local"
             ],
@@ -49,15 +55,23 @@
               "vendorChunk": false,
               "buildOptimizer": true,
               "assets": [
-                "src/assets",
-                "src/conf",
-                "src/favicon.ico"
+                "src/assets"
               ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
+              ]
+            },
+            "de": {
+              "localize": [
+                "de"
+              ]
+            },
+            "fr": {
+              "localize": [
+                "fr"
               ]
             }
           },
@@ -71,6 +85,12 @@
           "configurations": {
             "production": {
               "browserTarget": "printmaps-ui:build:production"
+            },
+            "de": {
+              "browserTarget": "printmaps-ui:build:de"
+            },
+            "fr": {
+              "browserTarget": "printmaps-ui:build:fr"
             }
           }
         },

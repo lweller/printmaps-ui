@@ -12,5 +12,15 @@
             <directory>target/dist</directory>
             <outputDirectory>.</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>src/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+        </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>src/favicon.ico</source>
+            <outputDirectory>.</outputDirectory>
+        </file>
+    </files>
 </assembly>

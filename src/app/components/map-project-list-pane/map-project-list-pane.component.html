@@ -1,6 +1,6 @@
 <div>
     <div fxLayout="row">
-        <div fxFlex="1 0 0" class="mat-h2">Map Projects</div>
+        <div class="mat-h2" fxFlex="1 0 0" i18n>Map Projects</div>
         <app-button-box fxFlex="1 1 1"></app-button-box>
     </div>
     <mat-selection-list (ngModelChange)="loadMapProject($event)" [ngModel]="[currentMapProject?.id]"
@@ -14,6 +14,6 @@
         </mat-list-option>
     </mat-selection-list>
     <div *ngIf="mapProjectReferences?.length == 0" class="mat-body">
-        No map projects have been created yet.
+        <span i18n>No map projects have been created yet.</span>
     </div>
 </div>

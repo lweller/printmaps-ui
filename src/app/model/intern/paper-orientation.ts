@@ -4,6 +4,7 @@ export enum PaperOrientation {
 }
 
 export interface PaperOrientationProperties {
+    label: string
 }
 
 class PaperOrientationPropertiesImpl implements PaperOrientationProperties {
@@ -16,8 +17,8 @@ class PaperOrientationPropertiesImpl implements PaperOrientationProperties {
 }
 
 export const PAPER_ORIENTATIONS = new Map<PaperOrientation, PaperOrientationProperties>([
-    [PaperOrientation.PORTRAIT, new PaperOrientationPropertiesImpl("Portrait")],
-    [PaperOrientation.LANDSCAPE, new PaperOrientationPropertiesImpl("Landscape")]
+    [PaperOrientation.PORTRAIT, new PaperOrientationPropertiesImpl($localize`Portrait`)],
+    [PaperOrientation.LANDSCAPE, new PaperOrientationPropertiesImpl($localize`Landscape`)]
 ]);
 
 export function getPaperOrientationProperties(paperOrientation: PaperOrientation): PaperOrientationProperties {

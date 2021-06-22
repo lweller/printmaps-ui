@@ -37,10 +37,10 @@ class PaperFormatPropertiesImpl implements PaperFormatProperties {
 }
 
 export const PAPER_FORMATS = new Map<PaperFormat, PaperFormatPropertiesImpl>([
-    [PaperFormat.A3, new PaperFormatPropertiesImpl("A3", 297, 420)],
-    [PaperFormat.A4, new PaperFormatPropertiesImpl("A4", 210, 297)],
     [PaperFormat.A5, new PaperFormatPropertiesImpl("A5", 148, 210)],
-    [PaperFormat.CUSTOM, new PaperFormatPropertiesImpl("Custom", undefined, undefined)]
+    [PaperFormat.A4, new PaperFormatPropertiesImpl("A4", 210, 297)],
+    [PaperFormat.A3, new PaperFormatPropertiesImpl("A3", 297, 420)],
+    [PaperFormat.CUSTOM, new PaperFormatPropertiesImpl($localize`Custom`, undefined, undefined)]
 ]);
 
 export function getPaperFormatProperties(paperFormat: PaperFormat): PaperFormatProperties {

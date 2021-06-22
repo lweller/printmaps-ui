@@ -1,20 +1,20 @@
 <div *ngIf="mapProject" style="margin-right: 10px;">
     <div fxLayout="row" fxLayoutGap="5px">
-        <div class="mat-h2" fxFlex="1 0 300px">Current Project Configuration</div>
+        <div class="mat-h2" fxFlex="1 0 300px" i18n>Current Project Configuration</div>
         <mat-icon *ngIf="mapProject?.id && mapProject?.modifiedLocally"
                   fxFlex="0 0 20px" svgIcon="edition-state:edited-locally"></mat-icon>
     </div>
     <div>
         <mat-form-field fxFlexFill>
-            <mat-label>Name</mat-label>
+            <mat-label i18n>Project Name</mat-label>
             <input (keydown.enter)="$event.target.blur()" (ngModelChange)="dispatchNameUpdate($event)"
                    [ngModel]="mapProject.name" matInput
                    required>
         </mat-form-field>
-        <div class="mat-h3">Print Area</div>
+        <div class="mat-h3" i18n>Print Area</div>
         <div>
             <mat-form-field fxFlexFill>
-                <mat-label>Format</mat-label>
+                <mat-label i18n>Page Format</mat-label>
                 <mat-select (ngModelChange)="dispatchFormatUpdate($event)"
                             [ngModel]="printAreaFormat">
                     <mat-option *ngFor="let entry of paperFormats | keyvalue" [value]=entry.key class="mat-body">
@@ -25,7 +25,7 @@
         </div>
         <div>
             <mat-form-field fxFlexFill>
-                <mat-label>Orientation</mat-label>
+                <mat-label i18n>Page Orientation</mat-label>
                 <mat-select (ngModelChange)="dispatchOrientationUpdate($event)"
                             [ngModel]="printAreaOrientation">
                     <mat-option *ngFor="let entry of paperOrientations | keyvalue" [value]=entry.key
@@ -37,14 +37,14 @@
         </div>
         <div fxFill fxLayout="row" fxLayoutGap="10px">
             <mat-form-field fxFlex="calc(50%-5px)">
-                <mat-label>Width</mat-label>
+                <mat-label i18n>Width</mat-label>
                 <input [ngModel]="mapProject.widthInMm" (ngModelChange)="dispatchSelectedAreaWidthUpdate($event)"
                        (keydown.enter)="$event.target.blur()" [ngModelOptions]="{updateOn: 'blur'}"
                        decimals="0" matInput max="3000" min="50" numeric required>
                 <span matSuffix>mm</span>
             </mat-form-field>
             <mat-form-field fxFlex="calc(50%-5px)">
-                <mat-label>Height</mat-label>
+                <mat-label i18n>Height</mat-label>
                 <input [ngModel]="mapProject.heightInMm" (ngModelChange)="dispatchSelectedAreaHeightUpdate($event)"
                        (keydown.enter)="$event.target.blur()" [ngModelOptions]="{updateOn: 'blur'}"
                        decimals="0" matInput max="2500" min="50" numeric required>
@@ -53,10 +53,10 @@
         </div>
     </div>
     <div>
-        <div class="mat-h3">Map Center</div>
+        <div class="mat-h3" i18n>Map Center</div>
         <div fxFill fxLayout="row" fxLayoutGap="10px">
             <mat-form-field fxFlex="calc(50%-5px)">
-                <mat-label>Latitude</mat-label>
+                <mat-label i18n>Latitude</mat-label>
                 <input #latitudeField (cuechange)="latitudeField.blur()" (keydown.enter)="$event.target.blur()"
                        (ngModelChange)="dispatchCenterLatitudeUpdate($event)"
                        [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.center.latitude"
@@ -64,7 +64,7 @@
                 <span matSuffix>°</span>
             </mat-form-field>
             <mat-form-field fxFlex="calc(50%-5px)">
-                <mat-label>Longitude</mat-label>
+                <mat-label i18n>Longitude</mat-label>
                 <input #longitudeField (cuechange)="longitudeField.blur()" (keydown.enter)="$event.target.blur()"
                        (ngModelChange)="dispatchCenterLongitudeUpdate($event)"
                        [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.center.longitude"
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div>
-        <div class="mat-h3">Map Properties</div>
+        <div class="mat-h3" i18n>Map Properties</div>
         <div>
             <mat-form-field fxFlexFill>
                 <mat-label>Scale</mat-label>
@@ -88,7 +88,7 @@
         </div>
         <div>
             <mat-form-field fxFlexFill>
-                <mat-label>Format</mat-label>
+                <mat-label i18n>Output File Format</mat-label>
                 <mat-select (ngModelChange)="dispatchFileFormatUpdate($event)"
                             [ngModel]="mapProject.options.fileFormat">
                     <mat-option *ngFor="let entry of fileFormats | keyvalue" [value]=entry.key class="mat-body">
@@ -99,7 +99,7 @@
         </div>
         <div>
             <mat-form-field fxFlexFill>
-                <mat-label>Style</mat-label>
+                <mat-label i18n>Map Style</mat-label>
                 <mat-select (ngModelChange)="dispatchMapStyleUpdate($event)"
                             [ngModel]="mapProject.options.mapStyle">
                     <mat-option *ngFor="let entry of mapStyles | keyvalue" [value]=entry.key class="mat-body">
