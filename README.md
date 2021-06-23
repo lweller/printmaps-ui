@@ -84,4 +84,9 @@ Normally the Printmaps should now be opened in your web browser.
 * Extracted config into a separate modifiable file
 * Added some notes about installation and development
 
+## Version 0.0.3 (not released yet)
+
+* Fixed action not triggered when not clicking in the center zone of a button
+* Added German adn French translations
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
