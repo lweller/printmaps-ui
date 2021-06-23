@@ -55,7 +55,8 @@
               "vendorChunk": false,
               "buildOptimizer": true,
               "assets": [
-                "src/assets"
+                "src/assets",
+                "src/favicon.ico"
               ],
               "fileReplacements": [
                 {
