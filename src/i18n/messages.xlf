@@ -69,91 +69,91 @@
         <source>Current Project Configuration</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fe0de8bb8bd4970c4e5208df83894e0d87830589" datatype="html">
+        <source>map project has been modified</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="47254ad5c5e4e98e0aa1971bbc22247ba67481d9" datatype="html">
+        <source>General properties</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="84f64f26d4b4e040f0ca418bb766cf2120b052bd" datatype="html">
         <source>Project Name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5f9277243f8162484b52ec228f110a5599d361ae" datatype="html">
-        <source>Print Area</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">14</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="45a458f74ce79db93d329bde823ab762a64f47ad" datatype="html">
-        <source>Page Format</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="fe986a0242d8c117811abff3e11fd87e39839a27" datatype="html">
-        <source>Page Orientation</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">28</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="828bc0d28636c4fda125fbf32af8df99cf1fe83e" datatype="html">
-        <source>Width</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">40</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="179eb5c4a21ad324f75f723218a621d120e39d30" datatype="html">
-        <source>Height</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">47</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4c68f22f4fc7e48b0c5a302c4b43abe8217f58f1" datatype="html">
-        <source>Map Center</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">56</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="d95840b42ca39e22b1458fe893c244e4f2c173f5" datatype="html">
-        <source>Latitude</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">59</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="76fef7c7446cd96cd65b7b0f3e0e527955f9ef34" datatype="html">
-        <source>Longitude</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">67</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="08de4f1dae97719883d4beb9717963593d870570" datatype="html">
-        <source>Map Properties</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="81b180fe1687880220b59bd5fad28fba338ac998" datatype="html">
         <source>Output File Format</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0dbb6fb7fdbc6fb771a253da7f99b86111371d7d" datatype="html">
         <source>Map Style</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="60c0959124ef5d0f2513023d763ae091b321f167" datatype="html">
+        <source>Map Area</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="83296148fec5ddc76628c70b85b5dbc8d4ada3c2" datatype="html">
+        <source>Map Center Latitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6167307d952064c5321d4f6a4a240be9a99bbaa4" datatype="html">
+        <source>Map Center Longitude</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="45a458f74ce79db93d329bde823ab762a64f47ad" datatype="html">
+        <source>Page Format</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fe986a0242d8c117811abff3e11fd87e39839a27" datatype="html">
+        <source>Page Orientation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="828bc0d28636c4fda125fbf32af8df99cf1fe83e" datatype="html">
+        <source>Width</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="179eb5c4a21ad324f75f723218a621d120e39d30" datatype="html">
+        <source>Height</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b303a199bc10045754d5ede82bb915c6eb9e2276" datatype="html">
@@ -167,7 +167,7 @@
         <source>No map projects have been created yet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/map-project-list-pane/map-project-list-pane.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc7510a84a4f1292364c0717b665a8195e4ae984" datatype="html">

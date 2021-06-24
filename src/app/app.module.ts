@@ -37,6 +37,8 @@ import {ConfigurationService, configurationServiceInitializerFactory} from "./se
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatCardModule} from "@angular/material/card";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -78,7 +80,7 @@ export const metaReducers: MetaReducer[] = [];
             }),
         EffectsModule.forRoot([]),
         StoreModule.forFeature(PRINTMAPS_UI_STATE_ID, printmapsUiReducer),
-        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule
+        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule, MatExpansionModule, MatCardModule
     ],
     providers: [
         {

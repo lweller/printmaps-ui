@@ -1,6 +1,6 @@
-<div fxFill fxLayout="column">
+<div fxFlexFill fxLayout="column">
     <div fxFlex="0 0 50px" fxFlexAlign="start center" fxLayout="row" style="background: #2c7ada; padding: 10px">
-        <div fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex="0 1 100%" fxLayout="row" fxLayoutAlign="start center">
             <img alt="Printmaps UI" src="assets/printmaps-ui.svg" style="margin-right: 20px">
             <span class="mat-title" style="margin: 0; font-weight: bolder;color: white">Printmaps UI</span>
         </div>
@@ -16,11 +16,11 @@
             </mat-menu>
         </div>
     </div>
-    <div fxFlex="100%" fxLayout="row" style="padding: 10px">
-        <div fxFlex="0 0 400px" fxLayout="column" fxLayoutGap="20px">
-            <app-map-project-list-pane fxFlex="1 0.5"></app-map-project-list-pane>
-            <app-current-map-project-pane fxFlex="0 0.5"></app-current-map-project-pane>
+    <div fxFlex="calc(100%-50px)" fxLayout="row" style="padding: 10px">
+        <div fxFlex="0 0 480px" fxLayout="column" fxLayoutGap="20px">
+            <app-map-project-list-pane fxFlex="1 0 350px"></app-map-project-list-pane>
+            <app-current-map-project-pane fxFlex="1 0 calc(100%-370px)"></app-current-map-project-pane>
         </div>
-        <app-map-pane fxFlex="1 1" style="margin-left: 10px"></app-map-pane>
+        <app-map-pane fxFlex="1 1" style="min-width: 500px; min-height: 400px; margin-left: 10px"></app-map-pane>
     </div>
 </div>

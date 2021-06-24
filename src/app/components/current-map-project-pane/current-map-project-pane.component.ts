@@ -27,6 +27,9 @@ export class CurrentMapProjectPaneComponent {
 
     mapProject: MapProject = undefined;
 
+    generalPropertiesPartExpanded = false;
+    mapAreaPartExpanded = true;
+
     constructor(private store: Store<any>, private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer) {
         this.registerIcons();
         store
