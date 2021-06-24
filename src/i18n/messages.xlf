@@ -6,40 +6,60 @@
         <source>Language</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eb64c04afa79183b2eb12447491c9761e17c2c67" datatype="html">
         <source>German</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8293a584b57b870aca184a23bb8039c829acc4cf" datatype="html">
         <source>French</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a0843de0a64adcc7ee6a946408b6876cd8abdcae" datatype="html">
         <source>English</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8b63d022a3119728a462bdac6ac95c85d62fb1af" datatype="html">
+        <source>Add map project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2e322c1968c2de913e81ff9019878040ac3100b3" datatype="html">
+        <source>Delete map project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" datatype="html">
+        <source>Launch map rendering</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fd96805f04549ff76daf6b68bac60ef92492bc70" datatype="html">
         <source>Download rendered map</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4580959815176510999" datatype="html">
-        <source>New Map Project <x id="PH" equiv-text="new Date().toLocaleString(this.locale)"/>
-        </source>
+        <source>New Map Project <x id="PH" equiv-text="new Date().toLocaleString(this.locale)"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.ts</context>
           <context context-type="linenumber">46</context>
@@ -147,7 +167,7 @@
         <source>No map projects have been created yet.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/map-project-list-pane/map-project-list-pane.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dc7510a84a4f1292364c0717b665a8195e4ae984" datatype="html">
@@ -162,6 +182,55 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/map-project-list-pane/nonexistent-map-project-eviction-confirm-dialog.component.html</context>
           <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6437465865756465650" datatype="html">
+        <source>editable, not rendered yet</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5802381518117255931" datatype="html">
+        <source>waiting for rendering to begin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="61320738906284946" datatype="html">
+        <source>rendering ongoing</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8848868698545793631" datatype="html">
+        <source>ready for download</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8340341015466217710" datatype="html">
+        <source>rendering was not successful</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4018743755815708951" datatype="html">
+        <source>map project does not exist at server side</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8676157881523220903" datatype="html">
+        <source>unknown project state</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/map-project-state.ts</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7590013429208346303" datatype="html">

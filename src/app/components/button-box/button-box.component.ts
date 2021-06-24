@@ -39,7 +39,7 @@ export class ButtonBoxComponent {
     }
 
     isDownloadDisabled(): boolean {
-        return this.currentMapProject?.state != MapProjectState.READY_FRO_DOWNLOAD;
+        return this.currentMapProject?.state != MapProjectState.READY_FOR_DOWNLOAD;
     }
 
     createMapProject() {

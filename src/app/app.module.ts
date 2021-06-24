@@ -36,6 +36,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {ConfigurationService, configurationServiceInitializerFactory} from "./services/configuration.service";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatMenuModule} from "@angular/material/menu";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -77,7 +78,7 @@ export const metaReducers: MetaReducer[] = [];
             }),
         EffectsModule.forRoot([]),
         StoreModule.forFeature(PRINTMAPS_UI_STATE_ID, printmapsUiReducer),
-        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule
+        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule
     ],
     providers: [
         {

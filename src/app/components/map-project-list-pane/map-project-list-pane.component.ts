@@ -8,7 +8,7 @@ import {MapProjectReference} from "../../model/intern/map-project-reference";
 import * as UiActions from "../../actions/main.actions";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
-import {MapProjectState} from "../../model/intern/map-project-state";
+import {MapProjectState, mapProjectStateTooltip} from "../../model/intern/map-project-state";
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
@@ -62,6 +62,10 @@ export class MapProjectListPaneComponent {
         if (this.currentMapProject?.id != selectedMapProjectReference.id) {
             this.store.dispatch(UiActions.loadMapProject({mapProjectReference: selectedMapProjectReference}));
         }
+    }
+
+    public mapProjectStateTooltip(state: MapProjectState) {
+        return mapProjectStateTooltip(state);
     }
 
     private registerIcons() {

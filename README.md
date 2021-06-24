@@ -74,9 +74,11 @@ Normally the Printmaps should now be opened in your web browser.
 
 # Change Log
 
-## Version 0.0.1
+## Version 0.0.3 (not released yet)
 
-* Initial alpha version providing simple selection of an area on a map and allowing to render it
+* Fixed action not triggered when not clicking in the center zone of a button
+* Added tooltips for map project states and actions
+* Added German and French translations
 
 ## Version 0.0.2
 
@@ -84,9 +86,8 @@ Normally the Printmaps should now be opened in your web browser.
 * Extracted config into a separate modifiable file
 * Added some notes about installation and development
 
-## Version 0.0.3 (not released yet)
+## Version 0.0.1
 
-* Fixed action not triggered when not clicking in the center zone of a button
-* Added German adn French translations
+* Initial alpha version providing simple selection of an area on a map and allowing to render it
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

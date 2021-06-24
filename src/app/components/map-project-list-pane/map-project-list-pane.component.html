@@ -8,6 +8,7 @@
         <mat-list-option *ngFor="let mapProjectReference of mapProjectReferences" [value]="mapProjectReference.id"
                          class="mat-body">
             <mat-icon mat-list-icon style="width:18px"
+                      matTooltip="{{mapProjectStateTooltip(mapProjectReference.state)}}"
                       svgIcon="map-project-state:{{mapProjectReference.state}}"></mat-icon>
             <div>{{mapProjectReference.name}}</div>
             <div style="font-size: smaller; color: #b3b3b3">{{mapProjectReference.id}}</div>
