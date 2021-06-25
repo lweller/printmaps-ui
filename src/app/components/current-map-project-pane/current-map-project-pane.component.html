@@ -83,7 +83,7 @@
                 </mat-form-field>
                 <div fxFill fxLayout="row" fxLayoutGap="10px">
                     <mat-form-field fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Width</mat-label>
+                        <mat-label i18n>Page Width</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaWidthUpdate($event)"
                                [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.widthInMm"
@@ -91,7 +91,7 @@
                         <span matSuffix>mm</span>
                     </mat-form-field>
                     <mat-form-field fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Height</mat-label>
+                        <mat-label i18n>Page Height</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaHeightUpdate($event)"
                                [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.heightInMm"
@@ -100,7 +100,7 @@
                     </mat-form-field>
                 </div>
                 <mat-form-field fxFlexFill>
-                    <mat-label>Scale</mat-label>
+                    <mat-label i18n>Map Scale</mat-label>
                     <mat-select (ngModelChange)="dispatchScaleUpdate($event)"
                                 [ngModel]="mapProject.scale">
                         <mat-option *ngFor="let entry of scales | keyvalue" [value]=entry.key class="mat-body">

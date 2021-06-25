@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
-<xliff xmlns:trolltech="urn:trolltech:names:ts:document:1.0" version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file target-language="de" original="src/app/components/button-box/button-box.component.html" datatype="plaintext" source-language="en">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2" xmlns:trolltech="urn:trolltech:names:ts:document:1.0">
+  <file target-language="de" original="src/app/components/button-box/button-box.component.html" source-language="en" datatype="plaintext">
     <header>
       <phase-group>
-        <phase date="2021-06-23" tool-id="lokalize-20.12.2" process-name="approval" contact-name="Lucien Weller" phase-name="approval-1" contact-email="lucien@wellernet.ch"/>
+        <phase contact-name="Lucien Weller" date="2021-06-23" phase-name="approval-1" process-name="approval" contact-email="lucien@wellernet.ch" tool-id="lokalize-20.12.2"/>
       </phase-group>
-      <tool tool-id="lokalize-20.12.2" tool-name="Lokalize" tool-version="20.12.2"/>
+      <tool tool-version="20.12.2" tool-name="Lokalize" tool-id="lokalize-20.12.2"/>
     </header>
     <body>
 
 
 
-      <trans-unit id="fe46ccaae902ce974e2441abe752399288298619" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="fe46ccaae902ce974e2441abe752399288298619" approved="yes">
         <source>Language</source>
         <target state="signed-off" phase-name="approval-1">Sprache</target>
         
@@ -20,7 +20,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="eb64c04afa79183b2eb12447491c9761e17c2c67" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="eb64c04afa79183b2eb12447491c9761e17c2c67" approved="yes">
         <source>German</source>
         <target state="signed-off" phase-name="approval-1">Deutsch</target>
         
@@ -29,7 +29,7 @@
           <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8293a584b57b870aca184a23bb8039c829acc4cf" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="8293a584b57b870aca184a23bb8039c829acc4cf" approved="yes">
         <source>French</source>
         <target state="signed-off" phase-name="approval-1">Französisch</target>
         
@@ -38,7 +38,7 @@
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="a0843de0a64adcc7ee6a946408b6876cd8abdcae" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="a0843de0a64adcc7ee6a946408b6876cd8abdcae" approved="yes">
         <source>English</source>
         <target state="signed-off" phase-name="approval-1">English</target>
         
@@ -47,7 +47,7 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8b63d022a3119728a462bdac6ac95c85d62fb1af" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="8b63d022a3119728a462bdac6ac95c85d62fb1af" approved="yes">
         <source>Add map project</source>
         <target state="signed-off" phase-name="approval-1">Kartenprojekt anlegen</target>
         <context-group purpose="location">
@@ -55,7 +55,7 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2e322c1968c2de913e81ff9019878040ac3100b3" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="2e322c1968c2de913e81ff9019878040ac3100b3" approved="yes">
         <source>Delete map project</source>
         <target state="signed-off" phase-name="approval-1">Kartenprojekt löschen</target>
         <context-group purpose="location">
@@ -63,7 +63,7 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" approved="yes">
         <source>Launch map rendering</source>
         <target state="signed-off" phase-name="approval-1">Kartengenerierung auslösen</target>
         <context-group purpose="location">
@@ -73,7 +73,7 @@
       </trans-unit>
       <trans-unit id="fd96805f04549ff76daf6b68bac60ef92492bc70" approved="yes">
         <source xml:space="preserve">Download rendered map</source>
-        <target xml:space="preserve" phase-name="approval-1">Generierte Karte runterladen</target>
+        <target phase-name="approval-1" xml:space="preserve">Generierte Karte runterladen</target>
 
         
       <context-group purpose="location">
@@ -81,16 +81,16 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4580959815176510999" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="4580959815176510999" approved="yes">
         <source>New Map Project <x id="PH" equiv-text="new Date().toLocaleString(this.locale)"/></source>
-        <target state="signed-off" phase-name="approval-1">Neues Kartenprojekt <x id="PH" equiv-text="new Date().toLocaleString()"/></target>
+        <target state="signed-off" phase-name="approval-1">Neues Kartenprojekt <x equiv-text="new Date().toLocaleString()" id="PH"/></target>
 
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.ts</context>
           <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9f056ccfed43c5f5420fc5b0cbfc14e23e099111" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="9f056ccfed43c5f5420fc5b0cbfc14e23e099111" approved="yes">
         <source>Current Project Configuration</source>
         <target state="signed-off" phase-name="approval-1">Aktuelle Projektkonfiguration</target>
         <context-group purpose="location">
@@ -98,19 +98,20 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="fe0de8bb8bd4970c4e5208df83894e0d87830589" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="fe0de8bb8bd4970c4e5208df83894e0d87830589" approved="yes">
         <source>map project has been modified</source>
         <target state="signed-off" phase-name="approval-1">das Kartenprojekt wurde verändert</target>
-        <context-group purpose="location">
+        
+      <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
     </body>
   </file>
-  <file target-language="de" original="src/app/components/current-map-project-pane/current-map-project-pane.component.html" datatype="plaintext" source-language="en-US">
+  <file target-language="de" original="src/app/components/current-map-project-pane/current-map-project-pane.component.html" source-language="en-US" datatype="plaintext">
     <body>
-      <trans-unit id="47254ad5c5e4e98e0aa1971bbc22247ba67481d9" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="47254ad5c5e4e98e0aa1971bbc22247ba67481d9" approved="yes">
         <source>General properties</source>
         <target state="signed-off" phase-name="approval-1">Allgemeine Eingenschaften</target>
         
@@ -119,7 +120,7 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="84f64f26d4b4e040f0ca418bb766cf2120b052bd" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="84f64f26d4b4e040f0ca418bb766cf2120b052bd" approved="yes">
         <source>Project Name</source>
         <target state="signed-off" phase-name="approval-1">Projektname</target>
         
@@ -130,7 +131,7 @@
       </trans-unit>
 
       
-      <trans-unit id="45a458f74ce79db93d329bde823ab762a64f47ad" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="45a458f74ce79db93d329bde823ab762a64f47ad" approved="yes">
         <source>Page Format</source>
         <target state="signed-off" phase-name="approval-1">Seitenformat</target>
         
@@ -139,7 +140,7 @@
           <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="fe986a0242d8c117811abff3e11fd87e39839a27" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="fe986a0242d8c117811abff3e11fd87e39839a27" approved="yes">
         <source>Page Orientation</source>
         <target state="signed-off" phase-name="approval-1">Seitenausrichtung</target>
         
@@ -148,35 +149,44 @@
           <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
-
-
-
-
-
-
-      <trans-unit id="828bc0d28636c4fda125fbf32af8df99cf1fe83e" approved="yes" datatype="html">
-        <source>Width</source>
-        <target state="signed-off" phase-name="approval-1">Breite</target>
-        
-      <context-group purpose="location">
+      <trans-unit datatype="html" id="be1733ef44e43571667c2c8fbd47bbf6ce2d0ca2" approved="yes">
+        <source>Page Width</source>
+        <target state="signed-off" phase-name="approval-1">Seitenbreite</target>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
           <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="179eb5c4a21ad324f75f723218a621d120e39d30" approved="yes" datatype="html">
-        <source>Height</source>
-        <target state="signed-off" phase-name="approval-1">Höhe</target>
-        
-      <context-group purpose="location">
+      <trans-unit datatype="html" id="a0487bfc5f36eb68ca601504508b3b6b47629e35" approved="yes">
+        <source>Page Height</source>
+        <target state="signed-off" phase-name="approval-1">Seitenhöhe</target>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
           <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
+      <trans-unit datatype="html" id="26c193d786c43af04423c4997e20c20356d2ae91" approved="yes">
+        <source>Map Scale</source>
+        <target state="signed-off" phase-name="approval-1">Kartenmaßstab</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+      </trans-unit>
+      
+
+
+
+
+
+
       
       
       
       
-      <trans-unit id="81b180fe1687880220b59bd5fad28fba338ac998" approved="yes" datatype="html">
+      
+      
+      <trans-unit datatype="html" id="81b180fe1687880220b59bd5fad28fba338ac998" approved="yes">
         <source>Output File Format</source>
         <target state="signed-off" phase-name="approval-1">Ausgabedateiformat</target>
         
@@ -185,7 +195,7 @@
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="0dbb6fb7fdbc6fb771a253da7f99b86111371d7d" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="0dbb6fb7fdbc6fb771a253da7f99b86111371d7d" approved="yes">
         <source>Map Style</source>
         <target state="signed-off" phase-name="approval-1">Kartenstil</target>
         
@@ -194,7 +204,7 @@
           <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="60c0959124ef5d0f2513023d763ae091b321f167" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="60c0959124ef5d0f2513023d763ae091b321f167" approved="yes">
         <source>Map Area</source>
         <target state="signed-off" phase-name="approval-1">Kartenbereich</target>
         
@@ -203,7 +213,7 @@
           <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="83296148fec5ddc76628c70b85b5dbc8d4ada3c2" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="83296148fec5ddc76628c70b85b5dbc8d4ada3c2" approved="yes">
         <source>Map Center Latitude</source>
         <target state="signed-off" phase-name="approval-1">Breitengrad des Mittelpunkts</target>
         
@@ -212,7 +222,7 @@
           <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6167307d952064c5321d4f6a4a240be9a99bbaa4" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="6167307d952064c5321d4f6a4a240be9a99bbaa4" approved="yes">
         <source>Map Center Longitude</source>
         <target state="signed-off" phase-name="approval-1">Längengrad des Mittelpunkts</target>
         
@@ -224,7 +234,7 @@
 
 
 
-      <trans-unit id="b303a199bc10045754d5ede82bb915c6eb9e2276" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="b303a199bc10045754d5ede82bb915c6eb9e2276" approved="yes">
         <source>Map Projects</source>
         <target state="signed-off" phase-name="approval-1">Kartenprojekte</target>
         <context-group purpose="location">
@@ -232,7 +242,7 @@
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7de7d5c4846e612e7c6cdf5d12ddd86fc574a4dd" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="7de7d5c4846e612e7c6cdf5d12ddd86fc574a4dd" approved="yes">
         <source>No map projects have been created yet.</source>
         <target state="signed-off" phase-name="approval-1">Bisher wurden keine Kartenprojekte angelegt.</target>
         
@@ -242,7 +252,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="dc7510a84a4f1292364c0717b665a8195e4ae984" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="dc7510a84a4f1292364c0717b665a8195e4ae984" approved="yes">
         <source>This map project does not exist (anymore). It was probably deleted on the server side as it was older than 7 days and will therefore be removed locally as well.</source>
         <target state="signed-off" phase-name="approval-1">Dieses Kartenprojekt existiert nicht (mehr). Es wurde wahrscheinlich serverseitig gelöscht, weil es älter als 7 Tage alt war.</target>
         <context-group purpose="location">
@@ -251,7 +261,7 @@
         </context-group>
       </trans-unit>
 
-      <trans-unit id="be5c752b58791dd799bc5d5482d4351e06f18673" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="be5c752b58791dd799bc5d5482d4351e06f18673" approved="yes">
         <source>Ok</source>
         <target state="signed-off" phase-name="approval-1">Ok</target>
 
@@ -260,7 +270,7 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6437465865756465650" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="6437465865756465650" approved="yes">
         <source>editable, not rendered yet</source>
         <target state="signed-off" phase-name="approval-1">editierbar, noch nicht generiert</target>
         <context-group purpose="location">
@@ -268,7 +278,7 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5802381518117255931" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="5802381518117255931" approved="yes">
         <source>waiting for rendering to begin</source>
         <target state="signed-off" phase-name="approval-1">warte auf Kartengenerierung</target>
         <context-group purpose="location">
@@ -276,7 +286,7 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="61320738906284946" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="61320738906284946" approved="yes">
         <source>rendering ongoing</source>
         <target state="signed-off" phase-name="approval-1">Kartengenerierung läuft</target>
         <context-group purpose="location">
@@ -284,7 +294,7 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8848868698545793631" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="8848868698545793631" approved="yes">
         <source>ready for download</source>
         <target state="signed-off" phase-name="approval-1">Karte parat zum Runterladen</target>
         <context-group purpose="location">
@@ -292,7 +302,7 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8340341015466217710" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="8340341015466217710" approved="yes">
         <source>rendering was not successful</source>
         <target state="signed-off" phase-name="approval-1">Kartengenerierung nicht erfolgreich</target>
         <context-group purpose="location">
@@ -300,7 +310,7 @@
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4018743755815708951" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="4018743755815708951" approved="yes">
         <source>map project does not exist at server side</source>
         <target state="signed-off" phase-name="approval-1">Kartenprojekt existiert auf dem Server nicht</target>
         <context-group purpose="location">
@@ -308,7 +318,7 @@
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8676157881523220903" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="8676157881523220903" approved="yes">
         <source>unknown project state</source>
         <target state="signed-off" phase-name="approval-1">unbekannter Projektzustand</target>
         
@@ -317,7 +327,7 @@
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7590013429208346303" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="7590013429208346303" approved="yes">
         <source>Custom</source>
         <target state="signed-off" phase-name="approval-1">Benutzerdefiniert</target>
         <context-group purpose="location">
@@ -325,7 +335,7 @@
           <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9024440163320108713" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="9024440163320108713" approved="yes">
         <source>Portrait</source>
         <target state="signed-off" phase-name="approval-1">Hochformat</target>
         <context-group purpose="location">
@@ -333,7 +343,7 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1403507799985368460" approved="yes" datatype="html">
+      <trans-unit datatype="html" id="1403507799985368460" approved="yes">
         <source>Landscape</source>
         <target state="signed-off" phase-name="approval-1">Querformat</target>
         <context-group purpose="location">

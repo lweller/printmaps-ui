@@ -76,7 +76,7 @@
         <source>map project has been modified</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="47254ad5c5e4e98e0aa1971bbc22247ba67481d9" datatype="html">
@@ -142,18 +142,25 @@
           <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="828bc0d28636c4fda125fbf32af8df99cf1fe83e" datatype="html">
-        <source>Width</source>
+      <trans-unit id="be1733ef44e43571667c2c8fbd47bbf6ce2d0ca2" datatype="html">
+        <source>Page Width</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
           <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="179eb5c4a21ad324f75f723218a621d120e39d30" datatype="html">
-        <source>Height</source>
+      <trans-unit id="a0487bfc5f36eb68ca601504508b3b6b47629e35" datatype="html">
+        <source>Page Height</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
           <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="26c193d786c43af04423c4997e20c20356d2ae91" datatype="html">
+        <source>Map Scale</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b303a199bc10045754d5ede82bb915c6eb9e2276" datatype="html">
