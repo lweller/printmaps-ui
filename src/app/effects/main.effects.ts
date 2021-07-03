@@ -134,10 +134,11 @@ export class MainEffects {
         () => this.store
             .select(currentMapProject)
             .pipe(
-                filter(mapProject => mapProject?.modifiedLocally),
+                filter(mapProject => !!mapProject),
                 debounce(mapProject => mapProject.id ?
                     timer(this.configurationService.appConf.autoUploadIntervalInSeconds * 1000) :
                     of()),
+                filter(mapProject => mapProject.modifiedLocally),
                 map(mapProject => UiActions.uploadMapProject({mapProject: mapProject}))
             )
     );
