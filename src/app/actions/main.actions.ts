@@ -48,6 +48,10 @@ export const createMapProject = createAction(
     props<{ name: string }>()
 );
 
+export const copyMapProject = createAction(
+    createActionType(SOURCE, "COPY_MAP_PROJECT")
+);
+
 export const loadMapProject = createAction(
     createActionType(SOURCE, "LOAD_MAP_PROJECT"),
     props<{ mapProjectReference: MapProjectReference }>()
@@ -72,7 +76,7 @@ export const mapProjectDeleted = createAction(
     props<{ id: string }>()
 );
 
-export type UploadMapProjectFollowUpAction = "close" | "launchRendering";
+export type UploadMapProjectFollowUpAction = "close" | "copy" | "launchRendering";
 
 export const uploadMapProject = createAction(
     createActionType(SOURCE, "UPLOAD_MAP_PROJECT"),
@@ -85,14 +89,7 @@ export const mapProjectUploaded = createAction(
 );
 
 export function createUploadMapProjectFollowUpAction(followUpAction: UploadMapProjectFollowUpAction, id: string) {
-    switch (followUpAction) {
-        case "close":
-            return closeMapProject();
-        case "launchRendering":
-            return launchMapProjectRendering({id: id});
-        default:
-            return undefined;
-    }
+    return followUpAction == "launchRendering" ? launchMapProjectRendering({id: id}) : undefined;
 }
 
 export const launchMapProjectRendering = createAction(

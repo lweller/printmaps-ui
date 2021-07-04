@@ -30,6 +30,10 @@ export class ButtonBoxComponent {
             });
     }
 
+    isCopyDisabled(): boolean {
+        return !this.currentMapProject;
+    }
+
     isDeleteDisabled(): boolean {
         return !this.currentMapProject;
     }
@@ -45,6 +49,10 @@ export class ButtonBoxComponent {
     createMapProject() {
         let name = $localize`New Map Project ${new Date().toLocaleString(this.locale)}`;
         this.store.dispatch(UiActions.createMapProject({name: name}));
+    }
+
+    copyMapProject() {
+        this.store.dispatch(UiActions.copyMapProject());
     }
 
     deleteMapProject(id: string) {

@@ -198,15 +198,16 @@ export class PrintmapsService {
             .pipe(
                 map(mapRenderingJob => this.fromMapRenderingJob(mapProject.name, mapRenderingJob)),
                 tap(savedMapProject =>
-                    this.toUserFiles(savedMapProject).forEach(userFile =>
+                    this.toUserFiles(mapProject).forEach(userFile =>
                         this.uploadUserFile(savedMapProject.id, userFile.content, userFile.name).subscribe())),
                 concatMap(savedMapProject =>
                     this.loadMapProjectState(savedMapProject.id)
                         .pipe(
-                            map(mapProjectState => {
-                                savedMapProject.state = mapProjectState;
-                                return savedMapProject;
-                            })
+                            map(mapProjectState => ({
+                                    ...savedMapProject,
+                                    state: mapProjectState
+                                })
+                            )
                         )
                 ),
                 catchError(() => EMPTY)

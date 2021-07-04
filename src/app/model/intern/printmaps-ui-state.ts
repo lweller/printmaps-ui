@@ -1,5 +1,5 @@
 import {createFeatureSelector, createSelector} from "@ngrx/store";
-import {MapProject} from "./map-project";
+import {MapProject, toMapProjectReference} from "./map-project";
 import {MapProjectReference} from "./map-project-reference";
 import {GeoCoordinates} from "./geo-coordinates";
 import {AdditionalElementType, AdditionalGpxElement} from "./additional-element";
@@ -27,6 +27,11 @@ export const mapProjectReferences = createSelector(printmapsUiState,
 
 export const currentMapProject = createSelector(printmapsUiState,
     (state) => state.currentMapProject);
+
+export const selectedMapProjectReference = createSelector(
+    currentMapProject,
+    mapProject => toMapProjectReference(mapProject)
+);
 
 export const currentAdditionalElements = createSelector(currentMapProject,
     (mapProject) => mapProject?.additionalElements ?? []);

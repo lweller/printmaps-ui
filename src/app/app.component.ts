@@ -32,6 +32,7 @@ export class AppComponent implements OnInit {
 
     private registerIcons() {
         this.registerIcon("actions", "add");
+        this.registerIcon("actions", "duplicate");
         this.registerIcon("actions", "delete");
         this.registerIcon("actions", "launch-rendering");
         this.registerIcon("actions", "download");

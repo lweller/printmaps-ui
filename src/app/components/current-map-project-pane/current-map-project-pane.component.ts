@@ -50,7 +50,12 @@ export class CurrentMapProjectPaneComponent {
             .pipe(
                 distinctUntilChanged((previousValue, nextValue) => isEqual(previousValue, nextValue))
             )
-            .subscribe(nextValue => this.mapProject = cloneDeep(nextValue));
+            .subscribe(nextValue => {
+                if (this.mapProject?.id && this.mapProject?.modifiedLocally && this.mapProject?.id != nextValue.id) {
+                    store.dispatch(UiActions.uploadMapProject({mapProject: this.mapProject}));
+                }
+                this.mapProject = cloneDeep(nextValue);
+            });
         store
             .select(selectedAdditionalElementId)
             .pipe(
@@ -65,7 +70,7 @@ export class CurrentMapProjectPaneComponent {
                 (entry[1].length1 == this.mapProject.widthInMm
                     && entry[1].length2 == this.mapProject.heightInMm)
                 || (entry[1].length2 == this.mapProject.widthInMm
-                && entry[1].length1 == this.mapProject.heightInMm));
+                    && entry[1].length1 == this.mapProject.heightInMm));
         return formatEntry ? formatEntry[0] : PaperFormat.CUSTOM;
     }
 

@@ -7,8 +7,9 @@
         <div *ngIf="mapProjectReferences?.length == 0" style="padding: 10px">
             <span i18n>No map projects have been created yet.</span>
         </div>
-        <mat-selection-list (ngModelChange)="loadMapProject($event)" *ngIf="mapProjectReferences?.length > 0"
-                            [multiple]="false" [ngModel]="[currentMapProject?.id]" fxFlexFill>
+        <mat-selection-list (ngModelChange)="updateSelectedMapProjectReference($event)"
+                            *ngIf="mapProjectReferences?.length > 0"
+                            [multiple]="false" [ngModel]="[selectedMapProjectReference?.id]" fxFlexFill>
             <mat-list-option *ngFor="let mapProjectReference of mapProjectReferences" [value]="mapProjectReference.id">
                 <mat-icon mat-list-icon matTooltip="{{mapProjectStateTooltip(mapProjectReference.state)}}"
                           style="width:18px"

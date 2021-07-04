@@ -14,7 +14,7 @@ import {
 } from "../model/intern/additional-element";
 import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE, DEFAULT_TRACK_STYLE} from "../model/intern/additional-element-style";
 import {v4 as uuid} from "uuid";
-import {MapProject} from "../model/intern/map-project";
+import {generateMapProjectCopyName, MapProject} from "../model/intern/map-project";
 
 const reducer = createReducer(initialState,
 
@@ -51,22 +51,28 @@ const reducer = createReducer(initialState,
                 currentMapProject: {
                     ...mapProject,
                     additionalElements: [createAdditionalElement(mapProject, AdditionalElementType.ATTRIBUTION)]
-
                 }
             };
         }),
 
+    on(UiActions.copyMapProject,
+        (state) => ({
+            ...state,
+            currentMapProject: state.currentMapProject?.id
+                ? {
+                    ...state.currentMapProject,
+                    id: undefined,
+                    name: generateMapProjectCopyName(state.currentMapProject.name),
+                    modifiedLocally: true
+                }
+                : state.currentMapProject
+        })
+    ),
+
     on(UiActions.mapProjectLoaded,
         (state, {mapProject}) => ({
             ...state,
-            currentMapProject: mapProject
-        })),
-
-    on(UiActions.closeMapProject,
-        (state) => ({
-            ...state,
-            currentMapProject: undefined,
-            gpxTrack: undefined
+            currentMapProject: !state.currentMapProject || state.currentMapProject?.id ? mapProject : state.currentMapProject
         })),
 
     on(UiActions.mapProjectDeleted,
