@@ -1,17 +1,17 @@
 <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
-    <button (click)="createMapProject()" [matTooltip]="addImg.alt" color="primary" mat-mini-fab>
-        <img #addImg alt="Add map project" i18n-alt src="./assets/actions/add.svg">
+    <button (click)="createMapProject()" color="primary" i18n-matTooltip mat-mini-fab matTooltip="Add map project">
+        <mat-icon svgIcon="actions:add"></mat-icon>
     </button>
     <button (click)="deleteMapProject(currentMapProject.id)" [disabled]="isDeleteDisabled()" color="primary"
-            [matTooltip]="deleteImg.alt" mat-mini-fab>
-        <img #deleteImg alt="Delete map project" i18n-alt src="./assets/actions/delete.svg">
+            i18n-matTooltip mat-mini-fab matTooltip="Delete map project">
+        <mat-icon svgIcon="actions:delete"></mat-icon>
     </button>
     <button (click)="launchMapProjectRendering(currentMapProject)" [disabled]="isLaunchRenderingDisabled()"
-            [matTooltip]="launchImg.alt" color="primary" mat-mini-fab>
-        <img #launchImg alt="Launch map rendering" i18n-alt src="./assets/actions/launch-rendering.svg">
+            color="primary" i18n-matTooltip mat-mini-fab matTooltip="Launch map rendering">
+        <mat-icon svgIcon="actions:launch-rendering"></mat-icon>
     </button>
     <button (click)="downloadRenderedMapFile(currentMapProject.id)" [disabled]="isDownloadDisabled()" color="primary"
-            [matTooltip]="downloadImg.alt" mat-mini-fab>
-        <img #downloadImg alt="Download rendered map" i18n-alt src="./assets/actions/download.svg">
+            i18n-matTooltip mat-mini-fab matTooltip="Download rendered map">
+        <mat-icon svgIcon="actions:download"></mat-icon>
     </button>
 </div>

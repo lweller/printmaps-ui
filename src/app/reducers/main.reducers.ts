@@ -5,6 +5,10 @@ import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state
 import {getScaleProperties, Scale} from "../model/intern/scale";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
+import {AdditionalElementType, AdditionalTextElement, AnyAdditionalElement} from "../model/intern/additional-element";
+import {DEFAULT_TEXT_STYLE} from "../model/intern/additional-element-style";
+import {v4 as uuid} from "uuid";
+import {MapProject} from "../model/intern/map-project";
 
 const reducer = createReducer(initialState,
 
@@ -15,9 +19,8 @@ const reducer = createReducer(initialState,
         })),
 
     on(UiActions.createMapProject,
-        (state, {name}) => ({
-            ...state,
-            currentMapProject: {
+        (state, {name}) => {
+            let mapProject = {
                 id: undefined,
                 name: name,
                 modifiedLocally: true,
@@ -29,9 +32,19 @@ const reducer = createReducer(initialState,
                 options: {
                     fileFormat: FileFormat.SVG,
                     mapStyle: MapStyle.OSM_CARTO
+                },
+                additionalElements: []
+
+            };
+            return {
+                ...state,
+                currentMapProject: {
+                    ...mapProject,
+                    additionalElements: [createAdditionalElement(mapProject, AdditionalElementType.ATTRIBUTION)]
+
                 }
-            }
-        })),
+            };
+        }),
 
     on(UiActions.mapProjectLoaded,
         (state, {mapProject}) => ({
@@ -137,9 +150,90 @@ const reducer = createReducer(initialState,
                     state: mapProjectState
                 }
                 : state.currentMapProject
+        })),
+
+    on(UiActions.addAdditionalElement,
+        (state, {elementType}) => {
+            let newElement = createAdditionalElement(state.currentMapProject, elementType);
+            return {
+                ...state,
+                currentMapProject: state.currentMapProject
+                    ? {
+                        ...state.currentMapProject,
+                        modifiedLocally: true,
+                        additionalElements: [
+                            ...state.currentMapProject.additionalElements,
+                            newElement
+                        ]
+                    }
+                    : state.currentMapProject,
+                selectedAdditionalElementId: newElement.id
+            };
+        }),
+
+    on(UiActions.selectAdditionalElement,
+        (state, {id}) => ({
+            ...state,
+            selectedAdditionalElementId: id
+        })),
+
+    on(UiActions.removeAdditionalElement,
+        (state, {id}) => ({
+            ...state,
+            currentMapProject: state.currentMapProject
+                ? {
+                    ...state.currentMapProject,
+                    modifiedLocally: true,
+                    additionalElements: state.currentMapProject.additionalElements.filter(element => element.id != id)
+                }
+                : state.currentMapProject,
+            selectedAdditionalElementId: undefined
+        })),
+
+    on(UiActions.updateAdditionalElement,
+        (state, {element}) => ({
+            ...state,
+            currentMapProject: state.currentMapProject
+                ? {
+                    ...state.currentMapProject,
+                    modifiedLocally: true,
+                    additionalElements: state.currentMapProject.additionalElements
+                        .map(currentElement => currentElement.id == element.id
+                            ? element
+                            : currentElement)
+                }
+                : state.currentMapProject
         }))
 );
 
 export function printmapsUiReducer(state: PrintmapsUiState | undefined, action: Action) {
     return reducer(state, action);
+}
+
+function createAdditionalElement(mapProject: MapProject, type: AdditionalElementType): AnyAdditionalElement {
+    let baseElement = {
+        type: type,
+        id: uuid()
+    };
+    switch (type) {
+        case AdditionalElementType.TEXT_BOX:
+            return {
+                ...baseElement,
+                text: $localize`New Text Element`,
+                style: DEFAULT_TEXT_STYLE,
+                location: {
+                    x: Math.round(mapProject.widthInMm / 2),
+                    y: Math.round(mapProject.heightInMm / 2)
+                }
+            } as AdditionalTextElement;
+        case AdditionalElementType.ATTRIBUTION:
+            return {
+                ...baseElement,
+                text: "${attribution}",
+                style: DEFAULT_TEXT_STYLE,
+                location: {x: 40, y: 6}
+            } as AdditionalTextElement;
+        default :
+            return undefined;
+    }
 }

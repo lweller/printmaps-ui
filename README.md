@@ -76,9 +76,11 @@ Normally the Printmaps should now be opened in your web browser.
 
 ## Version 0.0.3 (not released yet)
 
-* Fixed action not triggered when not clicking in the center zone of a button
+* Definition of user defined texts on top of the map
 * Added tooltips for map project states and actions
 * Added German and French translations
+* Fixed action not triggered when not clicking in the center zone of a button
+* Fixed issue when rendering is launched before the project has been saved
 
 ## Version 0.0.2
 

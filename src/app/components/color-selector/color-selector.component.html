@@ -1,0 +1,27 @@
+<div [attr.aria-labelledby]="formField?.getLabelId()" class="color-selector-container" role="group">
+    <span class="color-field-background">
+        <svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#404040" height="4" opacity="0.15" width="4"/>
+          <rect fill="#ffffff" height="4" width="4" x="4"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="8"/>
+          <rect fill="#ffffff" height="4" width="4" x="12"/>
+          <rect fill="#ffffff" height="4" width="4" y="4"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="4" y="4"/>
+          <rect fill="#ffffff" height="4" width="4" x="8" y="4"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="12" y="4"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" y="8"/>
+          <rect fill="#ffffff" height="4" width="4" x="4" y="8"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="8" y="8"/>
+          <rect fill="#ffffff" height="4" width="4" x="12" y="8"/>
+          <rect fill="#ffffff" height="4" width="4" y="12"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="4" y="12"/>
+          <rect fill="#ffffff" height="4" width="4" x="8" y="12"/>
+          <rect fill="#404040" height="4" opacity="0.15" width="4" x="12" y="12"/>
+        </svg>
+    </span>
+    <span [style.background]="value?.rgbHexValue" [style.opacity]="value?.opacity" class="color-field"></span>
+    <span #colorField (click)="openColorPicker()" class="color-field-border"></span>
+    <ng-template #colorPicker="cdkPortal" cdkPortal>
+        <color-sketch (onChange)="updateColor($event)" [color]="rgbaValue" [mode]="ColorMode.RGB"></color-sketch>
+    </ng-template>
+</div>

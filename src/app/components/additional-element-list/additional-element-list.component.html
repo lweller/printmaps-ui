@@ -1,0 +1,20 @@
+<div *ngIf="additionalElements.length == 0">
+    <span i18n>No additional elements have been added yet.</span>
+</div>
+<div *ngFor="let element of additionalElements" class="entry">
+    <mat-divider></mat-divider>
+    <div fxLayout="column">
+        <div (click)="expand(element.id)" class="element-header" fxLayout="row" fxLayoutAlign="start start"
+             fxLayoutGap="10px">
+            <mat-icon fxFlex="0 0 16px" svgIcon="additional-elements:{{element.type}}">
+            </mat-icon>
+            <app-additional-text-element-detail (ngModelChange)="dispatchElementChanged($event)"
+                                                [expanded]="element.id == selectedElementId"
+                                                [ngModel]="element" fxFlex="1 1 calc(100%-47px)">
+            </app-additional-text-element-detail>
+            <div (click)="toggleExpansion(element.id);$event.stopPropagation();"
+                 [@expansionIndicator]="element.id == selectedElementId ? 'expanded' : 'collapsed'"
+                 class="mat-expansion-indicator"></div>
+        </div>
+    </div>
+</div>

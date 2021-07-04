@@ -5,7 +5,7 @@ import localeEn from "@angular/common/locales/en";
 import localeFr from "@angular/common/locales/fr";
 import {APP_INITIALIZER, NgModule} from "@angular/core";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
@@ -23,7 +23,10 @@ import {
 } from "./components/map-project-list-pane/map-project-list-pane.component";
 import {MapPaneComponent} from "./components/map-pane/map-pane.component";
 import {MapComponent} from "./components/map/map.component";
-import {CurrentMapProjectPaneComponent} from "./components/current-map-project-pane/current-map-project-pane.component";
+import {
+    CurrentMapProjectPaneComponent,
+    RemoveAttributionConfirmDialog
+} from "./components/current-map-project-pane/current-map-project-pane.component";
 import {NumericDirective} from "./directives/numeric.directive";
 import {PRINTMAPS_UI_STATE_ID} from "./model/intern/printmaps-ui-state";
 import {printmapsUiReducer} from "./reducers/main.reducers";
@@ -39,6 +42,16 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCardModule} from "@angular/material/card";
+import {MatTableModule} from "@angular/material/table";
+import {FontStyleSelector} from "./components/font-style-selector/font-style-selector.component";
+import {ColorSelector} from "./components/color-selector/color-selector.component";
+import {ColorSketchModule} from "ngx-color/sketch";
+import {OverlayModule} from "@angular/cdk/overlay";
+import {PortalModule} from "@angular/cdk/portal";
+import {AdditionalElementListComponent} from "./components/additional-element-list/additional-element-list.component";
+import {AdditionalTextElementDetailComponent} from "./components/additional-text-element-detail/additional-text-element-detail.component";
+import {TextOrientationSelector} from "./components/text-orientation-selector/text-orientation-selector.component";
+import {TemplateService} from "./services/template-service";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -50,12 +63,18 @@ export const metaReducers: MetaReducer[] = [];
     declarations: [
         NumericDirective,
         AppComponent,
+        FontStyleSelector,
+        TextOrientationSelector,
+        ColorSelector,
         ButtonBoxComponent,
         MapPaneComponent,
         MapProjectListPaneComponent,
         CurrentMapProjectPaneComponent,
+        RemoveAttributionConfirmDialog,
         MapComponent,
-        NonexistentMapProjectEvictionConfirmDialog
+        NonexistentMapProjectEvictionConfirmDialog,
+        AdditionalElementListComponent,
+        AdditionalTextElementDetailComponent
     ],
     imports: [
         BrowserModule,
@@ -80,7 +99,7 @@ export const metaReducers: MetaReducer[] = [];
             }),
         EffectsModule.forRoot([]),
         StoreModule.forFeature(PRINTMAPS_UI_STATE_ID, printmapsUiReducer),
-        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule, MatExpansionModule, MatCardModule
+        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule, MatExpansionModule, MatCardModule, MatTableModule, ReactiveFormsModule, ColorSketchModule, OverlayModule, PortalModule
     ],
     providers: [
         {
@@ -90,7 +109,8 @@ export const metaReducers: MetaReducer[] = [];
             deps: [ConfigurationService]
         },
         MapProjectReferenceService,
-        PrintmapsService
+        PrintmapsService,
+        TemplateService
     ],
     bootstrap: [AppComponent]
 })

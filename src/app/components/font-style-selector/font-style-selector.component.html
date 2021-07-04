@@ -1,0 +1,7 @@
+<div [attr.aria-labelledby]="_formField?.getLabelId()" class="font-style-selector-container" role="group">
+    <mat-button-toggle-group (change)="onChange($event.value)" [value]="value">
+        <mat-button-toggle *ngFor="let value of values" value="{{value}}">
+            <mat-icon svgIcon="{{iconNamespace}}:{{value}}"></mat-icon>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+</div>

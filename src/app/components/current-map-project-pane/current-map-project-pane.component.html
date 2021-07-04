@@ -10,7 +10,8 @@
     </div>
     <mat-card fxFlex="1 0" style="overflow-y:scroll;padding:10px">
         <mat-accordion fxFlexFill multi>
-            <mat-expansion-panel [(expanded)]="generalPropertiesPartExpanded">
+            <mat-expansion-panel #generalPropertiesPart (afterExpand)="scrollTo(generalPropertiesPart)"
+                                 [(expanded)]="generalPropertiesPartExpanded">
                 <mat-expansion-panel-header>
                     <mat-panel-title i18n>General properties</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -24,7 +25,8 @@
                     <mat-label i18n>Output File Format</mat-label>
                     <mat-select (ngModelChange)="dispatchFileFormatUpdate($event)"
                                 [ngModel]="mapProject.options.fileFormat">
-                        <mat-option *ngFor="let entry of fileFormats | keyvalue" [value]=entry.key class="mat-body">
+                        <mat-option *ngFor="let entry of fileFormats | keyvalue: order" [value]=entry.key
+                                    class="mat-body">
                             {{entry.value}}
                         </mat-option>
                     </mat-select>
@@ -33,13 +35,14 @@
                     <mat-label i18n>Map Style</mat-label>
                     <mat-select (ngModelChange)="dispatchMapStyleUpdate($event)"
                                 [ngModel]="mapProject.options.mapStyle">
-                        <mat-option *ngFor="let entry of mapStyles | keyvalue" [value]=entry.key class="mat-body">
+                        <mat-option *ngFor="let entry of mapStyles | keyvalue: order" [value]=entry.key
+                                    class="mat-body">
                             {{entry.value}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </mat-expansion-panel>
-            <mat-expansion-panel [(expanded)]="mapAreaPartExpanded">
+            <mat-expansion-panel #mapAreaPart (afterExpand)="scrollTo(mapAreaPart)" [(expanded)]="mapAreaPartExpanded">
                 <mat-expansion-panel-header>
                     <mat-panel-title i18n>Map Area</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -75,7 +78,7 @@
                     <mat-label i18n>Page Orientation</mat-label>
                     <mat-select (ngModelChange)="dispatchOrientationUpdate($event)"
                                 [ngModel]="printAreaOrientation">
-                        <mat-option *ngFor="let entry of paperOrientations | keyvalue" [value]=entry.key
+                        <mat-option *ngFor="let entry of paperOrientations | keyvalue: order" [value]=entry.key
                                     class="mat-body">
                             {{entry.value}}
                         </mat-option>
@@ -108,6 +111,30 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+            </mat-expansion-panel>
+            <mat-expansion-panel #additionalElementsPart (afterExpand)="scrollTo(additionalElementsPart)"
+                                 [(expanded)]="additionalElementsPartExpanded">
+                <mat-expansion-panel-header>
+                    <mat-panel-title fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px"
+                                     style="height: 100px; padding-right: 10px">
+                        <div fxFlex="1 1 100%" i18n>Additional Elements</div>
+                        <button (click)="$event.stopPropagation()" [matMenuTriggerFor]="elementTypes" fxFlex="0 0 auto"
+                                mat-mini-fab>
+                            <mat-icon svgIcon="actions:add"></mat-icon>
+                        </button>
+                        <button (click)="removeAdditionalElement(); $event.stopPropagation()"
+                                [disabled]="!selectedAdditionalElementId"
+                                fxFlex="0 0 auto" mat-mini-fab>
+                            <mat-icon svgIcon="actions:delete"></mat-icon>
+                        </button>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-menu #elementTypes="matMenu">
+                    <button (click)="addAdditionalElement(entry.key)"
+                            *ngFor="let entry of additionalElementTypes | keyvalue: order"
+                            [disabled]="entry.value.disabled" mat-menu-item>{{entry.value}}</button>
+                </mat-menu>
+                <app-additional-element-list></app-additional-element-list>
             </mat-expansion-panel>
         </mat-accordion>
     </mat-card>

@@ -6,13 +6,15 @@ import {GeoCoordinates} from "./geo-coordinates";
 export interface PrintmapsUiState {
     mapCenter: GeoCoordinates,
     mapProjectReferences: MapProjectReference[],
-    currentMapProject: MapProject
+    currentMapProject: MapProject,
+    selectedAdditionalElementId: string
 }
 
 export const initialState: PrintmapsUiState = {
     mapCenter: undefined,
     mapProjectReferences: undefined,
-    currentMapProject: undefined
+    currentMapProject: undefined,
+    selectedAdditionalElementId: undefined
 };
 
 export const PRINTMAPS_UI_STATE_ID = "ch.wellernet.printmaps.ui-state";
@@ -20,7 +22,13 @@ export const PRINTMAPS_UI_STATE_ID = "ch.wellernet.printmaps.ui-state";
 const printmapsUiState = createFeatureSelector<PrintmapsUiState>(PRINTMAPS_UI_STATE_ID);
 
 export const mapProjectReferences = createSelector(printmapsUiState,
-    (state: PrintmapsUiState) => state.mapProjectReferences);
+    (state) => state.mapProjectReferences);
 
 export const currentMapProject = createSelector(printmapsUiState,
-    (state: PrintmapsUiState) => state.currentMapProject);
+    (state) => state.currentMapProject);
+
+export const currentAdditionalElements = createSelector(currentMapProject,
+    (mapProject) => mapProject?.additionalElements ?? []);
+
+export const selectedAdditionalElementId = createSelector(printmapsUiState,
+    (state) => state.selectedAdditionalElementId);

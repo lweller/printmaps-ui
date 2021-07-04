@@ -6,6 +6,7 @@ import {MapOptions} from "../model/intern/map-options";
 import {MapProjectReference} from "../model/intern/map-project-reference";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {GeoCoordinates} from "../model/intern/geo-coordinates";
+import {AdditionalElementType, AnyAdditionalElement} from "../model/intern/additional-element";
 
 const SOURCE = "Printmaps UI";
 
@@ -107,4 +108,24 @@ export const refreshMapProjectState = createAction(
 export const mapProjectStateUpdated = createAction(
     createActionType(SOURCE, "MAP_PROJECT_STATE_UPDATED"),
     props<{ id: string, mapProjectState: MapProjectState }>()
+);
+
+export const addAdditionalElement = createAction(
+    createActionType(SOURCE, "ADD_ADDITIONAL_ELEMENT"),
+    props<{ elementType: AdditionalElementType }>()
+);
+
+export const selectAdditionalElement = createAction(
+    createActionType(SOURCE, "SELECT_ADDITIONAL_ELEMENT"),
+    props<{ id: string }>()
+);
+
+export const removeAdditionalElement = createAction(
+    createActionType(SOURCE, "REMOVE_ADDITIONAL_ELEMENT"),
+    props<{ id: string }>()
+);
+
+export const updateAdditionalElement = createAction(
+    createActionType(SOURCE, "UPDATE_ADDITIONAL_ELEMENT"),
+    props<{ element: AnyAdditionalElement }>()
 );

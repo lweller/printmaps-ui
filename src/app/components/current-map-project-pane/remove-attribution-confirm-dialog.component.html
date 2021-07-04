@@ -1,0 +1,11 @@
+<h1 i18n mat-dialog-title>Confirm Attribution Removal</h1>
+<div class="mat-body" mat-dialog-content>
+    <span i18n>You are about to remove the attribution statement from your map project. Please confirm that you will to
+        add it somewhere the attribution according to <a href="http://printmaps-osm.de/de/nutzung.html" target="_blank">
+        http://printmaps-osm.de/de/nutzung.html</a> somewhere else on your final work to by compliant with the
+        copyright law.</span>
+</div>
+<div mat-dialog-actions>
+    <button [mat-dialog-close]="false" cdkFocusInitial i18n mat-button>Cancel</button>
+    <button [mat-dialog-close]="true" i18n mat-button>Continue</button>
+</div>

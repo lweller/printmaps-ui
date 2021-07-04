@@ -1,9 +1,10 @@
-import {MapRenderingJobDefinition, MapRenderingJobExecution} from "../api/map-rendering-job-definition";
-import {fromReductionFactor, getScaleProperties, Scale} from "./scale";
+import {MapRenderingJobExecution} from "../api/map-rendering-job-definition";
+import {Scale} from "./scale";
 import {MapProjectState} from "./map-project-state";
 import {MapOptions} from "./map-options";
 import {GeoCoordinates} from "./geo-coordinates";
 import {MapProjectReference} from "./map-project-reference";
+import {AdditionalElement} from "./additional-element";
 
 export interface MapProject {
     id: string;
@@ -14,47 +15,8 @@ export interface MapProject {
     widthInMm: number;
     heightInMm: number;
     options: MapOptions;
+    additionalElements: AdditionalElement[];
     modifiedLocally: boolean;
-}
-
-export function toMapRenderingJob(mapProject: MapProject): MapRenderingJobDefinition {
-    return {
-        Data: {
-            Type: "maps",
-            ID: mapProject.id,
-            Attributes: {
-                Fileformat: mapProject.options.fileFormat,
-                Style: mapProject.options.mapStyle,
-                Projection: "3857",
-                Scale: getScaleProperties(mapProject.scale).reductionFactor,
-                Latitude: mapProject.center.latitude,
-                Longitude: mapProject.center.longitude,
-                PrintWidth: mapProject.widthInMm,
-                PrintHeight: mapProject.heightInMm,
-                HideLayers: "",
-                UserObjects: []
-            }
-        }
-    };
-}
-
-export function fromMapRenderingJob(name: string, mapRenderingJob: MapRenderingJobDefinition): MapProject {
-    let data = mapRenderingJob.Data;
-    let attributes = data.Attributes;
-    return {
-        id: data.ID,
-        name: name,
-        state: undefined,
-        scale: fromReductionFactor(attributes.Scale),
-        center: {latitude: attributes.Latitude, longitude: attributes.Longitude},
-        widthInMm: attributes.PrintWidth,
-        heightInMm: attributes.PrintHeight,
-        options: {
-            fileFormat: attributes.Fileformat,
-            mapStyle: attributes.Style
-        },
-        modifiedLocally: false
-    };
 }
 
 export function toMapRenderingJobExecution(id: string): MapRenderingJobExecution {

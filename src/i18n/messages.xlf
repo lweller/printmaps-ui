@@ -30,32 +30,106 @@
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="6321d45e8af86e9cf765d7f7e5d0edf68f0e2b00" datatype="html">
+        <source>No additional elements have been added yet.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-element-list/additional-element-list.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8ba143716c2da6e4120c0c1a804f0bdd9a7e5f5b" datatype="html">
+        <source>Text</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0bd1b7ca428a0c47d189e1f26194062b13a0aa6c" datatype="html">
+        <source>Font Size</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b8b50eff7a3a1f8538f03f10801eb80b283006c1" datatype="html">
+        <source>Font Style</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f8f2fe5fcdb6180137be69b1538e55534da06349" datatype="html">
+        <source>Font Color</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b83d6a573bd44bf17428124d7c8b7459df305824" datatype="html">
+        <source>Text Orientation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c4a58d51c438a3786600291d80a39ed7d4ab4ad8" datatype="html">
+        <source>Horizontal Position</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d93e13026e73455e84660268263187c5bc7f6e7d" datatype="html">
+        <source>Vertical Position</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5674567698673280037" datatype="html">
+        <source>Attribution</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4963211655678323533" datatype="html">
+        <source>Unknown Element</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.ts</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8b63d022a3119728a462bdac6ac95c85d62fb1af" datatype="html">
         <source>Add map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2e322c1968c2de913e81ff9019878040ac3100b3" datatype="html">
         <source>Delete map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" datatype="html">
         <source>Launch map rendering</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fd96805f04549ff76daf6b68bac60ef92492bc70" datatype="html">
         <source>Download rendered map</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4580959815176510999" datatype="html">
@@ -83,84 +157,119 @@
         <source>General properties</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="84f64f26d4b4e040f0ca418bb766cf2120b052bd" datatype="html">
         <source>Project Name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="81b180fe1687880220b59bd5fad28fba338ac998" datatype="html">
         <source>Output File Format</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="0dbb6fb7fdbc6fb771a253da7f99b86111371d7d" datatype="html">
         <source>Map Style</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="60c0959124ef5d0f2513023d763ae091b321f167" datatype="html">
         <source>Map Area</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83296148fec5ddc76628c70b85b5dbc8d4ada3c2" datatype="html">
         <source>Map Center Latitude</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6167307d952064c5321d4f6a4a240be9a99bbaa4" datatype="html">
         <source>Map Center Longitude</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="45a458f74ce79db93d329bde823ab762a64f47ad" datatype="html">
         <source>Page Format</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fe986a0242d8c117811abff3e11fd87e39839a27" datatype="html">
         <source>Page Orientation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="be1733ef44e43571667c2c8fbd47bbf6ce2d0ca2" datatype="html">
         <source>Page Width</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a0487bfc5f36eb68ca601504508b3b6b47629e35" datatype="html">
         <source>Page Height</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="26c193d786c43af04423c4997e20c20356d2ae91" datatype="html">
         <source>Map Scale</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="84245814b52593a4ba821daea00a7955ad6e8312" datatype="html">
+        <source>Additional Elements</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="46bba95876aac36cde35f886414fab637d692e74" datatype="html">
+        <source>Confirm Attribution Removal</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/remove-attribution-confirm-dialog.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9cec715d16fca2942a8704ded2af8d14c6e1d91f" datatype="html">
+        <source>You are about to remove the attribution statement from your map project. Please confirm that you will to add it somewhere the attribution according to <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;http://printmaps-osm.de/de/nutzung.html&quot; target=&quot;_blank&quot;&gt;"/> http://printmaps-osm.de/de/nutzung.html<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> somewhere else on your final work to by compliant with the copyright law.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/remove-attribution-confirm-dialog.component.html</context>
+          <context context-type="linenumber">3,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/remove-attribution-confirm-dialog.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ac10a3d9b59575640797c1a8e6aea642cf5d5e77" datatype="html">
+        <source>Continue</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/remove-attribution-confirm-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="b303a199bc10045754d5ede82bb915c6eb9e2276" datatype="html">
@@ -177,6 +286,13 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="6e4c9568073a6ffed2899df276a3221d97248499" datatype="html">
+        <source>Nonexistent Map Project</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/map-project-list-pane/nonexistent-map-project-eviction-confirm-dialog.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="dc7510a84a4f1292364c0717b665a8195e4ae984" datatype="html">
         <source>This map project does not exist (anymore). It was probably deleted on the server side as it was older than 7 days and will therefore be removed locally as well.</source>
         <context-group purpose="location">
@@ -188,7 +304,28 @@
         <source>Ok</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/map-project-list-pane/nonexistent-map-project-eviction-confirm-dialog.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4874531207622168124" datatype="html">
+        <source>Text Box</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6058250078921751077" datatype="html">
+        <source>GPX Track</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1371553127733924023" datatype="html">
+        <source>Scale</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6437465865756465650" datatype="html">
@@ -259,6 +396,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/paper-orientation.ts</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4762748867415276215" datatype="html">
+        <source>New Text Element</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/reducers/main.reducers.ts</context>
+          <context context-type="linenumber">222</context>
         </context-group>
       </trans-unit>
     </body>

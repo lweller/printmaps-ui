@@ -1,14 +1,12 @@
+import {Ordered} from "../../utils/common.util";
+
 export enum PaperOrientation {
     PORTRAIT = "portrait",
     LANDSCAPE = "landscape"
 }
 
-export interface PaperOrientationProperties {
-    label: string
-}
-
-class PaperOrientationPropertiesImpl implements PaperOrientationProperties {
-    constructor(public label: string) {
+class PaperOrientationProperties implements Ordered {
+    constructor(public label: string, public order: number) {
     }
 
     toString() {
@@ -17,8 +15,8 @@ class PaperOrientationPropertiesImpl implements PaperOrientationProperties {
 }
 
 export const PAPER_ORIENTATIONS = new Map<PaperOrientation, PaperOrientationProperties>([
-    [PaperOrientation.PORTRAIT, new PaperOrientationPropertiesImpl($localize`Portrait`)],
-    [PaperOrientation.LANDSCAPE, new PaperOrientationPropertiesImpl($localize`Landscape`)]
+    [PaperOrientation.PORTRAIT, new PaperOrientationProperties($localize`Portrait`, 1)],
+    [PaperOrientation.LANDSCAPE, new PaperOrientationProperties($localize`Landscape`, 2)]
 ]);
 
 export function getPaperOrientationProperties(paperOrientation: PaperOrientation): PaperOrientationProperties {
