@@ -74,11 +74,12 @@ Normally the Printmaps should now be opened in your web browser.
 
 # Change Log
 
-## Version 0.0.3 (not released yet)
+## Version 0.0.3
 
 * Definition of user defined texts on top of the map
 * Added tooltips for map project states and actions
 * Added German and French translations
+* Defined PNG as standard format for new map projects
 * Fixed action not triggered when not clicking in the center zone of a button
 * Fixed issue when rendering is launched before the project has been saved
 
