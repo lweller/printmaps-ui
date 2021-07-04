@@ -30,7 +30,7 @@ const reducer = createReducer(initialState,
                 heightInMm: 297,
                 scale: Scale.RATIO_1_50000,
                 options: {
-                    fileFormat: FileFormat.SVG,
+                    fileFormat: FileFormat.PNG,
                     mapStyle: MapStyle.OSM_CARTO
                 },
                 additionalElements: []
