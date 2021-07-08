@@ -1,14 +1,14 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {EMPTY, Observable, of} from "rxjs";
-import {catchError, concatMap, map, mapTo} from "rxjs/operators";
+import {catchError, concatMap, map, mapTo, tap} from "rxjs/operators";
 import {MapRenderingJobDefinition} from "../model/api/map-rendering-job-definition";
 import {MapProject, toMapRenderingJobExecution} from "../model/intern/map-project";
 import {MapRenderingJobState} from "../model/api/map-rendering-job-state";
 import {fromMapRenderingJobState, MapProjectState} from "../model/intern/map-project-state";
 import {MapProjectReference} from "../model/intern/map-project-reference";
 import {ConfigurationService} from "./configuration.service";
-import {fromReductionFactor, getScaleProperties} from "../model/intern/scale";
+import {fromReductionFactor, getScaleProperties, SCALES} from "../model/intern/scale";
 import {
     ADDITIONAL_ELEMENT_TYPES,
     AdditionalElementType,
@@ -17,10 +17,16 @@ import {
 import {TemplateService} from "./template-service";
 import {UserObject} from "../model/api/user-object";
 import {UserObjectMetadata} from "../model/api/user-object-metadata";
-import {AdditionalElementStyleType, FONT_STYLE_BY_FONTSET_NAME} from "../model/intern/additional-element-style";
+import {
+    AdditionalElementStyleType,
+    DEFAULT_SCALE_STYLE,
+    FONT_STYLE_BY_FONTSET_NAME
+} from "../model/intern/additional-element-style";
 import {FontStyle} from "../components/font-style-selector/font-style-selector.component";
 import {v4 as uuid} from "uuid";
 import {parse} from "wellknown";
+import {UserFile} from "../model/api/user-file";
+import {ScaleService} from "./scale.service";
 
 const REQUEST_OPTIONS = {
     headers: new HttpHeaders({
@@ -31,7 +37,7 @@ const REQUEST_OPTIONS = {
 
 @Injectable()
 export class PrintmapsService {
-    constructor(private readonly configurationService: ConfigurationService, private templateService: TemplateService, private http: HttpClient) {
+    constructor(private readonly configurationService: ConfigurationService, private templateService: TemplateService, private http: HttpClient, private scaleService: ScaleService) {
     }
 
     private get baseUrl() {
@@ -61,6 +67,14 @@ export class PrintmapsService {
                         opacity: parseFloat(textSymbolizerAttributes.getNamedItem("opacity")?.value ?? "1")
                     }
                 },
+                location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
+            };
+        } else if (metadata?.Type == AdditionalElementType.SCALE) {
+            let wkt = parse(userObject.WellKnownText);
+            return {
+                type: metadata.Type,
+                id: metadata.ID ?? uuid(),
+                style: DEFAULT_SCALE_STYLE,
                 location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
             };
         }
@@ -138,6 +152,9 @@ export class PrintmapsService {
         return this.http.post<MapRenderingJobDefinition>(endpointUrl, this.toMapRenderingJob(mapProject), REQUEST_OPTIONS)
             .pipe(
                 map(mapRenderingJob => this.fromMapRenderingJob(mapProject.name, mapRenderingJob)),
+                tap(savedMapProject =>
+                    this.toUserFiles(savedMapProject).forEach(userFile =>
+                        this.uploadUserFile(savedMapProject.id, userFile.content, userFile.name).subscribe())),
                 concatMap(savedMapProject =>
                     this.loadMapProjectState(savedMapProject.id)
                         .pipe(
@@ -238,5 +255,24 @@ export class PrintmapsService {
                 }
             }
         };
+    }
+
+    private toUserFiles(mapProject: MapProject): UserFile[] {
+        let reductionFactor = SCALES.get(mapProject.scale).reductionFactor;
+        let scaleRatio = Math.pow(10, Math.ceil(Math.log10(10 * reductionFactor))) / reductionFactor;
+        let unitLengthInM;
+        if (scaleRatio >= 30) {
+            unitLengthInM = scaleRatio * reductionFactor / 4000;
+        } else if (scaleRatio >= 15) {
+            unitLengthInM = scaleRatio * reductionFactor / 2000;
+        } else {
+            unitLengthInM = scaleRatio * reductionFactor / 1000;
+        }
+        return mapProject.additionalElements
+            .filter(addAdditionalElement => addAdditionalElement.type == AdditionalElementType.SCALE)
+            .map(element => ({
+                name: `scale_${element.id}.svg`,
+                content: this.scaleService.buildScaleSvg(unitLengthInM, SCALES.get(mapProject.scale).reductionFactor)
+            }));
     }
 }

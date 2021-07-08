@@ -1,5 +1,5 @@
 import {Component, ElementRef, Host, Optional} from "@angular/core";
-import {AdditionalElement, AnyAdditionalElement} from "../../model/intern/additional-element";
+import {AdditionalElement, AdditionalElementType, AnyAdditionalElement} from "../../model/intern/additional-element";
 import {currentAdditionalElements, selectedAdditionalElementId} from "../../model/intern/printmaps-ui-state";
 import {distinctUntilChanged, filter} from "rxjs/operators";
 import {assignIn, cloneDeep, isEqual} from "lodash";
@@ -21,6 +21,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
     ]
 })
 export class AdditionalElementListComponent {
+
+    AdditionalElementType = AdditionalElementType;
 
     additionalElements: AdditionalElement[] = [];
     selectedElementId = undefined;

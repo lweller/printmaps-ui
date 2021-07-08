@@ -6,12 +6,30 @@
     <div fxLayout="column">
         <div (click)="expand(element.id)" class="element-header" fxLayout="row" fxLayoutAlign="start start"
              fxLayoutGap="10px">
-            <mat-icon fxFlex="0 0 16px" svgIcon="additional-elements:{{element.type}}">
-            </mat-icon>
-            <app-additional-text-element-detail (ngModelChange)="dispatchElementChanged($event)"
-                                                [expanded]="element.id == selectedElementId"
-                                                [ngModel]="element" fxFlex="1 1 calc(100%-47px)">
-            </app-additional-text-element-detail>
+            <mat-icon fxFlex="0 0 16px" svgIcon="additional-elements:{{element?.type}}"></mat-icon>
+            <ng-container [ngSwitch]="element?.type">
+                <app-additional-text-element-detail
+                        (ngModelChange)="dispatchElementChanged($event)"
+                        *ngSwitchCase="AdditionalElementType.TEXT_BOX"
+                        [expanded]="element.id == selectedElementId"
+                        [ngModel]="element"
+                        fxFlex="1 1 calc(100%-47px)">
+                </app-additional-text-element-detail>
+                <app-additional-text-element-detail
+                        (ngModelChange)="dispatchElementChanged($event)"
+                        *ngSwitchCase="AdditionalElementType.ATTRIBUTION"
+                        [expanded]="element.id == selectedElementId"
+                        [ngModel]="element"
+                        fxFlex="1 1 calc(100%-47px)">
+                </app-additional-text-element-detail>
+                <app-additional-scale-element-detail
+                        (ngModelChange)="dispatchElementChanged($event)"
+                        *ngSwitchCase="AdditionalElementType.SCALE"
+                        [expanded]="element.id == selectedElementId"
+                        [ngModel]="element"
+                        fxFlex="1 1 calc(100%-47px)">
+                </app-additional-scale-element-detail>
+            </ng-container>
             <div (click)="toggleExpansion(element.id);$event.stopPropagation();"
                  [@expansionIndicator]="element.id == selectedElementId ? 'expanded' : 'collapsed'"
                  class="mat-expansion-indicator"></div>

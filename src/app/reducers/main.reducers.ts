@@ -5,8 +5,13 @@ import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state
 import {getScaleProperties, Scale} from "../model/intern/scale";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
-import {AdditionalElementType, AdditionalTextElement, AnyAdditionalElement} from "../model/intern/additional-element";
-import {DEFAULT_TEXT_STYLE} from "../model/intern/additional-element-style";
+import {
+    AdditionalElementType,
+    AdditionalScaleElement,
+    AdditionalTextElement,
+    AnyAdditionalElement
+} from "../model/intern/additional-element";
+import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE} from "../model/intern/additional-element-style";
 import {v4 as uuid} from "uuid";
 import {MapProject} from "../model/intern/map-project";
 
@@ -241,8 +246,14 @@ function createAdditionalElement(mapProject: MapProject, type: AdditionalElement
                 ...baseElement,
                 text: "${attribution}",
                 style: DEFAULT_TEXT_STYLE,
-                location: {x: 40, y: 6}
+                location: {x: 40, y: 7}
             } as AdditionalTextElement;
+        case AdditionalElementType.SCALE:
+            return {
+                ...baseElement,
+                style: DEFAULT_SCALE_STYLE,
+                location: {x: 160, y: 10}
+            } as AdditionalScaleElement;
         default :
             return undefined;
     }

@@ -49,9 +49,15 @@ import {ColorSketchModule} from "ngx-color/sketch";
 import {OverlayModule} from "@angular/cdk/overlay";
 import {PortalModule} from "@angular/cdk/portal";
 import {AdditionalElementListComponent} from "./components/additional-element-list/additional-element-list.component";
-import {AdditionalTextElementDetailComponent} from "./components/additional-text-element-detail/additional-text-element-detail.component";
+import {
+    AdditionalTextElementDetailComponent
+} from "./components/additional-text-element-detail/additional-text-element-detail.component";
 import {TextOrientationSelector} from "./components/text-orientation-selector/text-orientation-selector.component";
 import {TemplateService} from "./services/template-service";
+import {
+    AdditionalScaleElementDetailComponent
+} from "./components/additional-scale-element-detail/additional-scale-element-detail.component";
+import {ScaleService} from "./services/scale.service";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -74,7 +80,8 @@ export const metaReducers: MetaReducer[] = [];
         MapComponent,
         NonexistentMapProjectEvictionConfirmDialog,
         AdditionalElementListComponent,
-        AdditionalTextElementDetailComponent
+        AdditionalTextElementDetailComponent,
+        AdditionalScaleElementDetailComponent
     ],
     imports: [
         BrowserModule,
@@ -110,6 +117,7 @@ export const metaReducers: MetaReducer[] = [];
         },
         MapProjectReferenceService,
         PrintmapsService,
+        ScaleService,
         TemplateService
     ],
     bootstrap: [AppComponent]

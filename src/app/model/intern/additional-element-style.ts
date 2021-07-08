@@ -1,4 +1,4 @@
-import {AdditionalElement, AdditionalTextElement} from "./additional-element";
+import {AdditionalElement, AdditionalScaleElement, AdditionalTextElement} from "./additional-element";
 import {FontStyle} from "../../components/font-style-selector/font-style-selector.component";
 import {Color} from "../../components/color-selector/color-selector.component";
 import {UserObjectMetadata} from "../api/user-object-metadata";
@@ -17,7 +17,8 @@ export interface AdditionalElementTextStyle extends AdditionalElementStyle {
 }
 
 export enum AdditionalElementStyleType {
-    TEXT = "text"
+    TEXT = "text",
+    SCALE = "scale"
 }
 
 export class AdditionalElementStyleTypeProperties {
@@ -29,6 +30,10 @@ export const ADDITIONAL_ELEMENT_TYPE_STYLES = new Map<AdditionalElementStyleType
     [
         AdditionalElementStyleType.TEXT,
         new AdditionalElementStyleTypeProperties(convertAdditionalTextElementToSymbolizer)
+    ],
+    [
+        AdditionalElementStyleType.SCALE,
+        new AdditionalElementStyleTypeProperties(convertAdditionalScaleElementToSymbolizer)
     ]
 ]);
 
@@ -39,6 +44,15 @@ function convertAdditionalTextElementToSymbolizer(templateService: TemplateServi
         Text: element.text
     };
     return `<!--${JSON.stringify(metadata)}--><TextSymbolizer fontset-name='${FONTSET_NAME_BY_FONT_STYLE.get(element.style.fontStyle)}' size='${element.style.fontSize}' fill='${element.style.fontColor.rgbHexValue}' opacity='${element.style.fontColor.opacity}' orientation='${element.style.textOrientation}' allow-overlap='true'>'${templateService.compile(mapProject, element.text)}'</TextSymbolizer>`;
+}
+
+function convertAdditionalScaleElementToSymbolizer(_templateService: TemplateService, _mapProject: MapProject, element: AdditionalScaleElement): string {
+    let metadata: UserObjectMetadata = {
+        ID: element.id,
+        Type: element.type,
+        Text: undefined
+    };
+    return `<!--${JSON.stringify(metadata)}--><MarkersSymbolizer file="scale_${element.id}.svg" allow-overlap="true" placement="point" />`;
 }
 
 export const FONT_STYLE_BY_FONTSET_NAME = new Map<string, FontStyle>([
@@ -62,4 +76,8 @@ export const DEFAULT_TEXT_STYLE: AdditionalElementTextStyle = {
         opacity: 1
     },
     textOrientation: 0
+};
+
+export const DEFAULT_SCALE_STYLE: AdditionalElementStyle = {
+    type: AdditionalElementStyleType.SCALE
 };

@@ -21,7 +21,11 @@ export interface AdditionalTextElement extends AdditionalElement {
     location: PrintLocation;
 }
 
-export type AnyAdditionalElement = AdditionalTextElement;
+export interface AdditionalScaleElement extends AdditionalElement {
+    location: PrintLocation;
+}
+
+export type AnyAdditionalElement = AdditionalTextElement | AdditionalScaleElement;
 
 export enum AdditionalElementType {
     TEXT_BOX = "text-box",
@@ -49,7 +53,7 @@ export const ADDITIONAL_ELEMENT_TYPES = new Map<AdditionalElementType, Additiona
             $localize`Text Box`,
             1,
             false,
-            convertAdditionalTextElementToUserObject
+            convertAdditionalElementToUserObject
         )
     ],
     [AdditionalElementType.ATTRIBUTION,
@@ -57,15 +61,15 @@ export const ADDITIONAL_ELEMENT_TYPES = new Map<AdditionalElementType, Additiona
             $localize`Attribution`,
             2,
             false,
-            convertAdditionalTextElementToUserObject
+            convertAdditionalElementToUserObject
         )
     ],
     [AdditionalElementType.SCALE,
         new AdditionalElementTypeProperties(
             $localize`Scale`,
             3,
-            true,
-            undefined
+            false,
+            convertAdditionalElementToUserObject
         )
     ],
     [AdditionalElementType.GPX_TRACK,
@@ -78,7 +82,7 @@ export const ADDITIONAL_ELEMENT_TYPES = new Map<AdditionalElementType, Additiona
     ]
 ]);
 
-function convertAdditionalTextElementToUserObject(templateService: TemplateService, mapProject: MapProject, element: AdditionalTextElement): UserObject {
+function convertAdditionalElementToUserObject(templateService: TemplateService, mapProject: MapProject, element: AdditionalTextElement): UserObject {
     return {
         Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateService, mapProject, element),
         WellKnownText: `POINT(${element.location.x} ${element.location.y})`
