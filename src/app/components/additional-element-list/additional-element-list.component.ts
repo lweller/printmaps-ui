@@ -1,7 +1,11 @@
 import {Component, ElementRef, Host, Optional} from "@angular/core";
 import {AdditionalElement, AdditionalElementType, AnyAdditionalElement} from "../../model/intern/additional-element";
-import {currentAdditionalElements, selectedAdditionalElementId} from "../../model/intern/printmaps-ui-state";
-import {distinctUntilChanged, filter} from "rxjs/operators";
+import {
+    currentAdditionalElements,
+    currentMapProject,
+    selectedAdditionalElementId
+} from "../../model/intern/printmaps-ui-state";
+import {distinctUntilChanged, filter, map} from "rxjs/operators";
 import {assignIn, cloneDeep, isEqual} from "lodash";
 import {Store} from "@ngrx/store";
 import * as UiActions from "../../actions/main.actions";
@@ -27,6 +31,8 @@ export class AdditionalElementListComponent {
     additionalElements: AdditionalElement[] = [];
     selectedElementId = undefined;
 
+    mapProjectId: string;
+
     @Host() elementHostRef: HTMLElement;
 
     constructor(@Optional() private elementRef: ElementRef<HTMLElement>,
@@ -43,6 +49,12 @@ export class AdditionalElementListComponent {
                 distinctUntilChanged((previousValue, nextValue) => isEqual(previousValue, nextValue))
             )
             .subscribe(nextValue => this.expand(nextValue));
+        store.select(currentMapProject)
+            .pipe(
+                map(mapProject => mapProject?.id),
+                distinctUntilChanged((previousValue, nextValue) => isEqual(previousValue, nextValue))
+            )
+            .subscribe(nextValue => this.mapProjectId = nextValue);
     }
 
     dispatchElementChanged(updatedElement: AnyAdditionalElement) {

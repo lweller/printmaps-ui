@@ -29,6 +29,14 @@
                         [ngModel]="element"
                         fxFlex="1 1 calc(100%-47px)">
                 </app-additional-scale-element-detail>
+                <app-additional-gpx-element-detail
+                        (ngModelChange)="dispatchElementChanged($event)"
+                        *ngSwitchCase="AdditionalElementType.GPX_TRACK"
+                        [expanded]="element.id == selectedElementId"
+                        [mapProjectId]="mapProjectId"
+                        [ngModel]="element"
+                        fxFlex="1 1 calc(100%-47px)">
+                </app-additional-gpx-element-detail>
             </ng-container>
             <div (click)="toggleExpansion(element.id);$event.stopPropagation();"
                  [@expansionIndicator]="element.id == selectedElementId ? 'expanded' : 'collapsed'"

@@ -1,0 +1,25 @@
+<div [formGroup]="form" fxLayout="column">
+    <div [@detailExpand]="!expanded ? 'expanded' : 'collapsed'"
+         class="collapsable" fxLayout="column">
+        <span style="padding-top: 4px">{{elementName()}}</span>
+    </div>
+    <div [@detailExpand]="expanded ? 'expanded' : 'collapsed'" class="collapsable" fxFlexAlign="start stretch"
+         fxLayout="column">
+        <mat-form-field fxFlex="1 0 60px">
+            <mat-label i18n>Select GPX File</mat-label>
+            <ngx-mat-file-input formControlName="file"></ngx-mat-file-input>
+        </mat-form-field>
+        <div formGroupName="style">
+            <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
+                <mat-form-field appearance="none" fxFlex="0 1 100px">
+                    <mat-label i18n>Line Width</mat-label>
+                    <line-width-selector formControlName="lineWidth"></line-width-selector>
+                </mat-form-field>
+                <mat-form-field appearance="none" fxFlex="1 0 100px">
+                    <mat-label i18n>Line Color</mat-label>
+                    <color-selector formControlName="lineColor"></color-selector>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>

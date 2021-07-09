@@ -44,6 +44,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatCardModule} from "@angular/material/card";
 import {MatTableModule} from "@angular/material/table";
 import {FontStyleSelector} from "./components/font-style-selector/font-style-selector.component";
+import {LineWidthSelector} from "./components/line-width-selector/line-width-selector.component";
 import {ColorSelector} from "./components/color-selector/color-selector.component";
 import {ColorSketchModule} from "ngx-color/sketch";
 import {OverlayModule} from "@angular/cdk/overlay";
@@ -58,6 +59,10 @@ import {
     AdditionalScaleElementDetailComponent
 } from "./components/additional-scale-element-detail/additional-scale-element-detail.component";
 import {ScaleService} from "./services/scale.service";
+import {
+    AdditionalGpxElementDetailComponent
+} from "./components/additional-gpx-element-detail/additional-gpx-element-detail.component";
+import {MaterialFileInputModule} from "ngx-material-file-input";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -70,6 +75,7 @@ export const metaReducers: MetaReducer[] = [];
         NumericDirective,
         AppComponent,
         FontStyleSelector,
+        LineWidthSelector,
         TextOrientationSelector,
         ColorSelector,
         ButtonBoxComponent,
@@ -81,7 +87,8 @@ export const metaReducers: MetaReducer[] = [];
         NonexistentMapProjectEvictionConfirmDialog,
         AdditionalElementListComponent,
         AdditionalTextElementDetailComponent,
-        AdditionalScaleElementDetailComponent
+        AdditionalScaleElementDetailComponent,
+        AdditionalGpxElementDetailComponent
     ],
     imports: [
         BrowserModule,
@@ -106,8 +113,7 @@ export const metaReducers: MetaReducer[] = [];
             }),
         EffectsModule.forRoot([]),
         StoreModule.forFeature(PRINTMAPS_UI_STATE_ID, printmapsUiReducer),
-        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule, MatExpansionModule, MatCardModule, MatTableModule, ReactiveFormsModule, ColorSketchModule, OverlayModule, PortalModule
-    ],
+        EffectsModule.forFeature([MainEffects]), MatListModule, MatIconModule, MatButtonToggleModule, MatMenuModule, MatTooltipModule, MatExpansionModule, MatCardModule, MatTableModule, ReactiveFormsModule, ColorSketchModule, OverlayModule, PortalModule, MaterialFileInputModule],
     providers: [
         {
             provide: APP_INITIALIZER,

@@ -1,5 +1,6 @@
 export interface UserObjectMetadata {
     ID: string,
     Type: string,
-    Text: string
+    Text?: string,
+    File?: string
 }

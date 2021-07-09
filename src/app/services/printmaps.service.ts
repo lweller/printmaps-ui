@@ -12,6 +12,9 @@ import {fromReductionFactor, getScaleProperties, SCALES} from "../model/intern/s
 import {
     ADDITIONAL_ELEMENT_TYPES,
     AdditionalElementType,
+    AdditionalGpxElement,
+    AdditionalScaleElement,
+    AdditionalTextElement,
     AnyAdditionalElement
 } from "../model/intern/additional-element";
 import {TemplateService} from "./template-service";
@@ -20,9 +23,10 @@ import {UserObjectMetadata} from "../model/api/user-object-metadata";
 import {
     AdditionalElementStyleType,
     DEFAULT_SCALE_STYLE,
+    DEFAULT_TEXT_STYLE,
+    DEFAULT_TRACK_STYLE,
     FONT_STYLE_BY_FONTSET_NAME
 } from "../model/intern/additional-element-style";
-import {FontStyle} from "../components/font-style-selector/font-style-selector.component";
 import {v4 as uuid} from "uuid";
 import {parse} from "wellknown";
 import {UserFile} from "../model/api/user-file";
@@ -45,47 +49,88 @@ export class PrintmapsService {
     }
 
     private static convertUserObjectToAdditionalElement(userObject: UserObject): AnyAdditionalElement {
+        if (!userObject.Style.match(/^<!--(.*)-->/)) {
+            return undefined;
+        }
         let metadata = JSON.parse(userObject.Style.match(/^<!--(.*)-->/)[1]) as UserObjectMetadata;
         if (metadata?.Type == AdditionalElementType.TEXT_BOX || metadata?.Type == AdditionalElementType.ATTRIBUTION) {
-            let parser = new DOMParser();
-            let styleXml = parser.parseFromString(userObject.Style, "application/xml");
-            let textSymbolizer = styleXml.getElementsByTagName("TextSymbolizer")[0];
-            let wkt = parse(userObject.WellKnownText);
-            let textSymbolizerAttributes = textSymbolizer.attributes;
-            return {
-                type: metadata.Type,
-                id: metadata.ID ?? uuid(),
-                text: metadata.Text ?? "",
-                style: {
-                    type: AdditionalElementStyleType.TEXT,
-                    fontStyle: FONT_STYLE_BY_FONTSET_NAME
-                        .get(textSymbolizerAttributes.getNamedItem("fontset-name")?.value) ?? FontStyle.NORMAL,
-                    fontSize: parseInt(textSymbolizerAttributes.getNamedItem("size")?.value ?? "10"),
-                    textOrientation: parseInt(textSymbolizerAttributes.getNamedItem("orientation")?.value ?? "0"),
-                    fontColor: {
-                        rgbHexValue: textSymbolizerAttributes.getNamedItem("fill")?.value ?? "#000000",
-                        opacity: parseFloat(textSymbolizerAttributes.getNamedItem("opacity")?.value ?? "1")
-                    }
-                },
-                location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
-            };
+            return this.extractTextElement(userObject, metadata);
         } else if (metadata?.Type == AdditionalElementType.SCALE) {
-            let wkt = parse(userObject.WellKnownText);
-            return {
-                type: metadata.Type,
-                id: metadata.ID ?? uuid(),
-                style: DEFAULT_SCALE_STYLE,
-                location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
-            };
+            return this.extractScaleElement(userObject, metadata);
+        } else if (metadata?.Type == AdditionalElementType.GPX_TRACK) {
+            return this.extractGpxElement(userObject, metadata);
         }
         return undefined;
     }
 
+    private static extractTextElement(userObject: UserObject, metadata: UserObjectMetadata): AdditionalTextElement {
+        let parser = new DOMParser();
+        let styleXml = parser.parseFromString(userObject.Style, "application/xml");
+        let wkt = parse(userObject.WellKnownText);
+        let textSymbolizerAttributes = styleXml.getElementsByTagName("TextSymbolizer")[0].attributes;
+        return {
+            type: metadata.Type as AdditionalElementType,
+            id: metadata.ID ?? uuid(),
+            text: metadata.Text ?? "",
+            style: {
+                type: AdditionalElementStyleType.TEXT,
+                fontStyle: FONT_STYLE_BY_FONTSET_NAME
+                        .get(textSymbolizerAttributes.getNamedItem("fontset-name")?.value) ??
+                    DEFAULT_TEXT_STYLE.fontStyle,
+                fontSize: parseInt(textSymbolizerAttributes.getNamedItem("size")?.value ??
+                    DEFAULT_TEXT_STYLE.fontSize.toString()),
+                textOrientation: parseInt(textSymbolizerAttributes.getNamedItem("orientation")?.value ??
+                    DEFAULT_TEXT_STYLE.textOrientation.toString()),
+                fontColor: {
+                    rgbHexValue: textSymbolizerAttributes.getNamedItem("fill")?.value ??
+                        DEFAULT_TEXT_STYLE.fontColor.rgbHexValue,
+                    opacity: parseFloat(textSymbolizerAttributes.getNamedItem("opacity")?.value ??
+                        DEFAULT_TEXT_STYLE.fontColor.opacity.toString())
+                }
+            },
+            location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
+        };
+    }
+
+    private static extractScaleElement(userObject: UserObject, metadata: UserObjectMetadata): AdditionalScaleElement {
+        let wkt = parse(userObject.WellKnownText);
+        return {
+            type: metadata.Type as AdditionalElementType,
+            id: metadata.ID ?? uuid(),
+            style: DEFAULT_SCALE_STYLE,
+            location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
+        };
+    }
+
+    private static extractGpxElement(userObject: UserObject, metadata: UserObjectMetadata): AdditionalGpxElement {
+        let parser = new DOMParser();
+        let styleXml = parser.parseFromString(userObject.Style, "application/xml");
+        let lineSymbolizerAttributes = styleXml.getElementsByTagName("LineSymbolizer")[0].attributes;
+        return {
+            type: AdditionalElementType.GPX_TRACK,
+            id: metadata.ID ?? uuid(),
+            style: {
+                type: AdditionalElementStyleType.TRACK,
+                lineWidth: parseFloat(lineSymbolizerAttributes.getNamedItem("stroke-width")?.value
+                    ?? DEFAULT_TRACK_STYLE.lineWidth.toString()),
+                lineColor: {
+                    rgbHexValue: lineSymbolizerAttributes.getNamedItem("stroke")?.value
+                        ?? DEFAULT_TRACK_STYLE.lineColor.rgbHexValue,
+                    opacity: parseFloat(lineSymbolizerAttributes.getNamedItem("stroke-opacity")?.value
+                        ?? DEFAULT_TRACK_STYLE.lineColor.opacity.toString())
+                }
+            },
+            file: {name: metadata.File, data: undefined, modified: new Date().getTime()}
+        };
+    }
+
     private static extractMargins(userObject: UserObject): { top: number, bottom: number, left: number, right: number } {
+        if (!userObject.Style.match(/^<!--(.*)-->/)) {
+            return undefined;
+        }
         let metadata = JSON.parse(userObject.Style.match(/^<!--(.*)-->/)[1]) as UserObjectMetadata;
         if (metadata?.Type == "margins") {
             let wkt = parse(userObject.WellKnownText);
-            console.log(wkt);
             return {
                 top: wkt.coordinates[0][2][1] - wkt.coordinates[1][2][1],
                 bottom: wkt.coordinates[1][0][1],
@@ -168,6 +213,23 @@ export class PrintmapsService {
             );
     }
 
+    uploadUserFile(mapProjectId: string, content: string | Blob, name: string): Observable<boolean> {
+        let formData = new FormData();
+        formData.append("file", new Blob([content], {type: "image/svg+xml"}), name);
+        let endpointUrl = `${this.baseUrl}/upload/${mapProjectId}`;
+        let requestOptions = {
+            headers: new HttpHeaders({
+                "Accept": "application/vnd.api+json; charset=utf-8"
+            })
+        };
+
+        return this.http.post<HttpResponse<any>>(endpointUrl, formData, requestOptions)
+            .pipe(
+                map(response => response.status == 201),
+                catchError(() => EMPTY)
+            );
+    }
+
     private static generateMargins(mapProject: MapProject): UserObject {
         let metadata: UserObjectMetadata = {
             ID: uuid(),
@@ -184,20 +246,6 @@ export class PrintmapsService {
             Style: `<!--${JSON.stringify(metadata)}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />`,
             WellKnownText: `POLYGON((0 0, 0 ${outerHeight}, ${outerWidth} ${outerHeight}, ${outerWidth} 0, 0 0), (${innerWidth1} ${innerHeight1}, ${innerWidth1} ${innerHeight2}, ${innerWidth2} ${innerHeight2}, ${innerWidth2} ${innerHeight1}, ${innerWidth1} ${innerHeight1}))`
         };
-    }
-
-    uploadUserFile(mapProjectId: string, content: string | Blob, name: string): Observable<boolean> {
-        let formData = new FormData();
-        formData.append("file", new Blob([content], {type: "image/svg+xml"}), name);
-        let endpointUrl = `${this.baseUrl}/upload/${mapProjectId}`;
-        let requestOptions = {
-            headers: new HttpHeaders({
-                "Accept": "application/vnd.api+json; charset=utf-8"
-            })
-        };
-
-        return this.http.post<HttpResponse<any>>(endpointUrl, formData, requestOptions)
-            .pipe(map(response => response.status == 201));
     }
 
     private fromMapRenderingJob(name: string, mapRenderingJob: MapRenderingJobDefinition): MapProject {
@@ -230,12 +278,18 @@ export class PrintmapsService {
     }
 
     private toMapRenderingJob(mapProject: MapProject): MapRenderingJobDefinition {
-        let additionalElmentUserObjects = mapProject.additionalElements
+        let gpxTracks = mapProject.additionalElements
+            .filter(element => element.type == AdditionalElementType.GPX_TRACK)
+            .map(element => ADDITIONAL_ELEMENT_TYPES.get(element.type)
+                .toUserObject(this.templateService, mapProject, element));
+        let otherAdditionalElementUserObjects = mapProject.additionalElements
+            .filter(element => element.type != AdditionalElementType.GPX_TRACK)
             .map(element => ADDITIONAL_ELEMENT_TYPES.get(element.type)
                 .toUserObject(this.templateService, mapProject, element));
         let userObject = [
+            ...gpxTracks,
             PrintmapsService.generateMargins(mapProject),
-            ...additionalElmentUserObjects
+            ...otherAdditionalElementUserObjects
         ];
         return {
             Data: {
@@ -273,6 +327,16 @@ export class PrintmapsService {
             .map(element => ({
                 name: `scale_${element.id}.svg`,
                 content: this.scaleService.buildScaleSvg(unitLengthInM, SCALES.get(mapProject.scale).reductionFactor)
-            }));
+            }))
+            .concat(
+                mapProject.additionalElements
+                    .filter(addAdditionalElement => addAdditionalElement.type == AdditionalElementType.GPX_TRACK)
+                    .map(element => element as AdditionalGpxElement)
+                    .filter(element => element.file?.data)
+                    .map(element => ({
+                        name: element.file.name,
+                        content: element.file.data
+                    }))
+            );
     }
 }

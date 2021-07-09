@@ -1,4 +1,9 @@
-import {AdditionalElement, AdditionalScaleElement, AdditionalTextElement} from "./additional-element";
+import {
+    AdditionalElement,
+    AdditionalGpxElement,
+    AdditionalScaleElement,
+    AdditionalTextElement
+} from "./additional-element";
 import {FontStyle} from "../../components/font-style-selector/font-style-selector.component";
 import {Color} from "../../components/color-selector/color-selector.component";
 import {UserObjectMetadata} from "../api/user-object-metadata";
@@ -16,9 +21,15 @@ export interface AdditionalElementTextStyle extends AdditionalElementStyle {
     textOrientation: number;
 }
 
+export interface AdditionalElementTrackStyle extends AdditionalElementStyle {
+    lineWidth: number;
+    lineColor: Color;
+}
+
 export enum AdditionalElementStyleType {
     TEXT = "text",
-    SCALE = "scale"
+    SCALE = "scale",
+    TRACK = "track"
 }
 
 export class AdditionalElementStyleTypeProperties {
@@ -30,6 +41,10 @@ export const ADDITIONAL_ELEMENT_TYPE_STYLES = new Map<AdditionalElementStyleType
     [
         AdditionalElementStyleType.TEXT,
         new AdditionalElementStyleTypeProperties(convertAdditionalTextElementToSymbolizer)
+    ],
+    [
+        AdditionalElementStyleType.TRACK,
+        new AdditionalElementStyleTypeProperties(convertAdditionalTrackElementToSymbolizer)
     ],
     [
         AdditionalElementStyleType.SCALE,
@@ -44,6 +59,15 @@ function convertAdditionalTextElementToSymbolizer(templateService: TemplateServi
         Text: element.text
     };
     return `<!--${JSON.stringify(metadata)}--><TextSymbolizer fontset-name='${FONTSET_NAME_BY_FONT_STYLE.get(element.style.fontStyle)}' size='${element.style.fontSize}' fill='${element.style.fontColor.rgbHexValue}' opacity='${element.style.fontColor.opacity}' orientation='${element.style.textOrientation}' allow-overlap='true'>'${templateService.compile(mapProject, element.text)}'</TextSymbolizer>`;
+}
+
+function convertAdditionalTrackElementToSymbolizer(_templateService: TemplateService, _mapProject: MapProject, element: AdditionalGpxElement): string {
+    let metadata: UserObjectMetadata = {
+        ID: element.id,
+        Type: element.type,
+        File: element.file?.name
+    };
+    return `<!--${JSON.stringify(metadata)}--><LineSymbolizer stroke='${element.style.lineColor.rgbHexValue}' stroke-width='${element.style.lineWidth}' stroke-opacity='${element.style.lineColor.opacity}' stroke-linecap='round' stroke-linejoin='round' smooth='1' />`;
 }
 
 function convertAdditionalScaleElementToSymbolizer(_templateService: TemplateService, _mapProject: MapProject, element: AdditionalScaleElement): string {
@@ -80,4 +104,13 @@ export const DEFAULT_TEXT_STYLE: AdditionalElementTextStyle = {
 
 export const DEFAULT_SCALE_STYLE: AdditionalElementStyle = {
     type: AdditionalElementStyleType.SCALE
+};
+
+export const DEFAULT_TRACK_STYLE: AdditionalElementTrackStyle = {
+    type: AdditionalElementStyleType.TRACK,
+    lineWidth: 4,
+    lineColor: {
+        rgbHexValue: "#0000ff",
+        opacity: 0.4
+    }
 };

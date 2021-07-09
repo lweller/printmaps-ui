@@ -18,9 +18,11 @@ import {
 } from "rxjs/operators";
 import {Subjectize} from "subjectize";
 import * as UiActions from "../../actions/main.actions";
-import {currentMapProject} from "../../model/intern/printmaps-ui-state";
+import {currentAdditionalGpxElements, currentMapProject} from "../../model/intern/printmaps-ui-state";
 import {getScaleProperties, Scale} from "../../model/intern/scale";
 import {ConfigurationService} from "../../services/configuration.service";
+import {gpx} from "@mapbox/leaflet-omnivore";
+import {AdditionalGpxElement} from "../../model/intern/additional-element";
 
 @Component({
     selector: "app-map",
@@ -31,6 +33,11 @@ export class MapComponent implements AfterViewInit {
 
     @Input() active: boolean;
     @Subjectize("active") active$ = new ReplaySubject(1);
+
+    mapHandler: L.Map;
+    gpxTrackHandlerByElementId: Map<string, any> = new Map<string, any>();
+
+    gpxTrackLastUpdateByElementId: Map<string, number> = new Map<string, number>();
 
     @Input() centerCoordinates: L.LatLng;
     @Subjectize("centerCoordinates") centerCoordinates$ = new ReplaySubject<L.LatLng>(1);
@@ -50,70 +57,6 @@ export class MapComponent implements AfterViewInit {
 
     constructor(private readonly configurationService: ConfigurationService, private store: Store<any>) {
         this.bindToStore();
-    }
-
-    private bindToStore() {
-        // TODO: refactor direct binding to store to make map component reusable
-        this.store
-            .select(currentMapProject)
-            .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue))
-            )
-            .subscribe(nextCurrentMapProject => {
-                if (nextCurrentMapProject) {
-                    this.centerCoordinates = L.latLng(nextCurrentMapProject.center.latitude, nextCurrentMapProject.center.longitude);
-                    let factor = getScaleProperties(nextCurrentMapProject.scale).reductionFactor / 1000;
-                    this.selectedArea = {
-                        width: (nextCurrentMapProject.widthInMm - nextCurrentMapProject.leftMarginInMm - nextCurrentMapProject.rightMarginInMm) * factor,
-                        height: (nextCurrentMapProject.heightInMm - nextCurrentMapProject.topMarginInMm - nextCurrentMapProject.bottomMarginInMm) * factor
-                    };
-                    this.topMarginInMm = nextCurrentMapProject.topMarginInMm;
-                    this.bottomMarginInMm = nextCurrentMapProject.bottomMarginInMm;
-                    this.leftMarginInMm = nextCurrentMapProject.leftMarginInMm;
-                    this.rightMarginInMm = nextCurrentMapProject.rightMarginInMm;
-                    this.scale = nextCurrentMapProject.scale;
-                    this.active = true;
-                } else {
-                    this.active = false;
-                    if (!this.centerCoordinates) {
-                        let defaultCoordinates = this.configurationService.appConf.defaultCoordinates;
-                        this.centerCoordinates =
-                            L.latLng(defaultCoordinates.latitude, defaultCoordinates.longitude);
-                    }
-                    this.selectedArea = undefined;
-                    this.scale = undefined;
-                }
-            });
-        this.centerCoordinatesChange
-            .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue))
-            )
-            .subscribe(nextCenterCoordinates => this.store.dispatch(
-                UiActions.updateCenterCoordinates({
-                    center: {
-                        latitude: nextCenterCoordinates.lat,
-                        longitude: nextCenterCoordinates.lng
-                    }
-                })
-            ));
-        this.selectedAreaChange
-            .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue))
-            )
-            .subscribe(nextSelectedAreaInM => this.store.dispatch(
-                UiActions.updateSelectedArea({
-                    widthInM: nextSelectedAreaInM.width,
-                    heightInM: nextSelectedAreaInM.height,
-                    topMarginInMm: this.topMarginInMm,
-                    bottomMarginInMm: this.bottomMarginInMm,
-                    leftMarginInMm: this.leftMarginInMm,
-                    rightMarginInMm: this.rightMarginInMm,
-                    scale: this.scale
-                })
-            ));
     }
 
     private static addOsmLayer(mapHandler: L.Map) {
@@ -153,6 +96,110 @@ export class MapComponent implements AfterViewInit {
         });
 
         this.handleCenterCoordinatesUpdate(mapHandler);
+        this.mapHandler = mapHandler;
+    }
+
+    private bindToStore() {
+        // TODO: refactor direct binding to store to make map component reusable
+        this.store
+            .select(currentMapProject)
+            .pipe(
+                distinctUntilChanged((previousValue, nextValue) =>
+                    isEqual(previousValue, nextValue))
+            )
+            .subscribe(nextCurrentMapProject => {
+                if (nextCurrentMapProject) {
+                    this.centerCoordinates = L.latLng(nextCurrentMapProject.center.latitude, nextCurrentMapProject.center.longitude);
+                    let factor = getScaleProperties(nextCurrentMapProject.scale).reductionFactor / 1000;
+                    this.selectedArea = {
+                        width: (nextCurrentMapProject.widthInMm - nextCurrentMapProject.leftMarginInMm - nextCurrentMapProject.rightMarginInMm) * factor,
+                        height: (nextCurrentMapProject.heightInMm - nextCurrentMapProject.topMarginInMm - nextCurrentMapProject.bottomMarginInMm) * factor
+                    };
+                    this.topMarginInMm = nextCurrentMapProject.topMarginInMm;
+                    this.bottomMarginInMm = nextCurrentMapProject.bottomMarginInMm;
+                    this.leftMarginInMm = nextCurrentMapProject.leftMarginInMm;
+                    this.rightMarginInMm = nextCurrentMapProject.rightMarginInMm;
+                    this.scale = nextCurrentMapProject.scale;
+                    this.active = true;
+                } else {
+                    this.active = false;
+                    if (!this.centerCoordinates) {
+                        let defaultCoordinates = this.configurationService.appConf.defaultCoordinates;
+                        this.centerCoordinates =
+                            L.latLng(defaultCoordinates.latitude, defaultCoordinates.longitude);
+                    }
+                    this.selectedArea = undefined;
+                    this.scale = undefined;
+                }
+            });
+        this.store.select(currentAdditionalGpxElements).subscribe(additionalGpxElements => {
+            this.updateGpxTracks(additionalGpxElements);
+        });
+        this.centerCoordinatesChange
+            .pipe(
+                distinctUntilChanged((previousValue, nextValue) =>
+                    isEqual(previousValue, nextValue))
+            )
+            .subscribe(nextCenterCoordinates => this.store.dispatch(
+                UiActions.updateCenterCoordinates({
+                    center: {
+                        latitude: nextCenterCoordinates.lat,
+                        longitude: nextCenterCoordinates.lng
+                    }
+                })
+            ));
+        this.selectedAreaChange
+            .pipe(
+                distinctUntilChanged((previousValue, nextValue) =>
+                    isEqual(previousValue, nextValue))
+            )
+            .subscribe(nextSelectedAreaInM => this.store.dispatch(
+                UiActions.updateSelectedArea({
+                    widthInM: nextSelectedAreaInM.width,
+                    heightInM: nextSelectedAreaInM.height,
+                    topMarginInMm: this.topMarginInMm,
+                    bottomMarginInMm: this.bottomMarginInMm,
+                    leftMarginInMm: this.leftMarginInMm,
+                    rightMarginInMm: this.rightMarginInMm,
+                    scale: this.scale
+                })
+            ));
+    }
+
+    private updateGpxTracks(additionalGpxElements: AdditionalGpxElement[]) {
+        let gpxElementIdsToRemove = new Set<string>(this.gpxTrackHandlerByElementId.keys());
+        additionalGpxElements.forEach(additionalGpxElement => {
+            if (additionalGpxElement.file?.data) {
+                gpxElementIdsToRemove.delete(additionalGpxElement.id);
+                let style = {
+                    weight: additionalGpxElement.style.lineWidth,
+                    color: additionalGpxElement.style.lineColor.rgbHexValue,
+                    opacity: additionalGpxElement.style.lineColor.opacity
+                };
+                let currentGpxTrackHandler = this.gpxTrackHandlerByElementId.get(additionalGpxElement.id);
+                let lastUpdate = this.gpxTrackLastUpdateByElementId.get(additionalGpxElement.id) ?? new Date().getTime();
+                let modified = additionalGpxElement.file.modified > lastUpdate;
+                if (currentGpxTrackHandler && modified) {
+                    currentGpxTrackHandler.remove();
+                }
+                if (!currentGpxTrackHandler || modified) {
+                    let gpxTrackHandler = gpx.parse(additionalGpxElement.file.data);
+                    gpxTrackHandler.setStyle(() => style);
+                    gpxTrackHandler.addTo(this.mapHandler);
+                    this.gpxTrackHandlerByElementId.set(additionalGpxElement.id, gpxTrackHandler);
+                    this.gpxTrackLastUpdateByElementId.set(additionalGpxElement.id, additionalGpxElement.file.modified);
+                } else {
+                    currentGpxTrackHandler.setStyle(() => style);
+                }
+            }
+        });
+        gpxElementIdsToRemove.forEach(id => {
+            let gpxHandler = this.gpxTrackHandlerByElementId.get(id);
+            if (gpxHandler) {
+                gpxHandler.remove();
+            }
+            this.gpxTrackHandlerByElementId.delete(id);
+        });
     }
 
     private handleCenterCoordinatesUpdate(mapHandler: L.Map) {
@@ -270,7 +317,7 @@ export class MapComponent implements AfterViewInit {
                 filter(([selectedAreaInM, areaSelectDimensionInPx, scale]) => {
                     let selectedAreaPrecision = getScaleProperties(scale).reductionFactor / 1000;
                         return (Math.abs(selectedAreaInM.width - this.selectedArea.width) / selectedAreaPrecision >
-                            Math.pow(10, Math.ceil(Math.log10(selectedAreaInM.width / selectedAreaPrecision / areaSelectDimensionInPx.width)))) ||
+                                Math.pow(10, Math.ceil(Math.log10(selectedAreaInM.width / selectedAreaPrecision / areaSelectDimensionInPx.width)))) ||
                             (Math.abs(selectedAreaInM.height - this.selectedArea.height) / selectedAreaPrecision >
                                 Math.pow(10, Math.ceil(Math.log10(selectedAreaInM.height / selectedAreaPrecision / areaSelectDimensionInPx.height))));
                     }

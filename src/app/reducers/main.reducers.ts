@@ -7,11 +7,12 @@ import {MapProjectState} from "../model/intern/map-project-state";
 import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
 import {
     AdditionalElementType,
+    AdditionalGpxElement,
     AdditionalScaleElement,
     AdditionalTextElement,
     AnyAdditionalElement
 } from "../model/intern/additional-element";
-import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE} from "../model/intern/additional-element-style";
+import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE, DEFAULT_TRACK_STYLE} from "../model/intern/additional-element-style";
 import {v4 as uuid} from "uuid";
 import {MapProject} from "../model/intern/map-project";
 
@@ -64,7 +65,8 @@ const reducer = createReducer(initialState,
     on(UiActions.closeMapProject,
         (state) => ({
             ...state,
-            currentMapProject: undefined
+            currentMapProject: undefined,
+            gpxTrack: undefined
         })),
 
     on(UiActions.mapProjectDeleted,
@@ -254,6 +256,11 @@ function createAdditionalElement(mapProject: MapProject, type: AdditionalElement
                 style: DEFAULT_SCALE_STYLE,
                 location: {x: 160, y: 10}
             } as AdditionalScaleElement;
+        case AdditionalElementType.GPX_TRACK:
+            return {
+                ...baseElement,
+                style: DEFAULT_TRACK_STYLE
+            } as AdditionalGpxElement;
         default :
             return undefined;
     }

@@ -37,6 +37,20 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="6593bc774f57eea21063ea39fa8f3b9d316bdc12" datatype="html">
+        <source>Select GPX File</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-gpx-element-detail/additional-gpx-element-detail.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4267980179189609192" datatype="html">
+        <source>No file selected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-gpx-element-detail/additional-gpx-element-detail.component.ts</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="c4a58d51c438a3786600291d80a39ed7d4ab4ad8" datatype="html">
         <source>Horizontal Position</source>
         <context-group purpose="location">
@@ -63,11 +77,11 @@
         <source>Scale</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/additional-scale-element-detail/additional-scale-element-detail.component.ts</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">104</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8ba143716c2da6e4120c0c1a804f0bdd9a7e5f5b" datatype="html">
@@ -109,18 +123,18 @@
         <source>Attribution</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.ts</context>
-          <context context-type="linenumber">117</context>
+          <context context-type="linenumber">121</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4963211655678323533" datatype="html">
         <source>Unknown Element</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">123</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8b63d022a3119728a462bdac6ac95c85d62fb1af" datatype="html">
@@ -358,14 +372,14 @@
         <source>Text Box</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6058250078921751077" datatype="html">
         <source>GPX Track</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6437465865756465650" datatype="html">
@@ -442,7 +456,7 @@
         <source>New Text Element</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reducers/main.reducers.ts</context>
-          <context context-type="linenumber">237</context>
+          <context context-type="linenumber">245</context>
         </context-group>
       </trans-unit>
     </body>

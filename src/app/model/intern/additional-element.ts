@@ -3,7 +3,8 @@ import {UserObject} from "../api/user-object";
 import {
     ADDITIONAL_ELEMENT_TYPE_STYLES,
     AdditionalElementStyle,
-    AdditionalElementTextStyle
+    AdditionalElementTextStyle,
+    AdditionalElementTrackStyle
 } from "./additional-element-style";
 import {TemplateService} from "../../services/template-service";
 import {MapProject} from "./map-project";
@@ -25,7 +26,12 @@ export interface AdditionalScaleElement extends AdditionalElement {
     location: PrintLocation;
 }
 
-export type AnyAdditionalElement = AdditionalTextElement | AdditionalScaleElement;
+export interface AdditionalGpxElement extends AdditionalElement {
+    file: { name: string, data: string; modified: number };
+    style: AdditionalElementTrackStyle;
+}
+
+export type AnyAdditionalElement = AdditionalTextElement | AdditionalScaleElement | AdditionalGpxElement;
 
 export enum AdditionalElementType {
     TEXT_BOX = "text-box",
@@ -76,8 +82,8 @@ export const ADDITIONAL_ELEMENT_TYPES = new Map<AdditionalElementType, Additiona
         new AdditionalElementTypeProperties(
             $localize`GPX Track`,
             4,
-            true,
-            undefined
+            false,
+            convertAdditionalGpxElementToUserObject
         )
     ]
 ]);
@@ -86,5 +92,15 @@ function convertAdditionalElementToUserObject(templateService: TemplateService, 
     return {
         Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateService, mapProject, element),
         WellKnownText: `POINT(${element.location.x} ${element.location.y})`
+    };
+}
+
+function convertAdditionalGpxElementToUserObject(templateService: TemplateService, mapProject: MapProject, element: AdditionalGpxElement): UserObject {
+    return {
+        Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateService, mapProject, element),
+        SRS: "+init=epsg:4326",
+        Type: "ogr",
+        Layer: "tracks",
+        File: element.file?.name
     };
 }

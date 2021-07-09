@@ -2,6 +2,7 @@ import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {MapProject} from "./map-project";
 import {MapProjectReference} from "./map-project-reference";
 import {GeoCoordinates} from "./geo-coordinates";
+import {AdditionalElementType, AdditionalGpxElement} from "./additional-element";
 
 export interface PrintmapsUiState {
     mapCenter: GeoCoordinates,
@@ -29,6 +30,13 @@ export const currentMapProject = createSelector(printmapsUiState,
 
 export const currentAdditionalElements = createSelector(currentMapProject,
     (mapProject) => mapProject?.additionalElements ?? []);
+
+export const currentAdditionalGpxElements = createSelector(currentAdditionalElements,
+    (additionalElements) =>
+        additionalElements
+            .filter(additionalElement => additionalElement.type == AdditionalElementType.GPX_TRACK)
+            .map(additionalElement => additionalElement as AdditionalGpxElement)
+);
 
 export const selectedAdditionalElementId = createSelector(printmapsUiState,
     (state) => state.selectedAdditionalElementId);
