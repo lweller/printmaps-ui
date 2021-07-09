@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {EMPTY, Observable, of} from "rxjs";
 import {catchError, concatMap, map, mapTo} from "rxjs/operators";
@@ -62,6 +62,21 @@ export class PrintmapsService {
                     }
                 },
                 location: {x: wkt.coordinates[0], y: wkt.coordinates[1]}
+            };
+        }
+        return undefined;
+    }
+
+    private static extractMargins(userObject: UserObject): { top: number, bottom: number, left: number, right: number } {
+        let metadata = JSON.parse(userObject.Style.match(/^<!--(.*)-->/)[1]) as UserObjectMetadata;
+        if (metadata?.Type == "margins") {
+            let wkt = parse(userObject.WellKnownText);
+            console.log(wkt);
+            return {
+                top: wkt.coordinates[0][2][1] - wkt.coordinates[1][2][1],
+                bottom: wkt.coordinates[1][0][1],
+                left: wkt.coordinates[1][0][0],
+                right: wkt.coordinates[0][2][0] - wkt.coordinates[1][2][0]
             };
         }
         return undefined;
@@ -136,9 +151,44 @@ export class PrintmapsService {
             );
     }
 
+    private static generateMargins(mapProject: MapProject): UserObject {
+        let metadata: UserObjectMetadata = {
+            ID: uuid(),
+            Type: "margins",
+            Text: undefined
+        };
+        let outerWidth = mapProject.widthInMm;
+        let outerHeight = mapProject.heightInMm;
+        let innerWidth1 = mapProject.leftMarginInMm;
+        let innerWidth2 = mapProject.widthInMm - mapProject.rightMarginInMm;
+        let innerHeight1 = mapProject.bottomMarginInMm;
+        let innerHeight2 = mapProject.heightInMm - mapProject.topMarginInMm;
+        return {
+            Style: `<!--${JSON.stringify(metadata)}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />`,
+            WellKnownText: `POLYGON((0 0, 0 ${outerHeight}, ${outerWidth} ${outerHeight}, ${outerWidth} 0, 0 0), (${innerWidth1} ${innerHeight1}, ${innerWidth1} ${innerHeight2}, ${innerWidth2} ${innerHeight2}, ${innerWidth2} ${innerHeight1}, ${innerWidth1} ${innerHeight1}))`
+        };
+    }
+
+    uploadUserFile(mapProjectId: string, content: string | Blob, name: string): Observable<boolean> {
+        let formData = new FormData();
+        formData.append("file", new Blob([content], {type: "image/svg+xml"}), name);
+        let endpointUrl = `${this.baseUrl}/upload/${mapProjectId}`;
+        let requestOptions = {
+            headers: new HttpHeaders({
+                "Accept": "application/vnd.api+json; charset=utf-8"
+            })
+        };
+
+        return this.http.post<HttpResponse<any>>(endpointUrl, formData, requestOptions)
+            .pipe(map(response => response.status == 201));
+    }
+
     private fromMapRenderingJob(name: string, mapRenderingJob: MapRenderingJobDefinition): MapProject {
         let data = mapRenderingJob.Data;
         let attributes = data.Attributes;
+        let margins = mapRenderingJob.Data.Attributes.UserObjects
+            .map(userObject => PrintmapsService.extractMargins(userObject))
+            .filter(element => !!element)[0];
         return {
             id: data.ID,
             name: name,
@@ -147,17 +197,29 @@ export class PrintmapsService {
             center: {latitude: attributes.Latitude, longitude: attributes.Longitude},
             widthInMm: attributes.PrintWidth,
             heightInMm: attributes.PrintHeight,
+            topMarginInMm: margins.top ?? 8,
+            bottomMarginInMm: margins.bottom ?? 8,
+            leftMarginInMm: margins.left ?? 8,
+            rightMarginInMm: margins.right ?? 8,
             options: {
                 fileFormat: attributes.Fileformat,
                 mapStyle: attributes.Style
             },
             additionalElements: mapRenderingJob.Data.Attributes.UserObjects
-                .map(userObject => PrintmapsService.convertUserObjectToAdditionalElement(userObject)),
+                .map(userObject => PrintmapsService.convertUserObjectToAdditionalElement(userObject))
+                .filter(additionalElement => !!additionalElement),
             modifiedLocally: false
         };
     }
 
     private toMapRenderingJob(mapProject: MapProject): MapRenderingJobDefinition {
+        let additionalElmentUserObjects = mapProject.additionalElements
+            .map(element => ADDITIONAL_ELEMENT_TYPES.get(element.type)
+                .toUserObject(this.templateService, mapProject, element));
+        let userObject = [
+            PrintmapsService.generateMargins(mapProject),
+            ...additionalElmentUserObjects
+        ];
         return {
             Data: {
                 Type: "maps",
@@ -172,8 +234,7 @@ export class PrintmapsService {
                     PrintWidth: mapProject.widthInMm,
                     PrintHeight: mapProject.heightInMm,
                     HideLayers: "",
-                    UserObjects: mapProject.additionalElements.map(element => ADDITIONAL_ELEMENT_TYPES.get(element.type)
-                        .toUserObject(this.templateService, mapProject, element))
+                    UserObjects: userObject
                 }
             }
         };

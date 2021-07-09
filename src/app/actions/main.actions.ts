@@ -30,7 +30,7 @@ export const updateCenterCoordinates = createAction(
 
 export const updateSelectedArea = createAction(
     createActionType(SOURCE, "UPDATE_SELECTED_AREA"),
-    props<{ widthInM: number, heightInM: number, scale: Scale }>()
+    props<{ widthInM: number, heightInM: number, topMarginInMm: number, bottomMarginInMm: number, leftMarginInMm: number, rightMarginInMm: number, scale: Scale }>()
 );
 
 export const updateMapName = createAction(

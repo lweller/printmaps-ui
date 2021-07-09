@@ -28,6 +28,10 @@ const reducer = createReducer(initialState,
                 center: state.mapCenter,
                 widthInMm: 210,
                 heightInMm: 297,
+                topMarginInMm: 8,
+                bottomMarginInMm: 8,
+                leftMarginInMm: 8,
+                rightMarginInMm: 8,
                 scale: Scale.RATIO_1_50000,
                 options: {
                     fileFormat: FileFormat.PNG,
@@ -112,16 +116,22 @@ const reducer = createReducer(initialState,
         }),
 
     on(UiActions.updateSelectedArea,
-        (state, {widthInM, heightInM, scale}) => ({
-            ...state,
-            currentMapProject: {
-                ...state.currentMapProject,
-                widthInMm: Math.min(Math.max(round(widthInM / getScaleProperties(scale).reductionFactor * 1000), 50), 3000),
-                heightInMm: Math.min(Math.max(round(heightInM / getScaleProperties(scale).reductionFactor * 1000), 50), 2500),
-                scale: scale,
-                modifiedLocally: true
-            }
-        })),
+        (state, {widthInM, heightInM, topMarginInMm, bottomMarginInMm, leftMarginInMm, rightMarginInMm, scale}) =>
+            ({
+                ...state,
+                currentMapProject: {
+                    ...state.currentMapProject,
+                    widthInMm: Math.min(Math.max(round(widthInM / getScaleProperties(scale).reductionFactor * 1000) + leftMarginInMm * 1 + rightMarginInMm * 1, 50), 3000),
+                    heightInMm: Math.min(Math.max(round(heightInM / getScaleProperties(scale).reductionFactor * 1000) + topMarginInMm * 1 + bottomMarginInMm * 1, 50), 2500),
+                    topMarginInMm: topMarginInMm,
+                    bottomMarginInMm: bottomMarginInMm,
+                    leftMarginInMm: leftMarginInMm,
+                    rightMarginInMm: rightMarginInMm,
+                    scale: scale,
+                    modifiedLocally: true
+                }
+            })
+    ),
 
     on(UiActions.updateMapOptions,
         (state, {options}) => ({

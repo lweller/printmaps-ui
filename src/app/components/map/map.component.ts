@@ -40,6 +40,11 @@ export class MapComponent implements AfterViewInit {
     @Subjectize("selectedArea") selectedArea$ = new ReplaySubject<L.Dimension>(1);
     @Output() selectedAreaChange = new EventEmitter<L.Dimension>();
 
+    topMarginInMm: number;
+    bottomMarginInMm: number;
+    leftMarginInMm: number;
+    rightMarginInMm: number;
+
     @Input() scale: Scale;
     @Subjectize("scale") scale$ = new ReplaySubject<Scale>(1);
 
@@ -60,9 +65,13 @@ export class MapComponent implements AfterViewInit {
                     this.centerCoordinates = L.latLng(nextCurrentMapProject.center.latitude, nextCurrentMapProject.center.longitude);
                     let factor = getScaleProperties(nextCurrentMapProject.scale).reductionFactor / 1000;
                     this.selectedArea = {
-                        width: nextCurrentMapProject.widthInMm * factor,
-                        height: nextCurrentMapProject.heightInMm * factor
+                        width: (nextCurrentMapProject.widthInMm - nextCurrentMapProject.leftMarginInMm - nextCurrentMapProject.rightMarginInMm) * factor,
+                        height: (nextCurrentMapProject.heightInMm - nextCurrentMapProject.topMarginInMm - nextCurrentMapProject.bottomMarginInMm) * factor
                     };
+                    this.topMarginInMm = nextCurrentMapProject.topMarginInMm;
+                    this.bottomMarginInMm = nextCurrentMapProject.bottomMarginInMm;
+                    this.leftMarginInMm = nextCurrentMapProject.leftMarginInMm;
+                    this.rightMarginInMm = nextCurrentMapProject.rightMarginInMm;
                     this.scale = nextCurrentMapProject.scale;
                     this.active = true;
                 } else {
@@ -98,6 +107,10 @@ export class MapComponent implements AfterViewInit {
                 UiActions.updateSelectedArea({
                     widthInM: nextSelectedAreaInM.width,
                     heightInM: nextSelectedAreaInM.height,
+                    topMarginInMm: this.topMarginInMm,
+                    bottomMarginInMm: this.bottomMarginInMm,
+                    leftMarginInMm: this.leftMarginInMm,
+                    rightMarginInMm: this.rightMarginInMm,
                     scale: this.scale
                 })
             ));

@@ -102,6 +102,42 @@
                         <span matSuffix>mm</span>
                     </mat-form-field>
                 </div>
+                <div fxFill fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field fxFlex="calc(50%-5px)">
+                        <mat-label i18n>Top Margin</mat-label>
+                        <input (keydown.enter)="$event.target.blur()"
+                               (ngModelChange)="dispatchSelectedAreaTopMarginUpdate($event)"
+                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.topMarginInMm"
+                               decimals="0" matInput max="1000" min="0" numeric required>
+                        <span matSuffix>mm</span>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="calc(50%-5px)">
+                        <mat-label i18n>Bottom Margin</mat-label>
+                        <input (keydown.enter)="$event.target.blur()"
+                               (ngModelChange)="dispatchSelectedAreaBottomMarginUpdate($event)"
+                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.bottomMarginInMm"
+                               decimals="0" matInput max="1000" min="0" numeric required>
+                        <span matSuffix>mm</span>
+                    </mat-form-field>
+                </div>
+                <div fxFill fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field fxFlex="calc(50%-5px)">
+                        <mat-label i18n>Left Margin</mat-label>
+                        <input (keydown.enter)="$event.target.blur()"
+                               (ngModelChange)="dispatchSelectedAreaLeftMarginUpdate($event)"
+                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.leftMarginInMm"
+                               decimals="0" matInput max="1000" min="0" numeric required>
+                        <span matSuffix>mm</span>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="calc(50%-5px)">
+                        <mat-label i18n>Right Margin</mat-label>
+                        <input (keydown.enter)="$event.target.blur()"
+                               (ngModelChange)="dispatchSelectedAreaRightMarginUpdate($event)"
+                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.rightMarginInMm"
+                               decimals="0" matInput max="1000" min="0" numeric required>
+                        <span matSuffix>mm</span>
+                    </mat-form-field>
+                </div>
                 <mat-form-field fxFlexFill>
                     <mat-label i18n>Map Scale</mat-label>
                     <mat-select (ngModelChange)="dispatchScaleUpdate($event)"

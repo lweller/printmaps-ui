@@ -37,6 +37,39 @@
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="c4a58d51c438a3786600291d80a39ed7d4ab4ad8" datatype="html">
+        <source>Horizontal Position</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-scale-element-detail/additional-scale-element-detail.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d93e13026e73455e84660268263187c5bc7f6e7d" datatype="html">
+        <source>Vertical Position</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-scale-element-detail/additional-scale-element-detail.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1371553127733924023" datatype="html">
+        <source>Scale</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-scale-element-detail/additional-scale-element-detail.component.ts</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="8ba143716c2da6e4120c0c1a804f0bdd9a7e5f5b" datatype="html">
         <source>Text</source>
         <context-group purpose="location">
@@ -72,20 +105,6 @@
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="c4a58d51c438a3786600291d80a39ed7d4ab4ad8" datatype="html">
-        <source>Horizontal Position</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
-          <context context-type="linenumber">41</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="d93e13026e73455e84660268263187c5bc7f6e7d" datatype="html">
-        <source>Vertical Position</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/additional-text-element-detail/additional-text-element-detail.component.html</context>
-          <context context-type="linenumber">47</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="5674567698673280037" datatype="html">
         <source>Attribution</source>
         <context-group purpose="location">
@@ -94,7 +113,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4963211655678323533" datatype="html">
@@ -178,70 +197,98 @@
         <source>Map Style</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="60c0959124ef5d0f2513023d763ae091b321f167" datatype="html">
         <source>Map Area</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="83296148fec5ddc76628c70b85b5dbc8d4ada3c2" datatype="html">
         <source>Map Center Latitude</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6167307d952064c5321d4f6a4a240be9a99bbaa4" datatype="html">
         <source>Map Center Longitude</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="45a458f74ce79db93d329bde823ab762a64f47ad" datatype="html">
         <source>Page Format</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fe986a0242d8c117811abff3e11fd87e39839a27" datatype="html">
         <source>Page Orientation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="be1733ef44e43571667c2c8fbd47bbf6ce2d0ca2" datatype="html">
         <source>Page Width</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="a0487bfc5f36eb68ca601504508b3b6b47629e35" datatype="html">
         <source>Page Height</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="377b5518aea3e25ee7f6040a1d234de0d37f5cdf" datatype="html">
+        <source>Top Margin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fd9ffd88c004588dab84c75c6be9800a88512c5f" datatype="html">
+        <source>Bottom Margin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="83818b2b3de77976f6051d0b9b107885d2e68537" datatype="html">
+        <source>Left Margin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">125</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="02842b37e963f82f7ac695a48811b3a83c5224fb" datatype="html">
+        <source>Right Margin</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
+          <context context-type="linenumber">133</context>
         </context-group>
       </trans-unit>
       <trans-unit id="26c193d786c43af04423c4997e20c20356d2ae91" datatype="html">
         <source>Map Scale</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">104</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="84245814b52593a4ba821daea00a7955ad6e8312" datatype="html">
         <source>Additional Elements</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/current-map-project-pane/current-map-project-pane.component.html</context>
-          <context context-type="linenumber">118</context>
+          <context context-type="linenumber">156</context>
         </context-group>
       </trans-unit>
       <trans-unit id="46bba95876aac36cde35f886414fab637d692e74" datatype="html">
@@ -311,21 +358,14 @@
         <source>Text Box</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6058250078921751077" datatype="html">
         <source>GPX Track</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">54</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1371553127733924023" datatype="html">
-        <source>Scale</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6437465865756465650" datatype="html">
@@ -388,21 +428,21 @@
         <source>Portrait</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/paper-orientation.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1403507799985368460" datatype="html">
         <source>Landscape</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/paper-orientation.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4762748867415276215" datatype="html">
         <source>New Text Element</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reducers/main.reducers.ts</context>
-          <context context-type="linenumber">222</context>
+          <context context-type="linenumber">237</context>
         </context-group>
       </trans-unit>
     </body>

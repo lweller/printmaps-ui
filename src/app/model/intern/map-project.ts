@@ -14,6 +14,10 @@ export interface MapProject {
     scale: Scale;
     widthInMm: number;
     heightInMm: number;
+    topMarginInMm: number;
+    bottomMarginInMm: number;
+    leftMarginInMm: number;
+    rightMarginInMm: number;
     options: MapOptions;
     additionalElements: AdditionalElement[];
     modifiedLocally: boolean;

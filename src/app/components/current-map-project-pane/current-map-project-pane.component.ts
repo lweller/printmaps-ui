@@ -123,6 +123,26 @@ export class CurrentMapProjectPaneComponent {
         this.dispatchSelectedAreaUpdate();
     }
 
+    dispatchSelectedAreaTopMarginUpdate(margin: number) {
+        this.mapProject.topMarginInMm = margin;
+        this.dispatchSelectedAreaUpdate();
+    }
+
+    dispatchSelectedAreaBottomMarginUpdate(margin: number) {
+        this.mapProject.bottomMarginInMm = margin;
+        this.dispatchSelectedAreaUpdate();
+    }
+
+    dispatchSelectedAreaLeftMarginUpdate(margin: number) {
+        this.mapProject.leftMarginInMm = margin;
+        this.dispatchSelectedAreaUpdate();
+    }
+
+    dispatchSelectedAreaRightMarginUpdate(margin: number) {
+        this.mapProject.rightMarginInMm = margin;
+        this.dispatchSelectedAreaUpdate();
+    }
+
     dispatchScaleUpdate(scale: s.Scale) {
         this.mapProject.scale = scale;
         this.dispatchSelectedAreaUpdate();
@@ -131,8 +151,12 @@ export class CurrentMapProjectPaneComponent {
     dispatchSelectedAreaUpdate() {
         let factor = s.getScaleProperties(this.mapProject.scale).reductionFactor / 1000;
         this.store.dispatch(UiActions.updateSelectedArea({
-            widthInM: this.mapProject.widthInMm * factor,
-            heightInM: this.mapProject.heightInMm * factor,
+            widthInM: (this.mapProject.widthInMm - this.mapProject.leftMarginInMm - this.mapProject.rightMarginInMm) * factor,
+            heightInM: (this.mapProject.heightInMm - this.mapProject.topMarginInMm - this.mapProject.bottomMarginInMm) * factor,
+            topMarginInMm: this.mapProject.topMarginInMm,
+            bottomMarginInMm: this.mapProject.bottomMarginInMm,
+            leftMarginInMm: this.mapProject.leftMarginInMm,
+            rightMarginInMm: this.mapProject.rightMarginInMm,
             scale: this.mapProject.scale
         }));
     }
