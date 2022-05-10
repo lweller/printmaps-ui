@@ -1,12 +1,12 @@
 <div [attr.aria-labelledby]="_formField?.getLabelId()" class="text-orientation-selector-container" fxLayout="row"
      fxLayoutAlign="space-between center" fxLayoutGap="20px" role="group">
-    <mat-button-toggle-group [formControl]="formControl" [value]="value" fxFlex="0 0 auto">
+    <mat-button-toggle-group [formControl]="formControl" [value]="formControl.value" fxFlex="0 0 auto">
         <mat-button-toggle *ngFor="let value of values" [value]="value">
             <mat-icon svgIcon="{{iconNamespace}}:{{toIconName(value)}}"></mat-icon>
         </mat-button-toggle>
     </mat-button-toggle-group>
     <div fxFlex="0 0 auto" fxLayout="row" style="border-bottom: #7f7f7f solid 0.1px">
-        <input (keydown.enter)="$event.target.blur()" [formControl]="formControl" [value]="value.toString()"
+        <input (keydown.enter)="$event.target.blur()" [formControl]="formControl" [value]="formControl.value"
                decimals="0"
                fxFlex="0 0 40px" matInput maxLength="3" numeric required>
         <span matSuffix>°</span>

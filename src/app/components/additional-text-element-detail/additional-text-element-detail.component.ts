@@ -3,9 +3,9 @@ import {AdditionalElementType, AdditionalTextElement} from "../../model/intern/a
 import {ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators} from "@angular/forms";
 import {FontStyle} from "../font-style-selector/font-style-selector.component";
 import {Color} from "../color-selector/color-selector.component";
-import {Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-
+import {switchMap, takeUntil} from "rxjs/operators";
 
 @Component({
     selector: "app-additional-text-element-detail",
@@ -28,9 +28,11 @@ export class AdditionalTextElementDetailComponent implements ControlValueAccesso
     @Input() disabled = false;
 
     readonly AdditionalElementType = AdditionalElementType;
-
+    startPropagateChanges = new Subject();
+    endPropagateChanges = new Subject();
     element: AdditionalTextElement;
     form: FormGroup;
+
     private subscriptions: Subscription[] = [];
 
     constructor(private formBuilder: FormBuilder,
@@ -55,6 +57,8 @@ export class AdditionalTextElementDetailComponent implements ControlValueAccesso
         if (this.ngControl != null) {
             this.ngControl.valueAccessor = this;
         }
+
+        this.startPropagateChanges.next();
     }
 
     private _expanded = false;
@@ -77,20 +81,18 @@ export class AdditionalTextElementDetailComponent implements ControlValueAccesso
 
     registerOnChange(callbackFunction: any): void {
         this.subscriptions.push(
-            this.form.valueChanges.subscribe(updatedElement =>
-                callbackFunction({
-                    ...this.element,
-                    ...updatedElement,
-                    style: {
-                        ...this.element.style,
-                        ...updatedElement.style
-                    },
-                    location: {
-                        ...this.element.location,
-                        ...updatedElement.location
-                    }
-                })
-            )
+            this.startPropagateChanges
+                .pipe(switchMap(() => this.form.valueChanges.pipe(takeUntil(this.endPropagateChanges))))
+                .subscribe(updatedElement =>
+                    callbackFunction({
+                        ...this.element,
+                        ...updatedElement,
+                        style: {
+                            ...this.element.style,
+                            ...updatedElement.style
+                        }
+                    })
+                )
         );
     }
 
@@ -104,9 +106,11 @@ export class AdditionalTextElementDetailComponent implements ControlValueAccesso
 
     writeValue(element: AdditionalTextElement) {
         this.element = element;
+        this.endPropagateChanges.next();
         if (element) {
             this.form.patchValue(element);
         }
+        this.startPropagateChanges.next();
     }
 
     elementName() {

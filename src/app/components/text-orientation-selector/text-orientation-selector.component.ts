@@ -5,7 +5,6 @@ import {Subject, Subscription} from "rxjs";
 import {coerceBooleanProperty} from "@angular/cdk/coercion";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
-import {filter} from "rxjs/operators";
 
 @Component({
     selector: "text-orientation-selector",
@@ -22,7 +21,6 @@ export class TextOrientationSelector implements MatFormFieldControl<number>, Con
     readonly stateChanges = new Subject<void>();
     @HostBinding("class.floating") shouldLabelFloat = true;
     focused = false;
-    touched = false;
     @HostBinding() readonly id = `text-orientation-selector-${TextOrientationSelector.nextId++}`;
     @Input("aria-describedby") userAriaDescribedBy: string;
 
@@ -48,11 +46,6 @@ export class TextOrientationSelector implements MatFormFieldControl<number>, Con
     @Input()
     get value(): number {
         return parseInt(this.formControl.value);
-    }
-
-    set value(value) {
-        this.formControl.setValue(value);
-        this.stateChanges.next();
     }
 
     get empty() {
@@ -102,19 +95,16 @@ export class TextOrientationSelector implements MatFormFieldControl<number>, Con
         controlElement.setAttribute("aria-describedby", ids.join(" "));
     }
 
-    onContainerClick(event: MouseEvent): void {
+    onContainerClick(): void {
         // This is intentional
     }
 
     writeValue(value: number | null): void {
-        this.value = value;
         this.formControl.patchValue(value);
     }
 
     registerOnChange(callbackFunction: any): void {
-        this.subscriptions.push(this.formControl.valueChanges
-            .pipe(filter(newValue => newValue != this.value))
-            .subscribe(callbackFunction));
+        this.subscriptions.push(this.formControl.valueChanges.subscribe(callbackFunction));
     }
 
     registerOnTouched(callbackFunction: any): void {
