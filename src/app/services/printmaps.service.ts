@@ -214,10 +214,10 @@ export class PrintmapsService {
             center: {latitude: attributes.Latitude, longitude: attributes.Longitude},
             widthInMm: attributes.PrintWidth,
             heightInMm: attributes.PrintHeight,
-            topMarginInMm: margins.top ?? 8,
-            bottomMarginInMm: margins.bottom ?? 8,
-            leftMarginInMm: margins.left ?? 8,
-            rightMarginInMm: margins.right ?? 8,
+            topMarginInMm: margins?.top ?? 8,
+            bottomMarginInMm: margins?.bottom ?? 8,
+            leftMarginInMm: margins?.left ?? 8,
+            rightMarginInMm: margins?.right ?? 8,
             options: {
                 fileFormat: attributes.Fileformat,
                 mapStyle: attributes.Style
