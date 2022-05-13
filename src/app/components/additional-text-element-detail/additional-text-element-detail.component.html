@@ -5,7 +5,7 @@
     </div>
     <div [@detailExpand]="expanded ? 'expanded' : 'collapsed'" class="collapsable" fxFlexAlign="start stretch"
          fxLayout="column">
-        <mat-form-field *ngIf="element?.type == AdditionalElementType.TEXT_BOX">
+        <mat-form-field *ngIf="element?.type == AdditionalElementType.TEXT_BOX" [hideRequiredMarker]="true">
             <mat-label i18n>Text</mat-label>
             <input (keydown.enter)="$event.target.blur()" formControlName="text" matInput required>
         </mat-form-field>
@@ -14,36 +14,36 @@
         </div>
         <div formGroupName="style">
             <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
-                <mat-form-field fxFlex="0 1 100px">
+                <mat-form-field [hideRequiredMarker]="true" fxFlex="0 1 100px">
                     <mat-label i18n>Font Size</mat-label>
                     <input (keydown.enter)="$event.target.blur()" decimals="0" formControlName="fontSize" matInput
                            numeric
                            required>
                 </mat-form-field>
-                <mat-form-field appearance="none" fxFlex="0 1 100px">
+                <mat-form-field [hideRequiredMarker]="true" appearance="none" fxFlex="0 1 100px">
                     <mat-label i18n>Font Style</mat-label>
                     <font-style-selector formControlName="fontStyle"></font-style-selector>
                 </mat-form-field>
-                <mat-form-field appearance="none" fxFlex="0 1 100px">
+                <mat-form-field [hideRequiredMarker]="true" appearance="none" fxFlex="0 1 100px">
                     <mat-label i18n>Font Color</mat-label>
                     <color-selector formControlName="fontColor"></color-selector>
                 </mat-form-field>
             </div>
             <div>
-                <mat-form-field appearance="none" fxFlex="1 0 150px">
+                <mat-form-field [hideRequiredMarker]="true" appearance="none" fxFlex="1 0 150px">
                     <mat-label i18n>Text Orientation</mat-label>
                     <text-orientation-selector formControlName="textOrientation"></text-orientation-selector>
                 </mat-form-field>
             </div>
         </div>
         <div formGroupName="location" fxLayout="row" fxLayoutAlign="stretch center" fxLayoutGap="10px">
-            <mat-form-field fxFlex="1 0 120px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="1 0 120px">
                 <mat-label i18n>Horizontal Position</mat-label>
                 <input (keydown.enter)="$event.target.blur()" decimals="0" formControlName="x" matInput numeric
                        required>
                 <span matSuffix>mm</span>
             </mat-form-field>
-            <mat-form-field fxFlex="1 0 120px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="1 0 120px">
                 <mat-label i18n>Vertical Position</mat-label>
                 <input (keydown.enter)="$event.target.blur()" decimals="0" formControlName="y" matInput numeric
                        required>

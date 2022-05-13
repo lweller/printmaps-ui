@@ -44,11 +44,25 @@
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="1273ba3ab5634ba9ead06a79df7b1034e798c41f" datatype="html">
+        <source>Line Width</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-gpx-element-detail/additional-gpx-element-detail.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4d28cf09b67057ed3f555cf86ceeba50929d1d13" datatype="html">
+        <source>Line Color</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/additional-gpx-element-detail/additional-gpx-element-detail.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4267980179189609192" datatype="html">
         <source>No file selected</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/additional-gpx-element-detail/additional-gpx-element-detail.component.ts</context>
-          <context context-type="linenumber">112</context>
+          <context context-type="linenumber">121</context>
         </context-group>
       </trans-unit>
       <trans-unit id="c4a58d51c438a3786600291d80a39ed7d4ab4ad8" datatype="html">
@@ -81,7 +95,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8ba143716c2da6e4120c0c1a804f0bdd9a7e5f5b" datatype="html">
@@ -127,7 +141,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4963211655678323533" datatype="html">
@@ -148,21 +162,21 @@
         <source>Delete map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" datatype="html">
         <source>Launch map rendering</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fd96805f04549ff76daf6b68bac60ef92492bc70" datatype="html">
         <source>Download rendered map</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4580959815176510999" datatype="html">
@@ -372,14 +386,14 @@
         <source>Text Box</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6058250078921751077" datatype="html">
         <source>GPX Track</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/model/intern/additional-element.ts</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6437465865756465650" datatype="html">
@@ -456,7 +470,7 @@
         <source>New Text Element</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reducers/main.reducers.ts</context>
-          <context context-type="linenumber">245</context>
+          <context context-type="linenumber">239</context>
         </context-group>
       </trans-unit>
     </body>

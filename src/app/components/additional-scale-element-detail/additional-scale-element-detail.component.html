@@ -6,13 +6,13 @@
     <div [@detailExpand]="expanded ? 'expanded' : 'collapsed'" class="collapsable" fxFlexAlign="start stretch"
          fxLayout="column">
         <div formGroupName="location" fxLayout="row" fxLayoutAlign="stretch center" fxLayoutGap="10px">
-            <mat-form-field fxFlex="1 0 120px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="1 0 120px">
                 <mat-label i18n>Horizontal Position</mat-label>
                 <input (keydown.enter)="$event.target.blur()" decimals="0" formControlName="x" matInput numeric
                        required>
                 <span matSuffix>mm</span>
             </mat-form-field>
-            <mat-form-field fxFlex="1 0 120px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="1 0 120px">
                 <mat-label i18n>Vertical Position</mat-label>
                 <input (keydown.enter)="$event.target.blur()" decimals="0" formControlName="y" matInput numeric
                        required>

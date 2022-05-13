@@ -15,13 +15,13 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title i18n>General properties</mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-form-field fxFlexFill>
+                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
                     <mat-label i18n>Project Name</mat-label>
                     <input (keydown.enter)="$event.target.blur()" (ngModelChange)="dispatchNameUpdate($event)"
                            [ngModel]="mapProject.name" matInput
                            required>
                 </mat-form-field>
-                <mat-form-field fxFlexFill>
+                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
                     <mat-label i18n>Output File Format</mat-label>
                     <mat-select (ngModelChange)="dispatchFileFormatUpdate($event)"
                                 [ngModel]="mapProject.options.fileFormat">
@@ -31,7 +31,7 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field fxFlexFill>
+                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
                     <mat-label i18n>Map Style</mat-label>
                     <mat-select (ngModelChange)="dispatchMapStyleUpdate($event)"
                                 [ngModel]="mapProject.options.mapStyle">
@@ -47,7 +47,7 @@
                     <mat-panel-title i18n>Map Area</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Map Center Latitude</mat-label>
                         <input #latitudeField (cuechange)="latitudeField.blur()" (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchCenterLatitudeUpdate($event)"
@@ -55,7 +55,7 @@
                                decimals="9" matInput max="85" min="-85" negative="9" numeric required>
                         <span matSuffix>°</span>
                     </mat-form-field>
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Map Center Longitude</mat-label>
                         <input #longitudeField (cuechange)="longitudeField.blur()"
                                (keydown.enter)="$event.target.blur()"
@@ -65,7 +65,7 @@
                         <span matSuffix>°</span>
                     </mat-form-field>
                 </div>
-                <mat-form-field fxFlexFill>
+                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
                     <mat-label i18n>Page Format</mat-label>
                     <mat-select (ngModelChange)="dispatchFormatUpdate($event)"
                                 [ngModel]="printAreaFormat">
@@ -85,7 +85,7 @@
                     </mat-select>
                 </mat-form-field>
                 <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Page Width</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaWidthUpdate($event)"
@@ -93,7 +93,7 @@
                                decimals="0" matInput max="3000" min="50" numeric required>
                         <span matSuffix>mm</span>
                     </mat-form-field>
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Page Height</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaHeightUpdate($event)"
@@ -103,7 +103,7 @@
                     </mat-form-field>
                 </div>
                 <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Top Margin</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaTopMarginUpdate($event)"
@@ -111,7 +111,7 @@
                                decimals="0" matInput max="1000" min="0" numeric required>
                         <span matSuffix>mm</span>
                     </mat-form-field>
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Bottom Margin</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaBottomMarginUpdate($event)"
@@ -121,7 +121,7 @@
                     </mat-form-field>
                 </div>
                 <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Left Margin</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaLeftMarginUpdate($event)"
@@ -129,7 +129,7 @@
                                decimals="0" matInput max="1000" min="0" numeric required>
                         <span matSuffix>mm</span>
                     </mat-form-field>
-                    <mat-form-field fxFlex="calc(50%-5px)">
+                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
                         <mat-label i18n>Right Margin</mat-label>
                         <input (keydown.enter)="$event.target.blur()"
                                (ngModelChange)="dispatchSelectedAreaRightMarginUpdate($event)"
@@ -138,7 +138,7 @@
                         <span matSuffix>mm</span>
                     </mat-form-field>
                 </div>
-                <mat-form-field fxFlexFill>
+                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
                     <mat-label i18n>Map Scale</mat-label>
                     <mat-select (ngModelChange)="dispatchScaleUpdate($event)"
                                 [ngModel]="mapProject.scale">
