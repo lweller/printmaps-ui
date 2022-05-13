@@ -2,6 +2,7 @@
     <button (click)="createMapProject()" color="primary" i18n-matTooltip mat-mini-fab matTooltip="Add map project">
         <mat-icon svgIcon="actions:add"></mat-icon>
     </button>
+    <span style="width:50px"></span>
     <button (click)="deleteMapProject(currentMapProject.id)" [disabled]="isDeleteDisabled()" color="primary"
             i18n-matTooltip mat-mini-fab matTooltip="Delete map project">
         <mat-icon svgIcon="actions:delete"></mat-icon>
