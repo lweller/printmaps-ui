@@ -132,7 +132,7 @@ export class ColorSelector implements MatFormFieldControl<Color>, ControlValueAc
     updateColor(event: ColorEvent) {
         this.value = {
             rgbHexValue: event.color.hex,
-            opacity: event.color.rgb.a
+            opacity: event.color.source == "hex" ? this.value.opacity : event.color.rgb.a
         };
         this.onChange(this.value);
     }
@@ -162,7 +162,7 @@ export class ColorSelector implements MatFormFieldControl<Color>, ControlValueAc
         controlElement.setAttribute("aria-describedby", ids.join(" "));
     }
 
-    onContainerClick(event: MouseEvent): void {
+    onContainerClick(_event: MouseEvent): void {
         // This is intentional
     }
 
