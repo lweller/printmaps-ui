@@ -30,7 +30,7 @@
     <scm>
         <url>https://github.com/lweller/printmaps-ui</url>
         <connection>scm:git:https://github.com/lweller/printmaps-ui.git</connection>
-        <developerConnection>scm:git:https://github.com/lweller/printmaps-ui.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:lweller/printmaps-ui.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <build>
