@@ -74,6 +74,13 @@ Normally the Printmaps should now be opened in your web browser.
 
 # Change Log
 
+## Version 0.0.4
+
+* Page margins
+* Inclusion of a map scale
+* Overlay with GPX tracks
+* Clone a map project
+
 ## Version 0.0.3
 
 * Definition of user defined texts on top of the map
