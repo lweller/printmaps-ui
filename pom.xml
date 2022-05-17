@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>ch.wellernet.printmaps</groupId>
     <artifactId>printmaps-ui</artifactId>
@@ -62,12 +63,14 @@
                 <executions>
                     <execution>
                         <id>install node and npm</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>npm install</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -77,8 +80,19 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
+                        <phase>compile</phase>
                         <configuration>
                             <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run test</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <arguments>run test-ci</arguments>
                         </configuration>
                     </execution>
                 </executions>
