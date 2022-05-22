@@ -4,7 +4,6 @@ import {
     AdditionalScaleElement,
     AdditionalTextElement
 } from "./additional-element";
-import {FontStyle} from "../../components/font-style-selector/font-style-selector.component";
 import {Color} from "../../components/color-selector/color-selector.component";
 import {UserObjectMetadata} from "../api/user-object-metadata";
 import {TemplateService} from "../../services/template-service";
@@ -77,6 +76,12 @@ function convertAdditionalScaleElementToSymbolizer(_templateService: TemplateSer
         Text: undefined
     };
     return `<!--${JSON.stringify(metadata)}--><MarkersSymbolizer file="scale_${element.id}.svg" allow-overlap="true" placement="point" />`;
+}
+
+export enum FontStyle {
+    NORMAL = "normal",
+    ITALIC = "italic",
+    BOLD = "bold"
 }
 
 export const FONT_STYLE_BY_FONTSET_NAME = new Map<string, FontStyle>([

@@ -1,16 +1,11 @@
-import {ControlValueAccessor, FormBuilder, NgControl} from "@angular/forms";
-import {Component, ElementRef, HostBinding, Inject, Input, OnDestroy, Optional, Self} from "@angular/core";
+import {FormBuilder, NgControl, Validators} from "@angular/forms";
+import {Component, ElementRef, Inject, Optional, Self} from "@angular/core";
 import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
-import {Subject} from "rxjs";
-import {coerceBooleanProperty} from "@angular/cdk/coercion";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
-
-export enum FontStyle {
-    NORMAL = "normal",
-    ITALIC = "italic",
-    BOLD = "bold"
-}
+import {AbstractBaseMatFormFieldComponent} from "../common/abstract-base-mat-form-field.component";
+import {FontStyle} from "../../model/intern/additional-element-style";
+import {allValuesOf} from "../../utils/common.util";
 
 @Component({
     selector: "font-style-selector",
@@ -18,113 +13,33 @@ export enum FontStyle {
     styleUrls: ["./font-style-selector.component.css"],
     providers: [{provide: MatFormFieldControl, useExisting: FontStyleSelector}]
 })
-export class FontStyleSelector implements MatFormFieldControl<FontStyle>, ControlValueAccessor, OnDestroy {
-    private static nextId = 0;
-    readonly controlType = "font-style-selector";
+export class FontStyleSelector extends AbstractBaseMatFormFieldComponent<FontStyle> {
+    static readonly DEFAULT_VALUE = FontStyle.NORMAL;
+
     readonly iconNamespace = "fontsets";
-    readonly values = ["normal", "italic", "bold"];
-    readonly placeholder = undefined;
-    readonly stateChanges = new Subject<void>();
-    @HostBinding("class.floating") shouldLabelFloat = true;
-    focused = false;
-    touched = false;
-    @HostBinding() readonly id = `font-style-selector-${FontStyleSelector.nextId++}`;
-    @Input("aria-describedby") userAriaDescribedBy: string;
+    readonly values = allValuesOf(FontStyle);
 
     constructor(
-        private formBuilder: FormBuilder,
+        private elementRef: ElementRef<HTMLElement>,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
-        private _elementRef: ElementRef<HTMLElement>,
+        formBuilder: FormBuilder,
         @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-        @Optional() @Self() public ngControl: NgControl
+        @Optional() @Self() ngControl: NgControl
     ) {
-        if (this.ngControl != null) {
-            this.ngControl.valueAccessor = this;
-        }
+        super(formBuilder.control(
+                FontStyleSelector.DEFAULT_VALUE,
+                [
+                    Validators.required
+                ]),
+            ngControl);
         this.values.forEach(value => this.registerIcon(value));
     }
 
-    private _value: FontStyle;
-
-    @Input()
-    get value(): FontStyle {
-        return this._value;
-    }
-
-    set value(value) {
-        this._value = value;
-        this.stateChanges.next();
-    }
-
-    get empty() {
-        return !this._value;
-    }
-
-    private _required = false;
-
-    @Input()
-    get required() {
-        return this._required;
-    }
-
-    set required(required) {
-        this._required = coerceBooleanProperty(required);
-        this.stateChanges.next();
-    }
-
-    private _disabled = false;
-
-    @Input()
-    get disabled(): boolean {
-        return this._disabled;
-    }
-
-    set disabled(disabled: boolean) {
-        this._disabled = coerceBooleanProperty(disabled);
-        this.stateChanges.next();
-    }
-
-    get errorState(): boolean {
-        return false;
-    }
-
-    onChange = (_: any) => {
-        // This is intentional
-    };
-
-    onTouched = () => {
-        // This is intentional
-    };
-
-    ngOnDestroy() {
-        this.stateChanges.complete();
-    }
-
     setDescribedByIds(ids: string[]) {
-        const controlElement = this._elementRef.nativeElement
+        const controlElement = this.elementRef.nativeElement
             .querySelector(".font-style-selector-container")!;
         controlElement.setAttribute("aria-describedby", ids.join(" "));
-    }
-
-    onContainerClick(event: MouseEvent): void {
-        // This is intentional
-    }
-
-    writeValue(fontStyle: FontStyle | null): void {
-        this.value = fontStyle;
-    }
-
-    registerOnChange(callbackFunction: any): void {
-        this.onChange = callbackFunction;
-    }
-
-    registerOnTouched(callbackFunction: any): void {
-        this.onTouched = callbackFunction;
-    }
-
-    setDisabledState(disabled: boolean): void {
-        this.disabled = disabled;
     }
 
     private registerIcon(iconName: string) {

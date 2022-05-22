@@ -1,123 +1,44 @@
-import {ControlValueAccessor, FormBuilder, NgControl} from "@angular/forms";
-import {Component, ElementRef, HostBinding, Inject, Input, OnDestroy, Optional, Self} from "@angular/core";
+import {FormBuilder, NgControl, Validators} from "@angular/forms";
+import {Component, ElementRef, Inject, Optional, Self} from "@angular/core";
 import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
-import {Subject} from "rxjs";
-import {coerceBooleanProperty} from "@angular/cdk/coercion";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AbstractBaseMatFormFieldComponent} from "../common/abstract-base-mat-form-field.component";
 
 @Component({
-    selector: "line-width-selector",
+    selector: "line-width-selector.component",
     templateUrl: "./line-width-selector.component.html",
     styleUrls: ["./line-width-selector.component.css"],
     providers: [{provide: MatFormFieldControl, useExisting: LineWidthSelector}]
 })
-export class LineWidthSelector implements MatFormFieldControl<number>, ControlValueAccessor, OnDestroy {
-    private static nextId = 0;
-    readonly controlType = "line-width-selector";
+export class LineWidthSelector extends AbstractBaseMatFormFieldComponent<number> {
+    static readonly DEFAULT_VALUE = 2;
+
     readonly iconNamespace = "line-width";
     readonly values = [2, 4, 6];
-    readonly placeholder = undefined;
-    readonly stateChanges = new Subject<void>();
-    @HostBinding("class.floating") shouldLabelFloat = true;
-    focused = false;
-    @HostBinding() readonly id = `line-width-selector-${LineWidthSelector.nextId++}`;
-    @Input("aria-describedby") userAriaDescribedBy: string;
 
     constructor(
-        private formBuilder: FormBuilder,
+        private elementRef: ElementRef<HTMLElement>,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
-        private _elementRef: ElementRef<HTMLElement>,
+        formBuilder: FormBuilder,
         @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-        @Optional() @Self() public ngControl: NgControl
+        @Optional() @Self() ngControl: NgControl
     ) {
-        if (this.ngControl != null) {
-            this.ngControl.valueAccessor = this;
-        }
+        super(formBuilder.control(
+                LineWidthSelector.DEFAULT_VALUE,
+                [
+                    Validators.required,
+                    Validators.pattern(/[246]/)
+                ]),
+            ngControl);
         this.values.forEach(value => this.registerIcon(value));
     }
 
-    private _value = this.values[0];
-
-    @Input()
-    get value(): number {
-        return this._value;
-    }
-
-    set value(value) {
-        this._value = value;
-        this.stateChanges.next();
-    }
-
-    get empty() {
-        return !this._value;
-    }
-
-    private _required = false;
-
-    @Input()
-    get required() {
-        return this._required;
-    }
-
-    set required(required) {
-        this._required = coerceBooleanProperty(required);
-        this.stateChanges.next();
-    }
-
-    private _disabled = false;
-
-    @Input()
-    get disabled(): boolean {
-        return this._disabled;
-    }
-
-    set disabled(disabled: boolean) {
-        this._disabled = coerceBooleanProperty(disabled);
-        this.stateChanges.next();
-    }
-
-    get errorState(): boolean {
-        return false;
-    }
-
-    onChange = (_: any) => {
-        // This is intentional
-    };
-
-    onTouched = () => {
-        // This is intentional
-    };
-
-    ngOnDestroy() {
-        this.stateChanges.complete();
-    }
-
     setDescribedByIds(ids: string[]) {
-        const controlElement = this._elementRef.nativeElement
+        const controlElement = this.elementRef.nativeElement
             .querySelector(".line-width-selector-container")!;
         controlElement.setAttribute("aria-describedby", ids.join(" "));
-    }
-
-    onContainerClick(_event: MouseEvent): void {
-        // This is intentional
-    }
-
-    writeValue(value: number | null): void {
-        this.value = value;
-    }
-
-    registerOnChange(callbackFunction: any): void {
-        this.onChange = callbackFunction;
-    }
-
-    registerOnTouched(callbackFunction: any): void {
-        this.onTouched = callbackFunction;
-    }
-
-    setDisabledState(disabled: boolean): void {
-        this.disabled = disabled;
     }
 
     toIconName(lineWidth: number) {

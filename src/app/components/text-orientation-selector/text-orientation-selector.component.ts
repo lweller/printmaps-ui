@@ -1,10 +1,9 @@
-import {ControlValueAccessor, FormBuilder, FormControl, NgControl} from "@angular/forms";
-import {Component, ElementRef, HostBinding, Inject, Input, OnDestroy, Optional, Self} from "@angular/core";
+import {FormBuilder, NgControl, Validators} from "@angular/forms";
+import {Component, ElementRef, Inject, Optional, Self} from "@angular/core";
 import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
-import {Subject, Subscription} from "rxjs";
-import {coerceBooleanProperty} from "@angular/cdk/coercion";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
+import {AbstractBaseMatFormFieldComponent} from "../common/abstract-base-mat-form-field.component";
 
 @Component({
     selector: "text-orientation-selector",
@@ -12,107 +11,35 @@ import {DomSanitizer} from "@angular/platform-browser";
     styleUrls: ["./text-orientation-selector.component.css"],
     providers: [{provide: MatFormFieldControl, useExisting: TextOrientationSelector}]
 })
-export class TextOrientationSelector implements MatFormFieldControl<number>, ControlValueAccessor, OnDestroy {
-    private static nextId = 0;
-    readonly controlType = "text-orientation-selector";
+export class TextOrientationSelector extends AbstractBaseMatFormFieldComponent<number> {
+    static readonly DEFAULT_VALUE = 0;
+
     readonly iconNamespace = "text-orientations";
     readonly values = [0, 90, 270, 180];
-    readonly placeholder = undefined;
-    readonly stateChanges = new Subject<void>();
-    @HostBinding("class.floating") shouldLabelFloat = true;
-    focused = false;
-    @HostBinding() readonly id = `text-orientation-selector-${TextOrientationSelector.nextId++}`;
-    @Input("aria-describedby") userAriaDescribedBy: string;
-
-    formControl: FormControl;
-
-    private subscriptions: Subscription[] = [];
 
     constructor(
-        private formBuilder: FormBuilder,
+        private elementRef: ElementRef<HTMLElement>,
         private iconRegistry: MatIconRegistry,
         private sanitizer: DomSanitizer,
-        private _elementRef: ElementRef<HTMLElement>,
+        formBuilder: FormBuilder,
         @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-        @Optional() @Self() public ngControl: NgControl
+        @Optional() @Self() ngControl: NgControl
     ) {
-        if (this.ngControl != null) {
-            this.ngControl.valueAccessor = this;
-        }
-        this.formControl = formBuilder.control(0);
+        super(formBuilder.control(
+                TextOrientationSelector.DEFAULT_VALUE,
+                [
+                    Validators.required,
+                    Validators.min(0),
+                    Validators.max(359)
+                ]),
+            ngControl);
         this.values.forEach(value => this.registerIcon(value));
     }
 
-    @Input()
-    get value(): number {
-        return parseInt(this.formControl.value);
-    }
-
-    get empty() {
-        return !this.formControl.value;
-    }
-
-    private _required = false;
-
-    @Input()
-    get required() {
-        return this._required;
-    }
-
-    set required(required) {
-        this._required = coerceBooleanProperty(required);
-        this.stateChanges.next();
-    }
-
-    private _disabled = false;
-
-    @Input()
-    get disabled(): boolean {
-        return this._disabled;
-    }
-
-    set disabled(disabled: boolean) {
-        this._disabled = coerceBooleanProperty(disabled);
-        this.stateChanges.next();
-    }
-
-    get errorState(): boolean {
-        return false;
-    }
-
-    ngOnDestroy() {
-        this.stateChanges.complete();
-        this.subscriptions.forEach(subscription => subscription.unsubscribe());
-    }
-
-    onTouched = () => {
-        // This is intentional
-    };
-
     setDescribedByIds(ids: string[]) {
-        const controlElement = this._elementRef.nativeElement
+        const controlElement = this.elementRef.nativeElement
             .querySelector(".text-orientation-selector-container")!;
         controlElement.setAttribute("aria-describedby", ids.join(" "));
-    }
-
-    onContainerClick(): void {
-        // This is intentional
-    }
-
-    writeValue(value: number | null): void {
-        this.formControl.patchValue(value);
-    }
-
-    registerOnChange(callbackFunction: any): void {
-        this.subscriptions.push(this.formControl.valueChanges.subscribe(callbackFunction));
-    }
-
-    registerOnTouched(callbackFunction: any): void {
-        this.onTouched = callbackFunction;
-    }
-
-    setDisabledState(disabled: boolean): void {
-        this.disabled = disabled;
     }
 
     toIconName(textOrientation: number) {

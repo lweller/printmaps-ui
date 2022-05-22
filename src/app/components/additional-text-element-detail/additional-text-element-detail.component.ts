@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, Self} from "@angular/core";
 import {AdditionalElementType, AdditionalTextElement} from "../../model/intern/additional-element";
 import {ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators} from "@angular/forms";
-import {FontStyle} from "../font-style-selector/font-style-selector.component";
 import {Color} from "../color-selector/color-selector.component";
 import {Subject, Subscription} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {switchMap, takeUntil} from "rxjs/operators";
+import {FontStyle} from "../../model/intern/additional-element-style";
 
 @Component({
     selector: "app-additional-text-element-detail",
