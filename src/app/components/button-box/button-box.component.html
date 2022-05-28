@@ -1,21 +1,22 @@
 <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8px">
-    <button (click)="createMapProject()" color="primary" i18n-matTooltip mat-mini-fab matTooltip="Add map project">
+    <button (click)="createMapProject()" color="primary" i18n-matTooltip id="add" mat-mini-fab
+            matTooltip="Add map project">
         <mat-icon svgIcon="actions:add"></mat-icon>
     </button>
     <span style="width:50px"></span>
-    <button (click)="copyMapProject()" [disabled]="isCopyDisabled()" color="primary"
+    <button (click)="copyMapProject()" [disabled]="copyButtonDisabled" color="primary" id="copy"
             i18n-matTooltip mat-mini-fab matTooltip="Create a copy of map project">
         <mat-icon svgIcon="actions:duplicate"></mat-icon>
     </button>
-    <button (click)="deleteMapProject(currentMapProject.id)" [disabled]="isDeleteDisabled()" color="primary"
+    <button (click)="deleteMapProject()" [disabled]="deleteButtonDisabled" color="primary" id="delete"
             i18n-matTooltip mat-mini-fab matTooltip="Delete map project">
         <mat-icon svgIcon="actions:delete"></mat-icon>
     </button>
-    <button (click)="launchMapProjectRendering(currentMapProject)" [disabled]="isLaunchRenderingDisabled()"
+    <button (click)="launchMapProjectRendering()" [disabled]="launchRenderingButtonDisabled" id="launchRendering"
             color="primary" i18n-matTooltip mat-mini-fab matTooltip="Launch map rendering">
         <mat-icon svgIcon="actions:launch-rendering"></mat-icon>
     </button>
-    <button (click)="downloadRenderedMapFile(currentMapProject.id)" [disabled]="isDownloadDisabled()" color="primary"
+    <button (click)="downloadRenderedMapFile()" [disabled]="downloadButtonDisabled" color="primary" id="download"
             i18n-matTooltip mat-mini-fab matTooltip="Download rendered map">
         <mat-icon svgIcon="actions:download"></mat-icon>
     </button>

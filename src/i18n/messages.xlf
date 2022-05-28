@@ -155,42 +155,35 @@
         <source>Add map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">2</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="d4a3d3ace4433f041ae4a3420f9cfe7f50f61655" datatype="html">
         <source>Create a copy of map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2e322c1968c2de913e81ff9019878040ac3100b3" datatype="html">
         <source>Delete map project</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="92a37f2f36dfe852701754ef458b40d4c1f3f6e8" datatype="html">
         <source>Launch map rendering</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="fd96805f04549ff76daf6b68bac60ef92492bc70" datatype="html">
         <source>Download rendered map</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/button-box/button-box.component.html</context>
-          <context context-type="linenumber">19</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4580959815176510999" datatype="html">
-        <source>New Map Project <x id="PH" equiv-text="new Date().toLocaleString(this.locale)"/></source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/components/button-box/button-box.component.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9f056ccfed43c5f5420fc5b0cbfc14e23e099111" datatype="html">
@@ -480,11 +473,18 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="4580959815176510999" datatype="html">
+        <source>New Map Project <x id="PH" equiv-text="new Date().toLocaleString(this.locale)"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/services/printmaps.service.ts</context>
+          <context context-type="linenumber">153</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4762748867415276215" datatype="html">
         <source>New Text Element</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/reducers/main.reducers.ts</context>
-          <context context-type="linenumber">245</context>
+          <context context-type="sourcefile">src/app/services/printmaps.service.ts</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
     </body>

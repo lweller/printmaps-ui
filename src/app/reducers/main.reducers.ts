@@ -2,19 +2,8 @@ import {Action, createReducer, on} from "@ngrx/store";
 import {round} from "lodash";
 import * as UiActions from "../actions/main.actions";
 import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state";
-import {getScaleProperties, Scale} from "../model/intern/scale";
-import {MapProjectState} from "../model/intern/map-project-state";
-import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
-import {
-    AdditionalElementType,
-    AdditionalGpxElement,
-    AdditionalScaleElement,
-    AdditionalTextElement,
-    AnyAdditionalElement
-} from "../model/intern/additional-element";
-import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE, DEFAULT_TRACK_STYLE} from "../model/intern/additional-element-style";
-import {v4 as uuid} from "uuid";
-import {generateMapProjectCopyName, MapProject} from "../model/intern/map-project";
+import {getScaleProperties} from "../model/intern/scale";
+import {generateMapProjectCopyName} from "../model/intern/map-project";
 
 const reducer = createReducer(initialState,
 
@@ -24,41 +13,17 @@ const reducer = createReducer(initialState,
             mapProjectReferences: mapProjectReferences
         })),
 
-    on(UiActions.createMapProject,
-        (state, {name}) => {
-            let mapProject = {
-                id: undefined,
-                name: name,
-                modifiedLocally: true,
-                state: MapProjectState.NOT_RENDERED,
-                center: state.mapCenter,
-                widthInMm: 210,
-                heightInMm: 297,
-                topMarginInMm: 8,
-                bottomMarginInMm: 8,
-                leftMarginInMm: 8,
-                rightMarginInMm: 8,
-                scale: Scale.RATIO_1_50000,
-                options: {
-                    fileFormat: FileFormat.PNG,
-                    mapStyle: MapStyle.OSM_CARTO
-                },
-                additionalElements: []
-
-            };
-            return {
-                ...state,
-                currentMapProject: {
-                    ...mapProject,
-                    additionalElements: [createAdditionalElement(mapProject, AdditionalElementType.ATTRIBUTION)]
-                }
-            };
-        }),
+    on(UiActions.createdMapProject,
+        (state, {mapProject}) => ({
+            ...state,
+            currentMapProject: mapProject
+        })
+    ),
 
     on(UiActions.copyMapProject,
         (state) => ({
             ...state,
-            currentMapProject: state.currentMapProject?.id
+            currentMapProject: state?.currentMapProject?.id
                 ? {
                     ...state.currentMapProject,
                     id: undefined,
@@ -175,24 +140,20 @@ const reducer = createReducer(initialState,
                 : state.currentMapProject
         })),
 
-    on(UiActions.addAdditionalElement,
-        (state, {elementType}) => {
-            let newElement = createAdditionalElement(state.currentMapProject, elementType);
-            return {
-                ...state,
-                currentMapProject: state.currentMapProject
-                    ? {
-                        ...state.currentMapProject,
-                        modifiedLocally: true,
-                        additionalElements: [
-                            ...state.currentMapProject.additionalElements,
-                            newElement
-                        ]
-                    }
-                    : state.currentMapProject,
-                selectedAdditionalElementId: newElement.id
-            };
-        }),
+    on(UiActions.additionalElementAdded,
+        (state, {additionalElement}) => ({
+            ...state,
+            currentMapProject: {
+                ...state.currentMapProject,
+                modifiedLocally: true,
+                additionalElements: [
+                    ...state.currentMapProject.additionalElements,
+                    additionalElement
+                ]
+            },
+            selectedAdditionalElementId: additionalElement.id
+        })
+    ),
 
     on(UiActions.selectAdditionalElement,
         (state, {id}) => ({
@@ -231,43 +192,4 @@ const reducer = createReducer(initialState,
 
 export function printmapsUiReducer(state: PrintmapsUiState | undefined, action: Action) {
     return reducer(state, action);
-}
-
-function createAdditionalElement(mapProject: MapProject, type: AdditionalElementType): AnyAdditionalElement {
-    let baseElement = {
-        type: type,
-        id: uuid()
-    };
-    switch (type) {
-        case AdditionalElementType.TEXT_BOX:
-            return {
-                ...baseElement,
-                text: $localize`New Text Element`,
-                style: DEFAULT_TEXT_STYLE,
-                location: {
-                    x: Math.round(mapProject.widthInMm / 2),
-                    y: Math.round(mapProject.heightInMm / 2)
-                }
-            } as AdditionalTextElement;
-        case AdditionalElementType.ATTRIBUTION:
-            return {
-                ...baseElement,
-                text: "${attribution}",
-                style: DEFAULT_TEXT_STYLE,
-                location: {x: 40, y: 7}
-            } as AdditionalTextElement;
-        case AdditionalElementType.SCALE:
-            return {
-                ...baseElement,
-                style: DEFAULT_SCALE_STYLE,
-                location: {x: 160, y: 10}
-            } as AdditionalScaleElement;
-        case AdditionalElementType.GPX_TRACK:
-            return {
-                ...baseElement,
-                style: DEFAULT_TRACK_STYLE
-            } as AdditionalGpxElement;
-        default :
-            return undefined;
-    }
 }

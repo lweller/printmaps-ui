@@ -1,12 +1,13 @@
-import {Component, Inject, LOCALE_ID} from "@angular/core";
-import {MapProject} from "../../model/intern/map-project";
+import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {distinctUntilChanged} from "rxjs/operators";
-import {cloneDeep, isEqual} from "lodash";
-import {currentMapProject} from "../../model/intern/printmaps-ui-state";
-import {MapProjectState} from "../../model/intern/map-project-state";
+import {
+    isCurrentMapProjectCopiable,
+    isCurrentMapProjectDeletable,
+    isCurrentMapProjectDownloadable,
+    isCurrentMapProjectRenderable,
+    PrintmapsUiState
+} from "../../model/intern/printmaps-ui-state";
 import * as UiActions from "../../actions/main.actions";
-import {ConfigurationService} from "../../services/configuration.service";
 
 @Component({
     selector: "app-button-box",
@@ -14,59 +15,35 @@ import {ConfigurationService} from "../../services/configuration.service";
     styles: []
 })
 export class ButtonBoxComponent {
-    currentMapProject: MapProject = undefined;
+    copyButtonDisabled = true;
+    deleteButtonDisabled = true;
+    launchRenderingButtonDisabled = true;
+    downloadButtonDisabled = true;
 
-    constructor(private readonly configurationService: ConfigurationService,
-                @Inject(LOCALE_ID) private readonly locale: string,
-                private store: Store<any>) {
-        store
-            .select(currentMapProject)
-            .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue))
-            )
-            .subscribe(nextCurrentMapProject => {
-                this.currentMapProject = nextCurrentMapProject?.id ? cloneDeep(nextCurrentMapProject) : undefined;
-            });
-    }
-
-    isCopyDisabled(): boolean {
-        return !this.currentMapProject;
-    }
-
-    isDeleteDisabled(): boolean {
-        return !this.currentMapProject;
-    }
-
-    isLaunchRenderingDisabled(): boolean {
-        return this.currentMapProject?.state != MapProjectState.NOT_RENDERED;
-    }
-
-    isDownloadDisabled(): boolean {
-        return this.currentMapProject?.state != MapProjectState.READY_FOR_DOWNLOAD;
+    constructor(private store: Store<PrintmapsUiState>) {
+        store.select(isCurrentMapProjectCopiable).subscribe(isCopiable => this.copyButtonDisabled = !isCopiable);
+        store.select(isCurrentMapProjectDeletable).subscribe(isDeletable => this.deleteButtonDisabled = !isDeletable);
+        store.select(isCurrentMapProjectRenderable).subscribe(isRenderable => this.launchRenderingButtonDisabled = !isRenderable);
+        store.select(isCurrentMapProjectDownloadable).subscribe(isDownloadable => this.downloadButtonDisabled = !isDownloadable);
     }
 
     createMapProject() {
-        let name = $localize`New Map Project ${new Date().toLocaleString(this.locale)}`;
-        this.store.dispatch(UiActions.createMapProject({name: name}));
+        this.store.dispatch(UiActions.createMapProject());
     }
 
     copyMapProject() {
         this.store.dispatch(UiActions.copyMapProject());
     }
 
-    deleteMapProject(id: string) {
-        this.store.dispatch(UiActions.deleteMapProject({id: id}));
+    deleteMapProject() {
+        this.store.dispatch(UiActions.deleteMapProject({}));
     }
 
-    launchMapProjectRendering(mapProject: MapProject) {
-        this.store.dispatch(UiActions.uploadMapProject({
-            mapProject: mapProject,
-            followUpAction: "launchRendering"
-        }));
+    launchMapProjectRendering() {
+        this.store.dispatch(UiActions.uploadMapProject({followUpAction: "launchRendering"}));
     }
 
-    downloadRenderedMapFile(id: string) {
-        window.open(`${this.configurationService.appConf.printmapsApiBaseUri}/mapfile/${id}`, "_self");
+    downloadRenderedMapFile() {
+        this.store.dispatch(UiActions.downloadRenderedMapProject());
     }
 }

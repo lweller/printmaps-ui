@@ -1,14 +1,14 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Injectable} from "@angular/core";
+import {Inject, Injectable, LOCALE_ID} from "@angular/core";
 import {EMPTY, Observable, of} from "rxjs";
 import {catchError, concatMap, map, mapTo, tap} from "rxjs/operators";
-import {MapRenderingJobDefinition} from "../model/api/map-rendering-job-definition";
+import {FileFormat, MapRenderingJobDefinition, MapStyle} from "../model/api/map-rendering-job-definition";
 import {MapProject, toMapRenderingJobExecution} from "../model/intern/map-project";
 import {MapRenderingJobState} from "../model/api/map-rendering-job-state";
 import {fromMapRenderingJobState, MapProjectState} from "../model/intern/map-project-state";
 import {MapProjectReference} from "../model/intern/map-project-reference";
 import {ConfigurationService} from "./configuration.service";
-import {fromReductionFactor, getScaleProperties, SCALES} from "../model/intern/scale";
+import {fromReductionFactor, getScaleProperties, Scale, SCALES} from "../model/intern/scale";
 import {
     ADDITIONAL_ELEMENT_TYPES,
     AdditionalElementType,
@@ -31,6 +31,7 @@ import {v4 as uuid} from "uuid";
 import {parse} from "wellknown";
 import {UserFile} from "../model/api/user-file";
 import {ScaleService} from "./scale.service";
+import {GeoCoordinates} from "../model/intern/geo-coordinates";
 
 const REQUEST_OPTIONS = {
     headers: new HttpHeaders({
@@ -41,7 +42,12 @@ const REQUEST_OPTIONS = {
 
 @Injectable()
 export class PrintmapsService {
-    constructor(private readonly configurationService: ConfigurationService, private templateService: TemplateService, private http: HttpClient, private scaleService: ScaleService) {
+    constructor(
+        @Inject(LOCALE_ID) private readonly locale: string,
+        private readonly configurationService: ConfigurationService,
+        private templateService: TemplateService,
+        private http: HttpClient,
+        private scaleService: ScaleService) {
     }
 
     private get baseUrl() {
@@ -141,6 +147,71 @@ export class PrintmapsService {
         return undefined;
     }
 
+    createMapProject(mapCenter: GeoCoordinates): MapProject {
+        let mapProject = {
+            id: undefined,
+            name: $localize`New Map Project ${new Date().toLocaleString(this.locale)}`,
+            modifiedLocally: true,
+            state: MapProjectState.NOT_RENDERED,
+            center: mapCenter,
+            widthInMm: 210,
+            heightInMm: 297,
+            topMarginInMm: 8,
+            bottomMarginInMm: 8,
+            leftMarginInMm: 8,
+            rightMarginInMm: 8,
+            scale: Scale.RATIO_1_50000,
+            options: {
+                fileFormat: FileFormat.PNG,
+                mapStyle: MapStyle.OSM_CARTO
+            },
+            additionalElements: []
+        };
+        return {
+            ...mapProject,
+            additionalElements: [this.createAdditionalElement(mapProject, AdditionalElementType.ATTRIBUTION)]
+        };
+    }
+
+    createAdditionalElement(mapProject: MapProject, type: AdditionalElementType): AnyAdditionalElement {
+        let baseElement = {
+            type: type,
+            id: uuid()
+        };
+        switch (type) {
+            case AdditionalElementType.TEXT_BOX:
+                return {
+                    ...baseElement,
+                    text: $localize`New Text Element`,
+                    style: DEFAULT_TEXT_STYLE,
+                    location: {
+                        x: Math.round(mapProject.widthInMm / 2),
+                        y: Math.round(mapProject.heightInMm / 2)
+                    }
+                } as AdditionalTextElement;
+            case AdditionalElementType.ATTRIBUTION:
+                return {
+                    ...baseElement,
+                    text: "${attribution}",
+                    style: DEFAULT_TEXT_STYLE,
+                    location: {x: 40, y: 7}
+                } as AdditionalTextElement;
+            case AdditionalElementType.SCALE:
+                return {
+                    ...baseElement,
+                    style: DEFAULT_SCALE_STYLE,
+                    location: {x: 160, y: 10}
+                } as AdditionalScaleElement;
+            case AdditionalElementType.GPX_TRACK:
+                return {
+                    ...baseElement,
+                    style: DEFAULT_TRACK_STYLE
+                } as AdditionalGpxElement;
+            default :
+                return undefined;
+        }
+    }
+
     loadMapProjectState(id: string): Observable<MapProjectState> {
         let endpointUrl = `${this.baseUrl}/mapstate/${id}`;
         return this.http.get<MapRenderingJobState>(endpointUrl)
@@ -190,6 +261,11 @@ export class PrintmapsService {
                 catchError(() => of(false))
             );
 
+    }
+
+    downloadRenderedMapFile(id: string): Observable<boolean> {
+        window.open(`${this.configurationService.appConf.printmapsApiBaseUri}/mapfile/${id}`, "_self");
+        return of(true);
     }
 
     createOrUpdateMapRenderingJob(mapProject: MapProject): Observable<MapProject> {

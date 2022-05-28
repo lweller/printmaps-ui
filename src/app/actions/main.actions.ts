@@ -44,8 +44,12 @@ export const updateMapOptions = createAction(
 );
 
 export const createMapProject = createAction(
-    createActionType(SOURCE, "CREATE_MAP_PROJECT"),
-    props<{ name: string }>()
+    createActionType(SOURCE, "CREATE_MAP_PROJECT")
+);
+
+export const createdMapProject = createAction(
+    createActionType(SOURCE, "CREATED_MAP_PROJECT"),
+    props<{ mapProject: MapProject }>()
 );
 
 export const copyMapProject = createAction(
@@ -62,13 +66,9 @@ export const mapProjectLoaded = createAction(
     props<{ mapProject: MapProject }>()
 );
 
-export const closeMapProject = createAction(
-    createActionType(SOURCE, "CLOSE_MAP_PROJECT")
-);
-
 export const deleteMapProject = createAction(
     createActionType(SOURCE, "DELETE_MAP_PROJECT"),
-    props<{ id: string }>()
+    props<{ id?: string }>()
 );
 
 export const mapProjectDeleted = createAction(
@@ -80,7 +80,7 @@ export type UploadMapProjectFollowUpAction = "close" | "copy" | "launchRendering
 
 export const uploadMapProject = createAction(
     createActionType(SOURCE, "UPLOAD_MAP_PROJECT"),
-    props<{ mapProject: MapProject, followUpAction?: UploadMapProjectFollowUpAction }>()
+    props<{ mapProject?: MapProject, followUpAction?: UploadMapProjectFollowUpAction }>()
 );
 
 export const mapProjectUploaded = createAction(
@@ -97,6 +97,10 @@ export const launchMapProjectRendering = createAction(
     props<{ id: string }>()
 );
 
+export const downloadRenderedMapProject = createAction(
+    createActionType(SOURCE, "DOWNLOAD_RENDERED_MAP_PROJECT")
+);
+
 export const refreshMapProjectState = createAction(
     createActionType(SOURCE, "REFRESH_MAP_PROJECT_STATE"),
     props<{ id: string }>()
@@ -110,6 +114,11 @@ export const mapProjectStateUpdated = createAction(
 export const addAdditionalElement = createAction(
     createActionType(SOURCE, "ADD_ADDITIONAL_ELEMENT"),
     props<{ elementType: AdditionalElementType }>()
+);
+
+export const additionalElementAdded = createAction(
+    createActionType(SOURCE, "ADDITIONAL_ELEMENT_ADDED"),
+    props<{ additionalElement: AnyAdditionalElement }>()
 );
 
 export const selectAdditionalElement = createAction(

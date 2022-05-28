@@ -3,6 +3,7 @@ import {MapProject, toMapProjectReference} from "./map-project";
 import {MapProjectReference} from "./map-project-reference";
 import {GeoCoordinates} from "./geo-coordinates";
 import {AdditionalElementType, AdditionalGpxElement} from "./additional-element";
+import {MapProjectState} from "./map-project-state";
 
 export interface PrintmapsUiState {
     mapCenter: GeoCoordinates,
@@ -28,6 +29,21 @@ export const mapProjectReferences = createSelector(printmapsUiState,
 export const currentMapProject = createSelector(printmapsUiState,
     (state) => state.currentMapProject);
 
+export const isCurrentMapProjectSaved = createSelector(currentMapProject,
+    (mapProject) => !!mapProject?.id);
+
+export const isCurrentMapProjectCopiable = isCurrentMapProjectSaved;
+
+export const isCurrentMapProjectDeletable = isCurrentMapProjectSaved;
+
+export const isCurrentMapProjectRenderable = createSelector(currentMapProject,
+    (mapProject) => mapProject?.state == MapProjectState.NOT_RENDERED
+);
+
+export const isCurrentMapProjectDownloadable = createSelector(currentMapProject,
+    (mapProject) => mapProject?.state == MapProjectState.READY_FOR_DOWNLOAD
+);
+
 export const selectedMapProjectReference = createSelector(
     currentMapProject,
     mapProject => toMapProjectReference(mapProject)
@@ -45,3 +61,6 @@ export const currentAdditionalGpxElements = createSelector(currentAdditionalElem
 
 export const selectedAdditionalElementId = createSelector(printmapsUiState,
     (state) => state.selectedAdditionalElementId);
+
+export const selectedMapCenter = createSelector(printmapsUiState,
+    (state) => state.mapCenter);

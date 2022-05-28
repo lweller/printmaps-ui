@@ -12,11 +12,12 @@ import {
     map,
     mergeAll,
     switchMap,
-    takeWhile
+    takeWhile,
+    withLatestFrom
 } from "rxjs/operators";
 import {Store} from "@ngrx/store";
 import {PrintmapsService} from "../services/printmaps.service";
-import {currentMapProject, mapProjectReferences} from "../model/intern/printmaps-ui-state";
+import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../model/intern/printmaps-ui-state";
 import * as UiActions from "../actions/main.actions";
 import {of, timer, zip} from "rxjs";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
@@ -38,11 +39,36 @@ export class MainEffects {
             )
     );
 
+    createMapProject = createEffect(
+        () => this.actions
+            .pipe(
+                ofType(UiActions.createMapProject),
+                withLatestFrom(this.store.select(selectedMapCenter)),
+                map(([_, mapCenter]) => UiActions.createdMapProject({
+                    mapProject: this.printmapsService.createMapProject(mapCenter)
+                }))
+            )
+    );
+
+    addAdditionalElement = createEffect(
+        () => this.actions
+            .pipe(
+                ofType(UiActions.addAdditionalElement),
+                withLatestFrom(this.store.select(currentMapProject)),
+                map(([action, curMapProject]) => UiActions.additionalElementAdded({
+                    additionalElement: this.printmapsService.createAdditionalElement(curMapProject, action.elementType)
+                }))
+            )
+    );
+
     deleteMapProject = createEffect(
         () => this.actions
             .pipe(
                 ofType(UiActions.deleteMapProject),
-                switchMap(action => zip(of(action.id), this.printmapsService.deleteMapRenderingJob(action.id))),
+                withLatestFrom(this.store.select(currentMapProject)),
+                map(([action, curMapProject]) => action.id ?? curMapProject?.id),
+                filter(id => !!id),
+                concatMap(id => zip(of(id), this.printmapsService.deleteMapRenderingJob(id))),
                 map(([id]) => UiActions.mapProjectDeleted({id: id}))
             )
     );
@@ -69,11 +95,14 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.uploadMapProject),
-                concatMap(action =>
-                    (action.mapProject.modifiedLocally
-                        ? this.printmapsService.createOrUpdateMapRenderingJob(action.mapProject)
-                        : of(action.mapProject))
+                withLatestFrom(this.store.select(currentMapProject)),
+                concatMap(([action, curMapProject]) =>
+                    of(curMapProject)
                         .pipe(
+                            map(mapProject => action.mapProject ?? mapProject),
+                            concatMap(mapProject => mapProject.modifiedLocally
+                                ? this.printmapsService.createOrUpdateMapRenderingJob(mapProject)
+                                : of(mapProject)),
                             map(mapProject =>
                                 UiActions.mapProjectUploaded({
                                     mapProjectReference: {
@@ -114,6 +143,20 @@ export class MainEffects {
             )
     );
 
+    downloadRenderedMapProject = createEffect(
+        () => this.actions
+            .pipe(
+                ofType(UiActions.downloadRenderedMapProject),
+                switchMap(() => this.store.select(currentMapProject)),
+                filter(curMapProject => !!curMapProject),
+                map(curMapProject => this.printmapsService.downloadRenderedMapFile(curMapProject.id)),
+                ignoreElements()
+            ),
+        {
+            dispatch: false
+        }
+    );
+
     autoSaveMapProjectReferences = createEffect(
         () => this.store
             .select(mapProjectReferences)
@@ -151,23 +194,23 @@ export class MainEffects {
                 map(group =>
                     group.pipe(
                         switchMap(action => of(action.id).pipe(
-                            expand(id =>
-                                of(id)
-                                    .pipe(
-                                        delay(this.configurationService.appConf.mapStatePollingIntervalInSeconds * 1000)
-                                    )
-                            ),
-                            switchMap(id => this.printmapsService.loadMapProjectState(id)),
-                            map((mapProjectState, index) => [mapProjectState, index] as [MapProjectState, number]),
-                            takeWhile(([mapProjectState, index]) =>
-                                    (index == 0
-                                        || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
-                                        || mapProjectState == MapProjectState.RENDERING),
-                                true),
-                            map(([mapProjectState]) => mapProjectState),
-                            distinctUntilChanged(),
-                            map(mapProjectState =>
-                                UiActions.mapProjectStateUpdated({id: action.id, mapProjectState: mapProjectState}))
+                                expand(id =>
+                                    of(id)
+                                        .pipe(
+                                            delay(this.configurationService.appConf.mapStatePollingIntervalInSeconds * 1000)
+                                        )
+                                ),
+                                switchMap(id => this.printmapsService.loadMapProjectState(id)),
+                                map((mapProjectState, index) => [mapProjectState, index] as [MapProjectState, number]),
+                                takeWhile(([mapProjectState, index]) =>
+                                        (index == 0
+                                            || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
+                                            || mapProjectState == MapProjectState.RENDERING),
+                                    true),
+                                map(([mapProjectState]) => mapProjectState),
+                                distinctUntilChanged(),
+                                map(mapProjectState =>
+                                    UiActions.mapProjectStateUpdated({id: action.id, mapProjectState: mapProjectState}))
                             )
                         )
                     )
