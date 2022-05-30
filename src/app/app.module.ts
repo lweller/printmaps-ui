@@ -28,7 +28,6 @@ import {
     RemoveAttributionConfirmDialog
 } from "./components/current-map-project-pane/current-map-project-pane.component";
 import {NumericDirective} from "./directives/numeric.directive";
-import {PRINTMAPS_UI_STATE_ID} from "./model/intern/printmaps-ui-state";
 import {printmapsUiReducer} from "./reducers/main.reducers";
 import {PrintmapsService} from "./services/printmaps.service";
 import {MatListModule} from "@angular/material/list";
@@ -63,6 +62,7 @@ import {
     AdditionalGpxElementDetailComponent
 } from "./components/additional-gpx-element-detail/additional-gpx-element-detail.component";
 import {MaterialFileInputModule} from "ngx-material-file-input";
+import {PRINTMAPS_UI_STATE_ID} from "./selectors/main.selectors";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);

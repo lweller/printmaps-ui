@@ -18,11 +18,11 @@ import {
 } from "rxjs/operators";
 import {Subjectize} from "subjectize";
 import * as UiActions from "../../actions/main.actions";
-import {currentAdditionalGpxElements, currentMapProject} from "../../model/intern/printmaps-ui-state";
 import {getScaleProperties, Scale} from "../../model/intern/scale";
 import {ConfigurationService} from "../../services/configuration.service";
 import {gpx} from "@mapbox/leaflet-omnivore";
 import {AdditionalGpxElement} from "../../model/intern/additional-element";
+import {currentAdditionalGpxElements, currentMapProject} from "../../selectors/main.selectors";
 
 @Component({
     selector: "app-map",

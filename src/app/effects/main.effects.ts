@@ -17,13 +17,13 @@ import {
 } from "rxjs/operators";
 import {Store} from "@ngrx/store";
 import {PrintmapsService} from "../services/printmaps.service";
-import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../model/intern/printmaps-ui-state";
 import * as UiActions from "../actions/main.actions";
 import {of, timer, zip} from "rxjs";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
 import {isEqual} from "lodash";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {ConfigurationService} from "../services/configuration.service";
+import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../selectors/main.selectors";
 
 // noinspection JSUnusedGlobalSymbols
 @Injectable()

@@ -1,11 +1,11 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
 import * as UiActions from "./actions/main.actions";
-import {mapProjectReferences} from "./model/intern/printmaps-ui-state";
 import {filter, first} from "rxjs/operators";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
 import {AdditionalElementType} from "./model/intern/additional-element";
+import {mapProjectReferences} from "./selectors/main.selectors";
 
 @Component({
     selector: "app-root",

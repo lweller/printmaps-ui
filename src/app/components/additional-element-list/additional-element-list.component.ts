@@ -1,16 +1,16 @@
 import {Component, ElementRef, Host, Optional} from "@angular/core";
 import {AdditionalElement, AdditionalElementType, AnyAdditionalElement} from "../../model/intern/additional-element";
-import {
-    currentAdditionalElements,
-    currentMapProject,
-    selectedAdditionalElementId
-} from "../../model/intern/printmaps-ui-state";
 import {distinctUntilChanged, filter, map} from "rxjs/operators";
 import {assignIn, cloneDeep, isEqual} from "lodash";
 import {Store} from "@ngrx/store";
 import * as UiActions from "../../actions/main.actions";
 import {timer} from "rxjs";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {
+    currentAdditionalElements,
+    currentMapProject,
+    selectedAdditionalElementId
+} from "../../selectors/main.selectors";
 
 @Component({
     selector: "app-additional-element-list",

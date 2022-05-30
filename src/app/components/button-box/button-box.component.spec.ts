@@ -1,12 +1,5 @@
 import {MockStore, provideMockStore} from "@ngrx/store/testing";
-import {
-    initialState,
-    isCurrentMapProjectCopiable,
-    isCurrentMapProjectDeletable,
-    isCurrentMapProjectDownloadable,
-    isCurrentMapProjectRenderable,
-    PrintmapsUiState
-} from "../../model/intern/printmaps-ui-state";
+import {initialState, PrintmapsUiState} from "../../model/intern/printmaps-ui-state";
 import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {ButtonBoxComponent} from "./button-box.component";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
@@ -14,6 +7,12 @@ import {MemoizedSelector} from "@ngrx/store";
 import * as UiActions from "../../actions/main.actions";
 import {TestbedHarnessEnvironment} from "@angular/cdk/testing/testbed";
 import {MatButtonHarness} from "@angular/material/button/testing";
+import {
+    isCurrentMapProjectCopiable,
+    isCurrentMapProjectDeletable,
+    isCurrentMapProjectDownloadable,
+    isCurrentMapProjectRenderable
+} from "../../selectors/main.selectors";
 
 describe("ButtonBox", () => {
 

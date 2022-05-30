@@ -6,7 +6,6 @@ import {FILE_FORMATS, FileFormat, MAP_STYLES, MapStyle} from "../../model/api/ma
 import {MapProject} from "../../model/intern/map-project";
 import {getPaperFormatProperties, PAPER_FORMATS, PaperFormat} from "../../model/intern/paper-format";
 import {PAPER_ORIENTATIONS, PaperOrientation} from "../../model/intern/paper-orientation";
-import {currentMapProject, selectedAdditionalElementId} from "../../model/intern/printmaps-ui-state";
 import * as s from "../../model/intern/scale";
 import {distinctUntilChanged, filter} from "rxjs/operators";
 import {MapProjectState} from "../../model/intern/map-project-state";
@@ -17,6 +16,7 @@ import {MatExpansionPanel} from "@angular/material/expansion";
 import {AdditionalElementListComponent} from "../additional-element-list/additional-element-list.component";
 import {MatDialog} from "@angular/material/dialog";
 import {order} from "../../utils/common.util";
+import {currentMapProject, selectedAdditionalElementId} from "../../selectors/main.selectors";
 
 @Component({
     selector: "app-current-map-project-pane",

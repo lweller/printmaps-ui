@@ -1,6 +1,5 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {mapProjectReferences, selectedMapProjectReference} from "../../model/intern/printmaps-ui-state";
 import {distinctUntilChanged, filter} from "rxjs/operators";
 import {cloneDeep, isEqual} from "lodash";
 import {MapProjectReference} from "../../model/intern/map-project-reference";
@@ -11,6 +10,7 @@ import {MapProjectState, mapProjectStateTooltip} from "../../model/intern/map-pr
 import {MatDialog} from "@angular/material/dialog";
 import {Subjectize} from "subjectize";
 import {ReplaySubject} from "rxjs";
+import {mapProjectReferences, selectedMapProjectReference} from "../../selectors/main.selectors";
 
 @Component({
     selector: "app-map-project-list-pane",

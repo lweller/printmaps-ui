@@ -1,13 +1,13 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
+import {PrintmapsUiState} from "../../model/intern/printmaps-ui-state";
+import * as UiActions from "../../actions/main.actions";
 import {
     isCurrentMapProjectCopiable,
     isCurrentMapProjectDeletable,
     isCurrentMapProjectDownloadable,
-    isCurrentMapProjectRenderable,
-    PrintmapsUiState
-} from "../../model/intern/printmaps-ui-state";
-import * as UiActions from "../../actions/main.actions";
+    isCurrentMapProjectRenderable
+} from "../../selectors/main.selectors";
 
 @Component({
     selector: "app-button-box",
