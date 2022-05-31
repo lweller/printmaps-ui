@@ -1,7 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Configuration} from "../model/intern/configuration";
-import {of} from "rxjs";
+import {Observable, of, timer} from "rxjs";
 import {environment} from "../../environments/environment";
+import {delay} from "rxjs/operators";
 
 export function configurationServiceInitializerFactory(configurationService: ConfigurationService): Function {
     return () => configurationService.load();
@@ -19,6 +20,14 @@ export class ConfigurationService {
             throw new Error("Configuration not loaded yet.");
         }
         return this.configuration;
+    }
+
+    public autoUploadDebounceTimer(): Observable<number> {
+        return timer(this.appConf.autoUploadIntervalInSeconds * 1000);
+    }
+
+    public returnAfterPollingDelay(id: string): Observable<string> {
+        return of(id).pipe(delay(this.appConf.mapStatePollingIntervalInSeconds * 1000));
     }
 
     public load(): Promise<Configuration> {

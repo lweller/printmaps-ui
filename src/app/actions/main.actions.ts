@@ -76,9 +76,9 @@ export const mapProjectDeleted = createAction(
     props<{ id: string }>()
 );
 
-export type UploadMapProjectFollowUpAction = "close" | "copy" | "launchRendering";
+export type UploadMapProjectFollowUpAction = "launchRendering";
 
-export const uploadMapProject = createAction(
+export const ensureMapProjectIsUploadedAndDispatch = createAction(
     createActionType(SOURCE, "UPLOAD_MAP_PROJECT"),
     props<{ mapProject?: MapProject, followUpAction?: UploadMapProjectFollowUpAction }>()
 );

@@ -135,7 +135,7 @@ describe("ButtonBox", () => {
         expect(await lauchRenderingButton.isDisabled()).withContext("disable state of launch rendering button").toBeFalse();
         expect(store.dispatch)
             .withContext("store dispatch method")
-            .toHaveBeenCalledWith(UiActions.uploadMapProject({followUpAction: "launchRendering"}));
+            .toHaveBeenCalledWith(UiActions.ensureMapProjectIsUploadedAndDispatch({followUpAction: "launchRendering"}));
     });
 
     it("should disable download button when current map project isn't downloadable", async () => {

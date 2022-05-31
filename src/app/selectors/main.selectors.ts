@@ -12,7 +12,7 @@ export const mapProjectReferences = createSelector(printmapsUiState,
     (state) => state.mapProjectReferences);
 
 export const currentMapProject = createSelector(printmapsUiState,
-    (state) => state.currentMapProject);
+    (state) => state?.currentMapProject);
 
 export const isCurrentMapProjectSaved = createSelector(currentMapProject,
     (mapProject) => !!mapProject?.id);
@@ -48,4 +48,4 @@ export const selectedAdditionalElementId = createSelector(printmapsUiState,
     (state) => state.selectedAdditionalElementId);
 
 export const selectedMapCenter = createSelector(printmapsUiState,
-    (state) => state.mapCenter);
+    (state) => state?.mapCenter);

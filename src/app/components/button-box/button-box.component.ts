@@ -40,7 +40,7 @@ export class ButtonBoxComponent {
     }
 
     launchMapProjectRendering() {
-        this.store.dispatch(UiActions.uploadMapProject({followUpAction: "launchRendering"}));
+        this.store.dispatch(UiActions.ensureMapProjectIsUploadedAndDispatch({followUpAction: "launchRendering"}));
     }
 
     downloadRenderedMapFile() {

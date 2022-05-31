@@ -52,7 +52,7 @@ export class CurrentMapProjectPaneComponent {
             )
             .subscribe(nextValue => {
                 if (this.mapProject?.id && this.mapProject?.modifiedLocally && this.mapProject?.id != nextValue.id) {
-                    store.dispatch(UiActions.uploadMapProject({mapProject: this.mapProject}));
+                    store.dispatch(UiActions.ensureMapProjectIsUploadedAndDispatch({mapProject: this.mapProject}));
                 }
                 this.mapProject = cloneDeep(nextValue);
             });

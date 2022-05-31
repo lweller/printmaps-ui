@@ -3,7 +3,6 @@ import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {
     concatMap,
     debounce,
-    delay,
     distinctUntilChanged,
     expand,
     filter,
@@ -18,12 +17,13 @@ import {
 import {Store} from "@ngrx/store";
 import {PrintmapsService} from "../services/printmaps.service";
 import * as UiActions from "../actions/main.actions";
-import {of, timer, zip} from "rxjs";
+import {UploadMapProjectFollowUpAction} from "../actions/main.actions";
+import {EMPTY, of, zip} from "rxjs";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
-import {isEqual} from "lodash";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {ConfigurationService} from "../services/configuration.service";
 import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../selectors/main.selectors";
+import {MapProject, toMapProjectReference} from "../model/intern/map-project";
 
 // noinspection JSUnusedGlobalSymbols
 @Injectable()
@@ -44,7 +44,9 @@ export class MainEffects {
             .pipe(
                 ofType(UiActions.createMapProject),
                 withLatestFrom(this.store.select(selectedMapCenter)),
-                map(([_, mapCenter]) => UiActions.createdMapProject({
+                map(([_, mapCenter]) => mapCenter),
+                filter(mapCenter => !!mapCenter),
+                map(mapCenter => UiActions.createdMapProject({
                     mapProject: this.printmapsService.createMapProject(mapCenter)
                 }))
             )
@@ -55,8 +57,9 @@ export class MainEffects {
             .pipe(
                 ofType(UiActions.addAdditionalElement),
                 withLatestFrom(this.store.select(currentMapProject)),
-                map(([action, curMapProject]) => UiActions.additionalElementAdded({
-                    additionalElement: this.printmapsService.createAdditionalElement(curMapProject, action.elementType)
+                filter(([_, mapProject]) => !!mapProject),
+                map(([action, mapProject]) => UiActions.additionalElementAdded({
+                    additionalElement: this.printmapsService.createAdditionalElement(mapProject, action.elementType)
                 }))
             )
     );
@@ -69,6 +72,7 @@ export class MainEffects {
                 map(([action, curMapProject]) => action.id ?? curMapProject?.id),
                 filter(id => !!id),
                 concatMap(id => zip(of(id), this.printmapsService.deleteMapRenderingJob(id))),
+                filter(([_, deletionSuccess]) => deletionSuccess),
                 map(([id]) => UiActions.mapProjectDeleted({id: id}))
             )
     );
@@ -77,10 +81,15 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.loadMapProject),
-                switchMap(action => this.printmapsService.loadMapProject(action.mapProjectReference)),
+                map(action => action.mapProjectReference),
+                filter(mapProjectReference => !!mapProjectReference),
+                distinctUntilChanged((previousMapProjectReference, currentMapProjectReference) =>
+                    previousMapProjectReference.id == currentMapProjectReference.id),
+                switchMap(mapProjectReference => this.printmapsService.loadMapProject(mapProjectReference)),
                 map(mapProject => UiActions.mapProjectLoaded({mapProject: mapProject}))
             )
     );
+
     loadMapProjectReferences = createEffect(
         () => this.actions
             .pipe(
@@ -91,29 +100,27 @@ export class MainEffects {
             )
     );
 
-    uploadMapProject = createEffect(
+    ensureMapProjectIsUploadedAndDispatch = createEffect(
         () => this.actions
             .pipe(
-                ofType(UiActions.uploadMapProject),
+                ofType(UiActions.ensureMapProjectIsUploadedAndDispatch),
                 withLatestFrom(this.store.select(currentMapProject)),
-                concatMap(([action, curMapProject]) =>
-                    of(curMapProject)
-                        .pipe(
-                            map(mapProject => action.mapProject ?? mapProject),
-                            concatMap(mapProject => mapProject.modifiedLocally
-                                ? this.printmapsService.createOrUpdateMapRenderingJob(mapProject)
-                                : of(mapProject)),
-                            map(mapProject =>
-                                UiActions.mapProjectUploaded({
-                                    mapProjectReference: {
-                                        id: mapProject.id,
-                                        name: mapProject.name,
-                                        state: mapProject.state
-                                    },
-                                    followUpAction: action.followUpAction
-                                })
-                            )
-                        )
+                map(([action, mapProject]) =>
+                    <[MapProject, UploadMapProjectFollowUpAction]>
+                        [action.mapProject ?? mapProject, action.followUpAction]),
+                filter(([mapProject]) => !!mapProject),
+                concatMap(([mapProject, followUpAction]) =>
+                    zip(mapProject.modifiedLocally
+                            ? this.printmapsService.createOrUpdateMapRenderingJob(mapProject)
+                            : of(mapProject),
+                        of(followUpAction)
+                    )
+                ),
+                map(([mapProject, followUpAction]) =>
+                    UiActions.mapProjectUploaded({
+                        mapProjectReference: toMapProjectReference(mapProject),
+                        followUpAction: followUpAction
+                    })
                 )
             )
     );
@@ -122,6 +129,7 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.mapProjectUploaded),
+                filter(action => !!action.mapProjectReference?.id),
                 concatMap(action => [
                         UiActions.refreshMapProjectState({id: action.mapProjectReference.id}),
                         UiActions.createUploadMapProjectFollowUpAction(action.followUpAction, action.mapProjectReference.id)
@@ -135,11 +143,9 @@ export class MainEffects {
             .pipe(
                 ofType(UiActions.launchMapProjectRendering),
                 map(action => action.id),
-                switchMap(id =>
-                    this.printmapsService
-                        .launchMapRenderingJob(id)
-                        .pipe(map(() => UiActions.refreshMapProjectState({id: id})))
-                )
+                filter(id => !!id),
+                concatMap(id => zip(of(id), this.printmapsService.launchMapRenderingJob(id))),
+                map(([id]) => UiActions.refreshMapProjectState({id: id}))
             )
     );
 
@@ -147,9 +153,11 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.downloadRenderedMapProject),
-                switchMap(() => this.store.select(currentMapProject)),
-                filter(curMapProject => !!curMapProject),
-                map(curMapProject => this.printmapsService.downloadRenderedMapFile(curMapProject.id)),
+                withLatestFrom(this.store.select(currentMapProject)),
+                map(([_, mapProject]) => mapProject),
+                filter(mapProject => !!mapProject?.id),
+                filter(mapProject => mapProject.state == MapProjectState.READY_FOR_DOWNLOAD),
+                map(mapProject => this.printmapsService.downloadRenderedMapFile(mapProject.id)),
                 ignoreElements()
             ),
         {
@@ -161,11 +169,9 @@ export class MainEffects {
         () => this.store
             .select(mapProjectReferences)
             .pipe(
-                filter(nextMapProjectReferences => !!nextMapProjectReferences),
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue)),
-                concatMap(nextMapProjectReferences =>
-                    this.mapProjectReferenceService.saveMapProjectReferences(nextMapProjectReferences)),
+                filter(currentMapProjectReferences => !!currentMapProjectReferences),
+                concatMap(currentMapProjectReferences =>
+                    this.mapProjectReferenceService.saveMapProjectReferences(currentMapProjectReferences)),
                 ignoreElements()
             ),
         {
@@ -178,11 +184,9 @@ export class MainEffects {
             .select(currentMapProject)
             .pipe(
                 filter(mapProject => !!mapProject),
-                debounce(mapProject => mapProject.id ?
-                    timer(this.configurationService.appConf.autoUploadIntervalInSeconds * 1000) :
-                    of()),
+                debounce(mapProject => mapProject.id ? this.configurationService.autoUploadDebounceTimer() : EMPTY),
                 filter(mapProject => mapProject.modifiedLocally),
-                map(mapProject => UiActions.uploadMapProject({mapProject: mapProject}))
+                map(mapProject => UiActions.ensureMapProjectIsUploadedAndDispatch({mapProject: mapProject}))
             )
     );
 
@@ -190,29 +194,23 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.refreshMapProjectState),
-                groupBy(action => action.id),
+                map(action => action.id),
+                groupBy(id => id),
                 map(group =>
                     group.pipe(
-                        switchMap(action => of(action.id).pipe(
-                                expand(id =>
-                                    of(id)
-                                        .pipe(
-                                            delay(this.configurationService.appConf.mapStatePollingIntervalInSeconds * 1000)
-                                        )
-                                ),
-                                switchMap(id => this.printmapsService.loadMapProjectState(id)),
-                                map((mapProjectState, index) => [mapProjectState, index] as [MapProjectState, number]),
-                                takeWhile(([mapProjectState, index]) =>
-                                        (index == 0
-                                            || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
-                                            || mapProjectState == MapProjectState.RENDERING),
-                                    true),
-                                map(([mapProjectState]) => mapProjectState),
-                                distinctUntilChanged(),
-                                map(mapProjectState =>
-                                    UiActions.mapProjectStateUpdated({id: action.id, mapProjectState: mapProjectState}))
-                            )
-                        )
+                        expand(id => this.configurationService.returnAfterPollingDelay(id)),
+                        switchMap(id => zip(this.printmapsService.loadMapProjectState(id), of(id))),
+                        map((mapProjectStateAndId, index) => [mapProjectStateAndId, index] as [[MapProjectState, string], number]),
+                        takeWhile(([[mapProjectState, _id], index]) =>
+                                (index == 0
+                                    || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
+                                    || mapProjectState == MapProjectState.RENDERING),
+                            true),
+                        map(([mapProjectStateAndId]) => mapProjectStateAndId),
+                        distinctUntilChanged(
+                            ([previousMapProjectState], [currentMapProjectState]) => previousMapProjectState == currentMapProjectState),
+                        map(([mapProjectState, id]) =>
+                            UiActions.mapProjectStateUpdated({id: id, mapProjectState: mapProjectState}))
                     )
                 ),
                 mergeAll()
@@ -220,11 +218,11 @@ export class MainEffects {
     );
 
     constructor(
-        private store: Store<any>,
-        private actions: Actions,
+        private readonly store: Store<any>,
+        private readonly actions: Actions,
         private readonly configurationService: ConfigurationService,
-        private mapProjectReferenceService: MapProjectReferenceService,
-        private printmapsService: PrintmapsService
+        private readonly mapProjectReferenceService: MapProjectReferenceService,
+        private readonly printmapsService: PrintmapsService
     ) {
     }
 }
