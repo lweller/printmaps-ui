@@ -1,4 +1,3 @@
-import {v4 as uuid} from "uuid";
 import {EMPTY, Observable, of} from "rxjs";
 import {Action} from "@ngrx/store";
 import {TestBed} from "@angular/core/testing";
@@ -13,19 +12,25 @@ import {ConfigurationService} from "../services/configuration.service";
 import {TemplateService} from "../services/template-service";
 import {HttpClient} from "@angular/common/http";
 import {ScaleService} from "../services/scale.service";
-import {MapProject} from "../model/intern/map-project";
 import {MapProjectState} from "../model/intern/map-project-state";
-import {Scale} from "../model/intern/scale";
-import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
 import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../selectors/main.selectors";
-import {AdditionalElementType, AnyAdditionalElement} from "../model/intern/additional-element";
-import {AdditionalElementStyleType, FontStyle} from "../model/intern/additional-element-style";
+import {AdditionalElementType} from "../model/intern/additional-element";
 import {TypedAction} from "@ngrx/store/src/models";
-import {MapProjectReference} from "../model/intern/map-project-reference";
 import {cold, hot} from "jasmine-marbles";
 import {cases} from "jasmine-parameterized";
 import {allValuesOf} from "../utils/common.util";
 import {TestObservable} from "jasmine-marbles/src/test-observables";
+import {
+    SAMPLE_ADDITIONAL_ELEMENT,
+    SAMPLE_APP_CONF,
+    SAMPLE_COORDINATES,
+    SAMPLE_MAP_PROJECT_1,
+    SAMPLE_MAP_PROJECT_2,
+    SAMPLE_MAP_PROJECT_ID_1,
+    SAMPLE_MAP_PROJECT_ID_2,
+    SAMPLE_MAP_PROJECT_REFERENCE_1,
+    SAMPLE_MAP_PROJECT_REFERENCE_2
+} from "../model/test/test-data";
 
 let actions$: Observable<Action>;
 
@@ -36,81 +41,6 @@ let printmapsService: PrintmapsService;
 let configurationService: ConfigurationService;
 
 let effects: MainEffects;
-
-const SAMPLE_COORDINATES = {latitude: 46, longitude: 12};
-
-const SAMPLE_APP_CONF = {
-    defaultCoordinates: SAMPLE_COORDINATES
-};
-
-const SAMPLE_ADDITIONAL_ELEMENT: AnyAdditionalElement = {
-    id: uuid(),
-    type: AdditionalElementType.TEXT_BOX,
-    text: "Some Text...",
-    location: {x: 50, y: 50},
-    style: {
-        type: AdditionalElementStyleType.TEXT,
-        fontStyle: FontStyle.NORMAL,
-        fontColor: {
-            rgbHexValue: "#000000",
-            opacity: 1
-        },
-        textOrientation: 0,
-        fontSize: 12
-    }
-};
-
-const SAMPLE_MAP_PROJECT_ID_1 = uuid();
-
-const SAMPLE_MAP_PROJECT_REFERENCE_1: MapProjectReference = {
-    id: SAMPLE_MAP_PROJECT_ID_1,
-    name: "Test Project 1",
-    state: MapProjectState.NOT_RENDERED
-};
-
-const SAMPLE_MAP_PROJECT_1: MapProject = {
-    ...SAMPLE_MAP_PROJECT_REFERENCE_1,
-    center: SAMPLE_COORDINATES,
-    widthInMm: 210,
-    heightInMm: 297,
-    topMarginInMm: 8,
-    bottomMarginInMm: 8,
-    leftMarginInMm: 8,
-    rightMarginInMm: 8,
-    scale: Scale.RATIO_1_25000,
-    additionalElements: [],
-    options: {
-        fileFormat: FileFormat.PDF,
-        mapStyle: MapStyle.OSM_CARTO_ELE20
-    },
-    modifiedLocally: false
-};
-
-const SAMPLE_MAP_PROJECT_ID_2 = uuid();
-
-const SAMPLE_MAP_PROJECT_REFERENCE_2: MapProjectReference = {
-    id: SAMPLE_MAP_PROJECT_ID_2,
-    name: "Test Project 2",
-    state: MapProjectState.NOT_RENDERED
-};
-
-const SAMPLE_MAP_PROJECT_2: MapProject = {
-    ...SAMPLE_MAP_PROJECT_REFERENCE_2,
-    center: SAMPLE_COORDINATES,
-    widthInMm: 210,
-    heightInMm: 297,
-    topMarginInMm: 8,
-    bottomMarginInMm: 8,
-    leftMarginInMm: 8,
-    rightMarginInMm: 8,
-    scale: Scale.RATIO_1_25000,
-    additionalElements: [],
-    options: {
-        fileFormat: FileFormat.PDF,
-        mapStyle: MapStyle.OSM_CARTO_ELE20
-    },
-    modifiedLocally: false
-};
 
 function setup() {
     actions$ = new Observable<Action>();
