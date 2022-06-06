@@ -23,7 +23,7 @@ import {TestObservable} from "jasmine-marbles/src/test-observables";
 import {
     SAMPLE_ADDITIONAL_ELEMENT,
     SAMPLE_APP_CONF,
-    SAMPLE_COORDINATES,
+    SAMPLE_COORDINATES_1,
     SAMPLE_MAP_PROJECT_1,
     SAMPLE_MAP_PROJECT_2,
     SAMPLE_MAP_PROJECT_ID_1,
@@ -93,7 +93,7 @@ describe("init", () => {
         // then
         expect(effects.init)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.updateCenterCoordinates({center: SAMPLE_COORDINATES})));
+            .toBeObservable(singleton(UiActions.updateCenterCoordinates({center: SAMPLE_COORDINATES_1})));
     });
 });
 
@@ -103,9 +103,9 @@ describe("createMapProject", () => {
         setup();
     });
 
-    it("should dispatch createdMapProject action with a new project based on currently selected coordinates when createMapProject action is dispatched", () => {
+    it("should dispatch mapProjectSelected action with a new project based on currently selected coordinates when createMapProject action is dispatched", () => {
         // given
-        store.overrideSelector(selectedMapCenter, SAMPLE_COORDINATES);
+        store.overrideSelector(selectedMapCenter, SAMPLE_COORDINATES_1);
         spyOn(printmapsService, "createMapProject").and.returnValue(SAMPLE_MAP_PROJECT_1);
 
         // when
@@ -114,7 +114,7 @@ describe("createMapProject", () => {
         // then
         expect(effects.createMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.createdMapProject({mapProject: SAMPLE_MAP_PROJECT_1})));
+            .toBeObservable(singleton(UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_1})));
         expect(printmapsService.createMapProject)
             .withContext("method printmapsService.createMapProject()")
             .toHaveBeenCalled();
@@ -133,6 +133,52 @@ describe("createMapProject", () => {
             .toBeObservable(cold(""));
         expect(printmapsService.createMapProject)
             .withContext("method printmapsService.createMapProject()")
+            .not.toHaveBeenCalled();
+    });
+});
+
+describe("copyMapProject", () => {
+
+    beforeEach(() => {
+        setup();
+    });
+
+    it("should dispatch mapProjectSelected action with a new project based on currently selected coordinates when copyMapProject action is dispatched", () => {
+        // given
+        store.overrideSelector(currentMapProject, SAMPLE_MAP_PROJECT_1);
+        let SAMPLE_CLONED_MAP_PROJECT = {
+            ...SAMPLE_MAP_PROJECT_1,
+            id: undefined,
+            name: SAMPLE_MAP_PROJECT_1.name + " (copy)",
+            modifiedLocally: true
+        };
+        spyOn(printmapsService, "cloneMapProject").and.returnValue(SAMPLE_CLONED_MAP_PROJECT);
+
+        // when
+        dispatch(UiActions.copyMapProject);
+
+        // then
+        expect(effects.copyMapProject)
+            .withContext("dispatched actions")
+            .toBeObservable(singleton(UiActions.mapProjectSelected({mapProject: SAMPLE_CLONED_MAP_PROJECT})));
+        expect(printmapsService.cloneMapProject)
+            .withContext("method printmapsService.cloneMapProject()")
+            .toHaveBeenCalled();
+    });
+
+    it("should dispatch no further action when copyMapProject action is dispatched and no coordinates are currently selected", () => {
+        // given
+        spyOn(printmapsService, "cloneMapProject");
+
+        // when
+        dispatch(UiActions.copyMapProject);
+
+        // then
+        expect(effects.copyMapProject)
+            .withContext("dispatched actions")
+            .toBeObservable(cold(""));
+        expect(printmapsService.cloneMapProject)
+            .withContext("method printmapsService.cloneMapProject()")
             .not.toHaveBeenCalled();
     });
 });
@@ -292,7 +338,7 @@ describe("loadMapProject", () => {
         setup();
     });
 
-    it("should load map rendering job and dispatch mapProjectLoaded action when loadMapProject is dispatched with a reference of an existing project", () => {
+    it("should load map rendering job and dispatch mapProjectSelected action when loadMapProject is dispatched with a reference of an existing project", () => {
         // given
         spyOn(printmapsService, "loadMapProject").and.returnValue(of(SAMPLE_MAP_PROJECT_1));
 
@@ -302,7 +348,7 @@ describe("loadMapProject", () => {
         //then
         expect(effects.loadMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.mapProjectLoaded({mapProject: SAMPLE_MAP_PROJECT_1})));
+            .toBeObservable(singleton(UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_1})));
         expect(printmapsService.loadMapProject)
             .withContext("method printmapsService.loadMapProject()")
             .toHaveBeenCalledWith(SAMPLE_MAP_PROJECT_REFERENCE_1);
@@ -340,7 +386,7 @@ describe("loadMapProject", () => {
             .not.toHaveBeenCalled();
     });
 
-    it("should load only last map rendering job and dispatch mapProjectLoaded action when loadMapProject is dispatched multiple times in a row", () => {
+    it("should load only last map rendering job and dispatch mapProjectSelected action when loadMapProject is dispatched multiple times in a row", () => {
         // given
         spyOn(printmapsService, "loadMapProject")
             .withArgs(SAMPLE_MAP_PROJECT_REFERENCE_1).and.returnValue(cold("-a", {a: SAMPLE_MAP_PROJECT_1}))
@@ -355,10 +401,10 @@ describe("loadMapProject", () => {
         //then
         expect(effects.loadMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(cold("-a", {a: UiActions.mapProjectLoaded({mapProject: SAMPLE_MAP_PROJECT_2})}));
+            .toBeObservable(cold("-a", {a: UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_2})}));
     });
 
-    it("should load map rendering job only once and dispatch mapProjectLoaded action when loadMapProject is dispatched multiple times in a row with the same reference", () => {
+    it("should load map rendering job only once and dispatch mapProjectSelected action when loadMapProject is dispatched multiple times in a row with the same reference", () => {
         // given
         spyOn(printmapsService, "loadMapProject")
             .withArgs(SAMPLE_MAP_PROJECT_REFERENCE_1).and.returnValue(cold("-a", {a: SAMPLE_MAP_PROJECT_1}));
@@ -371,7 +417,7 @@ describe("loadMapProject", () => {
         //then
         expect(effects.loadMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(cold("-a", {a: UiActions.mapProjectLoaded({mapProject: SAMPLE_MAP_PROJECT_1})}));
+            .toBeObservable(cold("-a", {a: UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_1})}));
         expect(printmapsService.loadMapProject)
             .withContext("method printmapsService.loadMapProject()")
             .toHaveBeenCalledOnceWith(SAMPLE_MAP_PROJECT_REFERENCE_1);

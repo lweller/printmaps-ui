@@ -3,42 +3,21 @@ import {round} from "lodash";
 import * as UiActions from "../actions/main.actions";
 import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state";
 import {getScaleProperties} from "../model/intern/scale";
-import {generateMapProjectCopyName} from "../model/intern/map-project";
 
 const reducer = createReducer(initialState,
 
     on(UiActions.mapProjectReferencesLoaded,
         (state, {mapProjectReferences}) => ({
             ...state,
-            mapProjectReferences: mapProjectReferences
+            mapProjectReferences: mapProjectReferences ?? []
         })),
 
-    on(UiActions.createdMapProject,
+    on(UiActions.mapProjectSelected,
         (state, {mapProject}) => ({
             ...state,
             currentMapProject: mapProject
         })
     ),
-
-    on(UiActions.copyMapProject,
-        (state) => ({
-            ...state,
-            currentMapProject: state?.currentMapProject?.id
-                ? {
-                    ...state.currentMapProject,
-                    id: undefined,
-                    name: generateMapProjectCopyName(state.currentMapProject.name),
-                    modifiedLocally: true
-                }
-                : state.currentMapProject
-        })
-    ),
-
-    on(UiActions.mapProjectLoaded,
-        (state, {mapProject}) => ({
-            ...state,
-            currentMapProject: !state.currentMapProject || state.currentMapProject?.id ? mapProject : state.currentMapProject
-        })),
 
     on(UiActions.mapProjectDeleted,
         (state, {id}) => ({
@@ -50,11 +29,13 @@ const reducer = createReducer(initialState,
     on(UiActions.mapProjectUploaded,
         (state, {mapProjectReference}) => ({
             ...state,
-            currentMapProject: {
-                ...state.currentMapProject,
-                id: state.currentMapProject.id ? state.currentMapProject.id : mapProjectReference.id,
-                modifiedLocally: false
-            },
+            currentMapProject: state?.currentMapProject?.id && state?.currentMapProject?.id != mapProjectReference.id
+                ? state.currentMapProject
+                : {
+                    ...state.currentMapProject,
+                    id: state?.currentMapProject?.id ? state.currentMapProject.id : mapProjectReference.id,
+                    modifiedLocally: false
+                },
             mapProjectReferences: [
                 ...state.mapProjectReferences,
                 ...(state.mapProjectReferences.filter(other => other.id == mapProjectReference.id).length == 0
@@ -66,9 +47,16 @@ const reducer = createReducer(initialState,
     on(UiActions.updateMapName,
         (state, {name}) => ({
             ...state,
+            currentMapProject: state.currentMapProject
+                ? {
+                    ...state.currentMapProject,
+                    name: name,
+                    modifiedLocally: true
+                }
+                : state.currentMapProject,
             mapProjectReferences: state.mapProjectReferences.map(
                 mapProjectReference =>
-                    mapProjectReference.id == state.currentMapProject.id
+                    mapProjectReference.id == state.currentMapProject?.id
                         ? {...mapProjectReference, name: name}
                         : mapProjectReference
             )
@@ -97,28 +85,32 @@ const reducer = createReducer(initialState,
         (state, {widthInM, heightInM, topMarginInMm, bottomMarginInMm, leftMarginInMm, rightMarginInMm, scale}) =>
             ({
                 ...state,
-                currentMapProject: {
-                    ...state.currentMapProject,
-                    widthInMm: Math.min(Math.max(round(widthInM / getScaleProperties(scale).reductionFactor * 1000) + leftMarginInMm * 1 + rightMarginInMm * 1, 50), 3000),
-                    heightInMm: Math.min(Math.max(round(heightInM / getScaleProperties(scale).reductionFactor * 1000) + topMarginInMm * 1 + bottomMarginInMm * 1, 50), 2500),
-                    topMarginInMm: topMarginInMm,
-                    bottomMarginInMm: bottomMarginInMm,
-                    leftMarginInMm: leftMarginInMm,
-                    rightMarginInMm: rightMarginInMm,
-                    scale: scale,
-                    modifiedLocally: true
-                }
+                currentMapProject: state.currentMapProject
+                    ? {
+                        ...state.currentMapProject,
+                        widthInMm: Math.min(Math.max(round(widthInM / getScaleProperties(scale).reductionFactor * 1000) + leftMarginInMm * 1 + rightMarginInMm * 1, 50), 3000),
+                        heightInMm: Math.min(Math.max(round(heightInM / getScaleProperties(scale).reductionFactor * 1000) + topMarginInMm * 1 + bottomMarginInMm * 1, 50), 2500),
+                        topMarginInMm: topMarginInMm,
+                        bottomMarginInMm: bottomMarginInMm,
+                        leftMarginInMm: leftMarginInMm,
+                        rightMarginInMm: rightMarginInMm,
+                        scale: scale,
+                        modifiedLocally: true
+                    }
+                    : state.currentMapProject
             })
     ),
 
     on(UiActions.updateMapOptions,
         (state, {options}) => ({
             ...state,
-            currentMapProject: {
-                ...state.currentMapProject,
-                options: options,
-                modifiedLocally: true
-            }
+            currentMapProject: state.currentMapProject
+                ? {
+                    ...state.currentMapProject,
+                    options: options,
+                    modifiedLocally: true
+                }
+                : state.currentMapProject
         })),
 
     on(UiActions.mapProjectStateUpdated,
@@ -141,53 +133,59 @@ const reducer = createReducer(initialState,
         })),
 
     on(UiActions.additionalElementAdded,
-        (state, {additionalElement}) => ({
-            ...state,
-            currentMapProject: {
-                ...state.currentMapProject,
-                modifiedLocally: true,
-                additionalElements: [
-                    ...state.currentMapProject.additionalElements,
-                    additionalElement
-                ]
-            },
-            selectedAdditionalElementId: additionalElement.id
-        })
+        (state, {additionalElement}) => (state.currentMapProject
+            ? {
+                ...state,
+                currentMapProject: {
+                    ...state.currentMapProject,
+                    modifiedLocally: true,
+                    additionalElements: [
+                        ...state.currentMapProject.additionalElements,
+                        additionalElement
+                    ]
+                },
+                selectedAdditionalElementId: additionalElement.id
+            }
+            : state)
     ),
 
     on(UiActions.selectAdditionalElement,
         (state, {id}) => ({
             ...state,
-            selectedAdditionalElementId: id
+            selectedAdditionalElementId: state?.currentMapProject?.additionalElements?.some(element => element.id == id)
+                ? id
+                : state.selectedAdditionalElementId
         })),
 
     on(UiActions.removeAdditionalElement,
-        (state, {id}) => ({
-            ...state,
-            currentMapProject: state.currentMapProject
+        (state, {id}) => (state.currentMapProject?.additionalElements?.some(element => element.id == id)
                 ? {
-                    ...state.currentMapProject,
-                    modifiedLocally: true,
-                    additionalElements: state.currentMapProject.additionalElements.filter(element => element.id != id)
+                    ...state,
+                    currentMapProject: {
+                        ...state.currentMapProject,
+                        modifiedLocally: true,
+                        additionalElements: state.currentMapProject.additionalElements.filter(element => element.id != id)
+                    },
+                    selectedAdditionalElementId: undefined
                 }
-                : state.currentMapProject,
-            selectedAdditionalElementId: undefined
-        })),
+                : state
+        )),
 
     on(UiActions.updateAdditionalElement,
-        (state, {element}) => ({
-            ...state,
-            currentMapProject: state.currentMapProject
+        (state, {element}) => (state.currentMapProject?.additionalElements?.some(otherElement => otherElement.id == element.id)
                 ? {
-                    ...state.currentMapProject,
-                    modifiedLocally: true,
-                    additionalElements: state.currentMapProject.additionalElements
-                        .map(currentElement => currentElement.id == element.id
-                            ? element
-                            : currentElement)
+                    ...state,
+                    currentMapProject: {
+                        ...state.currentMapProject,
+                        modifiedLocally: true,
+                        additionalElements: state.currentMapProject.additionalElements
+                            .map(currentElement => currentElement.id == element.id
+                                ? element
+                                : currentElement)
+                    }
                 }
-                : state.currentMapProject
-        }))
+                : state
+        ))
 );
 
 export function printmapsUiReducer(state: PrintmapsUiState | undefined, action: Action) {

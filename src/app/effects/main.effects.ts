@@ -46,8 +46,21 @@ export class MainEffects {
                 withLatestFrom(this.store.select(selectedMapCenter)),
                 map(([_, mapCenter]) => mapCenter),
                 filter(mapCenter => !!mapCenter),
-                map(mapCenter => UiActions.createdMapProject({
+                map(mapCenter => UiActions.mapProjectSelected({
                     mapProject: this.printmapsService.createMapProject(mapCenter)
+                }))
+            )
+    );
+
+    copyMapProject = createEffect(
+        () => this.actions
+            .pipe(
+                ofType(UiActions.copyMapProject),
+                withLatestFrom(this.store.select(currentMapProject)),
+                map(([_, mapProject]) => mapProject),
+                filter(mapProject => !!mapProject),
+                map(mapProject => UiActions.mapProjectSelected({
+                    mapProject: this.printmapsService.cloneMapProject(mapProject)
                 }))
             )
     );
@@ -86,7 +99,7 @@ export class MainEffects {
                 distinctUntilChanged((previousMapProjectReference, currentMapProjectReference) =>
                     previousMapProjectReference.id == currentMapProjectReference.id),
                 switchMap(mapProjectReference => this.printmapsService.loadMapProject(mapProjectReference)),
-                map(mapProject => UiActions.mapProjectLoaded({mapProject: mapProject}))
+                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
             )
     );
 

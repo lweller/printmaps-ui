@@ -12,10 +12,17 @@ import {MapProject} from "../intern/map-project";
 import {Scale} from "../intern/scale";
 import {FileFormat, MapStyle} from "../api/map-rendering-job-definition";
 
-export const SAMPLE_COORDINATES = {latitude: 46, longitude: 12};
+export const SAMPLE_COORDINATES_1 = {latitude: 46, longitude: 12};
+export const SAMPLE_COORDINATES_1_UPDATED = {latitude: 46.01, longitude: 12.02};
+export const SAMPLE_COORDINATES_1_UPDATED_MAX_NORTH = {latitude: 85, longitude: 12};
+export const SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_NORTH = {latitude: 88, longitude: 12};
+export const SAMPLE_COORDINATES_1_UPDATED_MAX_SOUTH = {latitude: -85, longitude: 12};
+export const SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_SOUTH = {latitude: -88, longitude: 12};
+export const SAMPLE_COORDINATES_1_UPDATED_OVER_PRECISE = {latitude: 46.0000000001, longitude: 12.0000000001};
+
 
 export const SAMPLE_APP_CONF = {
-    defaultCoordinates: SAMPLE_COORDINATES
+    defaultCoordinates: SAMPLE_COORDINATES_1
 };
 
 export const SAMPLE_ADDITIONAL_ELEMENT: AnyAdditionalElement = {
@@ -45,7 +52,7 @@ export const SAMPLE_MAP_PROJECT_REFERENCE_1: MapProjectReference = {
 
 export const SAMPLE_MAP_PROJECT_1: MapProject = {
     ...SAMPLE_MAP_PROJECT_REFERENCE_1,
-    center: SAMPLE_COORDINATES,
+    center: SAMPLE_COORDINATES_1,
     widthInMm: 210,
     heightInMm: 297,
     topMarginInMm: 8,
@@ -71,7 +78,7 @@ export const SAMPLE_MAP_PROJECT_REFERENCE_2: MapProjectReference = {
 
 export const SAMPLE_MAP_PROJECT_2: MapProject = {
     ...SAMPLE_MAP_PROJECT_REFERENCE_2,
-    center: SAMPLE_COORDINATES,
+    center: SAMPLE_COORDINATES_1,
     widthInMm: 210,
     heightInMm: 297,
     topMarginInMm: 8,

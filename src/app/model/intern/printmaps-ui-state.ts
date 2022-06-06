@@ -11,7 +11,7 @@ export interface PrintmapsUiState {
 
 export const initialState: PrintmapsUiState = {
     mapCenter: undefined,
-    mapProjectReferences: undefined,
+    mapProjectReferences: [],
     currentMapProject: undefined,
     selectedAdditionalElementId: undefined
 };

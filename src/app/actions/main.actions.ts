@@ -47,8 +47,8 @@ export const createMapProject = createAction(
     createActionType(SOURCE, "CREATE_MAP_PROJECT")
 );
 
-export const createdMapProject = createAction(
-    createActionType(SOURCE, "CREATED_MAP_PROJECT"),
+export const mapProjectSelected = createAction(
+    createActionType(SOURCE, "MAP_PROJECT_CREATED"),
     props<{ mapProject: MapProject }>()
 );
 
@@ -59,11 +59,6 @@ export const copyMapProject = createAction(
 export const loadMapProject = createAction(
     createActionType(SOURCE, "LOAD_MAP_PROJECT"),
     props<{ mapProjectReference: MapProjectReference }>()
-);
-
-export const mapProjectLoaded = createAction(
-    createActionType(SOURCE, "MAP_PROJECT_LOADED"),
-    props<{ mapProject: MapProject }>()
 );
 
 export const deleteMapProject = createAction(

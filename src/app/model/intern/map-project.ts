@@ -41,15 +41,3 @@ export function toMapProjectReference(mapProject: MapProject): MapProjectReferen
         }
         : undefined;
 }
-
-export function generateMapProjectCopyName(name: string): string {
-    let copySuffix = $localize`copy`;
-    let pattern = new RegExp("(.*?)\\s*\\(" + copySuffix + "(\\s*\\d+)?\\)$");
-    let matches = name.match(pattern);
-    if (matches) {
-        let number = matches[2] ? (parseInt(matches[2]) + 1) : 2;
-        return matches[1] + " (" + copySuffix + " " + number + ")";
-    } else {
-        return name + " (" + copySuffix + ")";
-    }
-}

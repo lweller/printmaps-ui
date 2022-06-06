@@ -35,7 +35,7 @@ describe("mapProjectReferences", () => {
         let result = mapProjectReferences.projector(initialState);
 
         // then
-        expect(result).toBeUndefined();
+        expect(result).toEqual([]);
     });
 
     it("should return array of map project references when they have been loaded", () => {
