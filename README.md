@@ -38,14 +38,39 @@ For Apache httpd this might be something like, assuming that the folder you want
 
   RewriteEngine on
 
+  # extract language from Accept-Language header
   RewriteCond %{HTTP:Accept-Language} (de|fr|en)
   RewriteRule .? - [E=LANG:%1,S=1]
+  # fallback to english
   RewriteRule .? - [E=LANG:en]
 
   RewriteCond %{DOCUMENT_ROOT}/%{ENV:LANG}%{REQUEST_URI} -f
   RewriteRule ^ /%{ENV:LANG}%{REQUEST_URI} [L]
 
   RewriteRule ^/$ /%{ENV:LANG}/index.html
+```
+
+For caddy web server this might be something like, assuming that the folder you want ot use is `/opt/printmaps`
+
+```
+localhost:80 {
+  root * /opt/printmaps
+  encode gzip
+  file_server
+  
+  # extract language from Accept-Language header
+  @extractlang {
+    path /
+    header_regexp lang Accept-Language (de|fr|en)
+  }
+  redir @extractlang http://localhost/{re.lang.1}/index.html
+  
+  # fallback to english
+  @defaultlang {
+    path /
+  }
+  redir @defaultlang http://localhost/en/index.html
+}
 ```
 
 ## Installation Procedure
