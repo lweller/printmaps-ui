@@ -46,9 +46,8 @@ export class MainEffects {
                 withLatestFrom(this.store.select(selectedMapCenter)),
                 map(([_, mapCenter]) => mapCenter),
                 filter(mapCenter => !!mapCenter),
-                map(mapCenter => UiActions.mapProjectSelected({
-                    mapProject: this.printmapsService.createMapProject(mapCenter)
-                }))
+                concatMap(mapCenter => this.printmapsService.createMapProject(mapCenter)),
+                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
             )
     );
 
@@ -59,9 +58,8 @@ export class MainEffects {
                 withLatestFrom(this.store.select(currentMapProject)),
                 map(([_, mapProject]) => mapProject),
                 filter(mapProject => !!mapProject),
-                map(mapProject => UiActions.mapProjectSelected({
-                    mapProject: this.printmapsService.cloneMapProject(mapProject)
-                }))
+                concatMap(mapProject => this.printmapsService.cloneMapProject(mapProject)),
+                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
             )
     );
 

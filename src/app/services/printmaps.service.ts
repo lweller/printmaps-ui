@@ -1,7 +1,7 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Inject, Injectable, LOCALE_ID} from "@angular/core";
-import {EMPTY, Observable, of} from "rxjs";
-import {catchError, concatMap, map, mapTo, tap} from "rxjs/operators";
+import {EMPTY, Observable, of, zip} from "rxjs";
+import {catchError, concatMap, map, tap, withLatestFrom} from "rxjs/operators";
 import {FileFormat, MapRenderingJobDefinition, MapStyle} from "../model/api/map-rendering-job-definition";
 import {MapProject, toMapRenderingJobExecution} from "../model/intern/map-project";
 import {MapRenderingJobState} from "../model/api/map-rendering-job-state";
@@ -44,14 +44,44 @@ const REQUEST_OPTIONS = {
 export class PrintmapsService {
     constructor(
         @Inject(LOCALE_ID) private readonly locale: string,
+        private readonly http: HttpClient,
         private readonly configurationService: ConfigurationService,
-        private templateService: TemplateService,
-        private http: HttpClient,
-        private scaleService: ScaleService) {
+        private readonly templateService: TemplateService,
+        private readonly scaleService: ScaleService) {
     }
 
     private get baseUrl() {
         return this.configurationService.appConf.printmapsApiBaseUri;
+    }
+
+    private static generateMapProjectCloneName(name: string): string {
+        let copySuffix = $localize`copy`;
+        let pattern = new RegExp("(.*?)\\s*\\(" + copySuffix + "(\\s*\\d+)?\\)$");
+        let matches = name.match(pattern);
+        if (matches) {
+            let number = matches[2] ? (parseInt(matches[2]) + 1) : 2;
+            return matches[1] + " (" + copySuffix + " " + number + ")";
+        } else {
+            return name + " (" + copySuffix + ")";
+        }
+    }
+
+    private static generateMargins(mapProject: MapProject): UserObject {
+        let metadata: UserObjectMetadata = {
+            ID: uuid(),
+            Type: "margins",
+            Text: undefined
+        };
+        let outerWidth = mapProject.widthInMm;
+        let outerHeight = mapProject.heightInMm;
+        let innerWidth1 = mapProject.leftMarginInMm;
+        let innerWidth2 = mapProject.widthInMm - mapProject.rightMarginInMm;
+        let innerHeight1 = mapProject.bottomMarginInMm;
+        let innerHeight2 = mapProject.heightInMm - mapProject.topMarginInMm;
+        return {
+            Style: `<!--${JSON.stringify(metadata)}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />`,
+            WellKnownText: `POLYGON((0 0, 0 ${outerHeight}, ${outerWidth} ${outerHeight}, ${outerWidth} 0, 0 0), (${innerWidth1} ${innerHeight1}, ${innerWidth1} ${innerHeight2}, ${innerWidth2} ${innerHeight2}, ${innerWidth2} ${innerHeight1}, ${innerWidth1} ${innerHeight1}))`
+        };
     }
 
     private static convertUserObjectToAdditionalElement(userObject: UserObject): AnyAdditionalElement {
@@ -147,7 +177,7 @@ export class PrintmapsService {
         return undefined;
     }
 
-    createMapProject(mapCenter: GeoCoordinates): MapProject {
+    createMapProject(mapCenter: GeoCoordinates): Observable<MapProject> {
         let mapProject = {
             id: undefined,
             name: $localize`New Map Project ${new Date().toLocaleString(this.locale)}`,
@@ -167,31 +197,10 @@ export class PrintmapsService {
             },
             additionalElements: []
         };
-        return {
+        return this.createOrUpdateMapRenderingJob({
             ...mapProject,
             additionalElements: [this.createAdditionalElement(mapProject, AdditionalElementType.ATTRIBUTION)]
-        };
-    }
-
-    private static generateMapProjectCloneName(name: string): string {
-        let copySuffix = $localize`copy`;
-        let pattern = new RegExp("(.*?)\\s*\\(" + copySuffix + "(\\s*\\d+)?\\)$");
-        let matches = name.match(pattern);
-        if (matches) {
-            let number = matches[2] ? (parseInt(matches[2]) + 1) : 2;
-            return matches[1] + " (" + copySuffix + " " + number + ")";
-        } else {
-            return name + " (" + copySuffix + ")";
-        }
-    }
-
-    cloneMapProject(mapProject: MapProject): MapProject {
-        return {
-            ...mapProject,
-            id: undefined,
-            name: PrintmapsService.generateMapProjectCloneName(mapProject.name),
-            modifiedLocally: true
-        };
+        });
     }
 
     createAdditionalElement(mapProject: MapProject, type: AdditionalElementType): AnyAdditionalElement {
@@ -233,79 +242,37 @@ export class PrintmapsService {
         }
     }
 
-    loadMapProjectState(id: string): Observable<MapProjectState> {
-        let endpointUrl = `${this.baseUrl}/mapstate/${id}`;
-        return this.http.get<MapRenderingJobState>(endpointUrl)
-            .pipe(
-                map(fromMapRenderingJobState),
-                catchError((error: HttpErrorResponse) => {
-                    if (error.status == 400) {
-                        return of(MapProjectState.NONEXISTENT);
-                    }
-                    return of(MapProjectState.RENDERING_UNSUCCESSFUL);
-                })
-            );
-    }
-
-    loadMapProject(mapProjectReference: MapProjectReference): Observable<MapProject> {
-        let endpointUrl = `${this.baseUrl}/metadata/${mapProjectReference.id}`;
-        return this.http.get<MapRenderingJobDefinition>(endpointUrl)
-            .pipe(
-                map(mapRenderingJob => this.fromMapRenderingJob(mapProjectReference.name, mapRenderingJob)),
-                concatMap(mapProject =>
-                    this.loadMapProjectState(mapProject.id)
-                        .pipe(
-                            map(mapProjectState => {
-                                mapProject.state = mapProjectState;
-                                return mapProject;
-                            })
-                        )
-                ),
-                catchError(() => EMPTY)
-            );
-    }
-
-    deleteMapRenderingJob(id: string): Observable<boolean> {
-        let endpointUrl = `${this.baseUrl}/delete/${id}`;
-        return this.http.post(endpointUrl, null, REQUEST_OPTIONS)
-            .pipe(
-                mapTo(true),
-                catchError(() => of(false))
-            );
-    }
-
-    launchMapRenderingJob(id: string): Observable<boolean> {
-        let endpointUrl = `${this.baseUrl}/mapfile`;
-        return this.http.post(endpointUrl, toMapRenderingJobExecution(id), REQUEST_OPTIONS)
-            .pipe(
-                mapTo(true),
-                catchError(() => of(false))
-            );
-
-    }
-
-    downloadRenderedMapFile(id: string): Observable<boolean> {
-        window.open(`${this.configurationService.appConf.printmapsApiBaseUri}/mapfile/${id}`, "_self");
-        return of(true);
+    cloneMapProject(mapProject: MapProject): Observable<MapProject> {
+        return this.createOrUpdateMapRenderingJob({
+            ...mapProject,
+            id: undefined,
+            name: PrintmapsService.generateMapProjectCloneName(mapProject.name),
+            modifiedLocally: true
+        });
     }
 
     createOrUpdateMapRenderingJob(mapProject: MapProject): Observable<MapProject> {
         let endpointUrl = `${this.baseUrl}/metadata${mapProject.id ? "/patch" : ""}`;
         return this.http.post<MapRenderingJobDefinition>(endpointUrl, this.toMapRenderingJob(mapProject), REQUEST_OPTIONS)
             .pipe(
-                map(mapRenderingJob => this.fromMapRenderingJob(mapProject.name, mapRenderingJob)),
+                withLatestFrom(of(mapProject.name)),
+                this.buildMapProject(),
                 tap(savedMapProject =>
                     this.toUserFiles(mapProject).forEach(userFile =>
-                        this.uploadUserFile(savedMapProject.id, userFile.content, userFile.name).subscribe())),
-                concatMap(savedMapProject =>
-                    this.loadMapProjectState(savedMapProject.id)
-                        .pipe(
-                            map(mapProjectState => ({
-                                    ...savedMapProject,
-                                    state: mapProjectState
-                                })
-                            )
-                        )
+                        this.uploadUserFile(savedMapProject.id, userFile.content, userFile.name).subscribe()))
+            );
+    }
+
+    buildMapProject() {
+        return (source: Observable<[MapRenderingJobDefinition, string]>): Observable<MapProject> =>
+            source.pipe(
+                map(([mapRenderingJob, name]) => this.fromMapRenderingJob(name, mapRenderingJob)),
+                concatMap(mapProject => zip(of(mapProject), this.loadMapProjectState(mapProject.id))),
+                map(([mapProject, mapProjectState]) => ({
+                        ...mapProject,
+                        state: mapProjectState,
+                        modifiedLocally: false
+                    })
                 ),
                 catchError(() => EMPTY)
             );
@@ -324,29 +291,58 @@ export class PrintmapsService {
         return this.http.post<HttpResponse<any>>(endpointUrl, formData, requestOptions)
             .pipe(
                 map(response => response.status == 201),
-                catchError(() => EMPTY)
+                catchError(() => of(false))
             );
     }
 
-    private static generateMargins(mapProject: MapProject): UserObject {
-        let metadata: UserObjectMetadata = {
-            ID: uuid(),
-            Type: "margins",
-            Text: undefined
-        };
-        let outerWidth = mapProject.widthInMm;
-        let outerHeight = mapProject.heightInMm;
-        let innerWidth1 = mapProject.leftMarginInMm;
-        let innerWidth2 = mapProject.widthInMm - mapProject.rightMarginInMm;
-        let innerHeight1 = mapProject.bottomMarginInMm;
-        let innerHeight2 = mapProject.heightInMm - mapProject.topMarginInMm;
-        return {
-            Style: `<!--${JSON.stringify(metadata)}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />`,
-            WellKnownText: `POLYGON((0 0, 0 ${outerHeight}, ${outerWidth} ${outerHeight}, ${outerWidth} 0, 0 0), (${innerWidth1} ${innerHeight1}, ${innerWidth1} ${innerHeight2}, ${innerWidth2} ${innerHeight2}, ${innerWidth2} ${innerHeight1}, ${innerWidth1} ${innerHeight1}))`
-        };
+    loadMapProject(mapProjectReference: MapProjectReference): Observable<MapProject> {
+        let endpointUrl = `${this.baseUrl}/metadata/${mapProjectReference.id}`;
+        return this.http.get<MapRenderingJobDefinition>(endpointUrl)
+            .pipe(
+                withLatestFrom(of(mapProjectReference.name)),
+                this.buildMapProject()
+            );
     }
 
-    private fromMapRenderingJob(name: string, mapRenderingJob: MapRenderingJobDefinition): MapProject {
+    loadMapProjectState(id: string): Observable<MapProjectState> {
+        let endpointUrl = `${this.baseUrl}/mapstate/${id}`;
+        return this.http.get<MapRenderingJobState>(endpointUrl)
+            .pipe(
+                map(fromMapRenderingJobState),
+                catchError((error: HttpErrorResponse) => {
+                    if (error.status == 400) {
+                        return of(MapProjectState.NONEXISTENT);
+                    }
+                    return of(MapProjectState.RENDERING_UNSUCCESSFUL);
+                })
+            );
+    }
+
+    deleteMapRenderingJob(id: string): Observable<boolean> {
+        let endpointUrl = `${this.baseUrl}/delete/${id}`;
+        return this.http.post<HttpResponse<any>>(endpointUrl, REQUEST_OPTIONS)
+            .pipe(
+                map(response => response.status == 204),
+                catchError(() => of(false))
+            );
+    }
+
+    launchMapRenderingJob(id: string): Observable<boolean> {
+        let endpointUrl = `${this.baseUrl}/mapfile`;
+        return this.http.post<HttpResponse<any>>(endpointUrl, toMapRenderingJobExecution(id), REQUEST_OPTIONS)
+            .pipe(
+                map(response => response.status == 202),
+                catchError(() => of(false))
+            );
+
+    }
+
+    downloadRenderedMapFile(id: string): Observable<boolean> {
+        window.open(`${this.configurationService.appConf.printmapsApiBaseUri}/mapfile/${id}`, "_self");
+        return of(true);
+    }
+
+    fromMapRenderingJob(name: string, mapRenderingJob: MapRenderingJobDefinition): MapProject {
         let data = mapRenderingJob.Data;
         let attributes = data.Attributes;
         let margins = mapRenderingJob.Data.Attributes.UserObjects
@@ -375,7 +371,7 @@ export class PrintmapsService {
         };
     }
 
-    private toMapRenderingJob(mapProject: MapProject): MapRenderingJobDefinition {
+    toMapRenderingJob(mapProject: MapProject): MapRenderingJobDefinition {
         let gpxTracks = mapProject.additionalElements
             .filter(element => element.type == AdditionalElementType.GPX_TRACK)
             .map(element => ADDITIONAL_ELEMENT_TYPES.get(element.type)

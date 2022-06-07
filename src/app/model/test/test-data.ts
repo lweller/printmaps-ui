@@ -10,7 +10,13 @@ import {MapProjectReference} from "../intern/map-project-reference";
 import {MapProjectState} from "../intern/map-project-state";
 import {MapProject} from "../intern/map-project";
 import {Scale} from "../intern/scale";
-import {FileFormat, MapStyle} from "../api/map-rendering-job-definition";
+import {
+    FileFormat,
+    MapRenderingJobDefinition,
+    MapRenderingJobExecution,
+    MapStyle
+} from "../api/map-rendering-job-definition";
+import {MapRenderingJobState} from "../api/map-rendering-job-state";
 
 export const SAMPLE_COORDINATES_1 = {latitude: 46, longitude: 12};
 export const SAMPLE_COORDINATES_1_UPDATED = {latitude: 46.01, longitude: 12.02};
@@ -68,6 +74,107 @@ export const SAMPLE_MAP_PROJECT_1: MapProject = {
     modifiedLocally: false
 };
 
+export const SAMPLE_MODIFIED_MAP_PROJECT_1: MapProject = {
+    ...SAMPLE_MAP_PROJECT_1,
+    modifiedLocally: true
+};
+
+export const SAMPLE_NEW_MAP_PROJECT_1: MapProject = {
+    ...SAMPLE_MODIFIED_MAP_PROJECT_1,
+    id: undefined
+};
+
+export const SAMPLE_MARGIN_ELEMENT_ID = uuid();
+
+export const SAMPLE_MAP_RENDERING_JOB_DEFINITION_1: MapRenderingJobDefinition = {
+    Data: {
+        Type: "maps",
+        ID: SAMPLE_MAP_PROJECT_ID_1,
+        Attributes: {
+            Fileformat: FileFormat.PDF,
+            Style: MapStyle.OSM_CARTO_ELE20,
+            Projection: "3857",
+            Scale: 25000,
+            Latitude: 46,
+            Longitude: 12,
+            PrintWidth: 210,
+            PrintHeight: 297,
+            HideLayers: "",
+            UserObjects: [{
+                Style: "<!--{\"ID\":\"" + SAMPLE_MARGIN_ELEMENT_ID + "\",\"Type\":\"margins\"}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />",
+                WellKnownText: "POLYGON((0 0, 0 297, 210 297, 210 0, 0 0), (8 8, 8 289, 202 289, 202 8, 8 8))"
+            }]
+        }
+    }
+};
+
+export const SAMPLE_MAP_RENDERING_JOB_EXECUTION_1: MapRenderingJobExecution = {
+    Data: {
+        Type: "maps",
+        ID: SAMPLE_MAP_PROJECT_ID_1
+    }
+};
+
+export const SAMPLE_MAP_JOB_RENDERING_STATE_1_NOT_RENDERED: MapRenderingJobState = {
+    Data: {
+        Type: "maps",
+        ID: SAMPLE_MAP_PROJECT_ID_1,
+        Attributes: {
+            MapMetadataWritten: "2018-12-03T11:05:58+01:00",
+            MapOrderSubmitted: "",
+            MapBuildStarted: "",
+            MapBuildCompleted: "",
+            MapBuildSuccessful: "no",
+            MapBuildMessage: "",
+            MapBuildBoxMillimeter: undefined,
+            MapBuildBoxPixel: undefined,
+            MapBuildBoxProjection: undefined,
+            MapBuildBoxWGS84: undefined
+        }
+    }
+};
+
+export const SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_LAUNCHED: MapRenderingJobState = {
+    Data: {
+        ...SAMPLE_MAP_JOB_RENDERING_STATE_1_NOT_RENDERED.Data,
+        Attributes: {
+            ...SAMPLE_MAP_JOB_RENDERING_STATE_1_NOT_RENDERED.Data.Attributes,
+            MapOrderSubmitted: "2018-12-03T11:06:35+01:00"
+        }
+    }
+};
+
+export const SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_STARTED: MapRenderingJobState = {
+    Data: {
+        ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_LAUNCHED.Data,
+        Attributes: {
+            ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_LAUNCHED.Data.Attributes,
+            MapBuildStarted: "2018-12-03T11:06:37+01:00"
+        }
+    }
+};
+
+export const SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERED: MapRenderingJobState = {
+    Data: {
+        ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_STARTED.Data,
+        Attributes: {
+            ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_STARTED.Data.Attributes,
+            MapBuildCompleted: "2018-12-03T11:06:46+01:00",
+            MapBuildSuccessful: "yes"
+        }
+    }
+};
+
+export const SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERING_UNSUCCESSFUL: MapRenderingJobState = {
+    Data: {
+        ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERED.Data,
+        Attributes: {
+            ...SAMPLE_MAP_JOB_RENDERING_STATE_1_RENDERED.Data.Attributes,
+            MapBuildSuccessful: "no"
+        }
+    }
+};
+
 export const SAMPLE_MAP_PROJECT_ID_2 = uuid();
 
 export const SAMPLE_MAP_PROJECT_REFERENCE_2: MapProjectReference = {
@@ -123,7 +230,25 @@ export const SAMPLE_ADDITIONAL_GPX_ELEMENT: AdditionalGpxElement = {
         }
     },
     file: {
-        name: "test-gpx",
+        name: "test.gpx",
+        data: "some data",
+        modified: 0
+    }
+};
+
+export const SAMPLE_ADDITIONAL_GPX_ELEMENT_WITH_UNDEFINED_DATA: AdditionalGpxElement = {
+    id: uuid(),
+    type: AdditionalElementType.GPX_TRACK,
+    style: {
+        type: AdditionalElementStyleType.TRACK,
+        lineWidth: 2,
+        lineColor: {
+            rgbHexValue: "#000000",
+            opacity: 1
+        }
+    },
+    file: {
+        name: "test.gpx",
         data: undefined,
         modified: 0
     }

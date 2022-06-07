@@ -106,7 +106,7 @@ describe("createMapProject", () => {
     it("should dispatch mapProjectSelected action with a new project based on currently selected coordinates when createMapProject action is dispatched", () => {
         // given
         store.overrideSelector(selectedMapCenter, SAMPLE_COORDINATES_1);
-        spyOn(printmapsService, "createMapProject").and.returnValue(SAMPLE_MAP_PROJECT_1);
+        spyOn(printmapsService, "createMapProject").and.returnValue(of(SAMPLE_MAP_PROJECT_1));
 
         // when
         dispatch(UiActions.createMapProject);
@@ -152,7 +152,7 @@ describe("copyMapProject", () => {
             name: SAMPLE_MAP_PROJECT_1.name + " (copy)",
             modifiedLocally: true
         };
-        spyOn(printmapsService, "cloneMapProject").and.returnValue(SAMPLE_CLONED_MAP_PROJECT);
+        spyOn(printmapsService, "cloneMapProject").and.returnValue(of(SAMPLE_CLONED_MAP_PROJECT));
 
         // when
         dispatch(UiActions.copyMapProject);
