@@ -6,8 +6,8 @@ import {
 } from "./additional-element";
 import {Color} from "../../components/color-selector/color-selector.component";
 import {UserObjectMetadata} from "../api/user-object-metadata";
-import {TemplateService} from "../../services/template-service";
 import {MapProject} from "./map-project";
+import {TemplateCompiler} from "../../services/map-project-conversion.service";
 
 export interface AdditionalElementStyle {
     readonly type: AdditionalElementStyleType;
@@ -32,7 +32,7 @@ export enum AdditionalElementStyleType {
 }
 
 export class AdditionalElementStyleTypeProperties {
-    constructor(public toSymbolizer: (templateService: TemplateService, mapProject: MapProject, element: AdditionalElement) => string) {
+    constructor(public toSymbolizer: (templateCompiler: TemplateCompiler, mapProject: MapProject, element: AdditionalElement) => string) {
     }
 }
 
@@ -51,16 +51,16 @@ export const ADDITIONAL_ELEMENT_TYPE_STYLES = new Map<AdditionalElementStyleType
     ]
 ]);
 
-function convertAdditionalTextElementToSymbolizer(templateService: TemplateService, mapProject: MapProject, element: AdditionalTextElement): string {
+function convertAdditionalTextElementToSymbolizer(templateCompiler: TemplateCompiler, mapProject: MapProject, element: AdditionalTextElement): string {
     let metadata: UserObjectMetadata = {
         ID: element.id,
         Type: element.type,
         Text: element.text
     };
-    return `<!--${JSON.stringify(metadata)}--><TextSymbolizer fontset-name='${FONTSET_NAME_BY_FONT_STYLE.get(element.style.fontStyle)}' size='${element.style.fontSize}' fill='${element.style.fontColor.rgbHexValue}' opacity='${element.style.fontColor.opacity}' orientation='${element.style.textOrientation}' allow-overlap='true'>'${templateService.compile(mapProject, element.text)}'</TextSymbolizer>`;
+    return `<!--${JSON.stringify(metadata)}--><TextSymbolizer fontset-name='${FONTSET_NAME_BY_FONT_STYLE.get(element.style.fontStyle)}' size='${element.style.fontSize}' fill='${element.style.fontColor.rgbHexValue}' opacity='${element.style.fontColor.opacity}' orientation='${element.style.textOrientation}' allow-overlap='true'>'${templateCompiler.compileTextTemplate(mapProject, element.text)}'</TextSymbolizer>`;
 }
 
-function convertAdditionalTrackElementToSymbolizer(_templateService: TemplateService, _mapProject: MapProject, element: AdditionalGpxElement): string {
+function convertAdditionalTrackElementToSymbolizer(_templateCompiler: TemplateCompiler, _mapProject: MapProject, element: AdditionalGpxElement): string {
     let metadata: UserObjectMetadata = {
         ID: element.id,
         Type: element.type,
@@ -69,13 +69,13 @@ function convertAdditionalTrackElementToSymbolizer(_templateService: TemplateSer
     return `<!--${JSON.stringify(metadata)}--><LineSymbolizer stroke='${element.style.lineColor.rgbHexValue}' stroke-width='${element.style.lineWidth}' stroke-opacity='${element.style.lineColor.opacity}' stroke-linecap='round' stroke-linejoin='round' smooth='1' />`;
 }
 
-function convertAdditionalScaleElementToSymbolizer(_templateService: TemplateService, _mapProject: MapProject, element: AdditionalScaleElement): string {
+function convertAdditionalScaleElementToSymbolizer(_templateCompiler: TemplateCompiler, _mapProject: MapProject, element: AdditionalScaleElement): string {
     let metadata: UserObjectMetadata = {
         ID: element.id,
         Type: element.type,
         Text: undefined
     };
-    return `<!--${JSON.stringify(metadata)}--><MarkersSymbolizer file="scale_${element.id}.svg" allow-overlap="true" placement="point" />`;
+    return `<!--${JSON.stringify(metadata)}--><MarkersSymbolizer file='scale_${element.id}.svg' allow-overlap='true' placement='point' />`;
 }
 
 export enum FontStyle {

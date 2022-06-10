@@ -53,7 +53,6 @@ import {
     AdditionalTextElementDetailComponent
 } from "./components/additional-text-element-detail/additional-text-element-detail.component";
 import {TextOrientationSelector} from "./components/text-orientation-selector/text-orientation-selector.component";
-import {TemplateService} from "./services/template-service";
 import {
     AdditionalScaleElementDetailComponent
 } from "./components/additional-scale-element-detail/additional-scale-element-detail.component";
@@ -63,6 +62,7 @@ import {
 } from "./components/additional-gpx-element-detail/additional-gpx-element-detail.component";
 import {MaterialFileInputModule} from "ngx-material-file-input";
 import {PRINTMAPS_UI_STATE_ID} from "./selectors/main.selectors";
+import {MapProjectConversionService} from "./services/map-project-conversion.service";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -121,10 +121,10 @@ export const metaReducers: MetaReducer[] = [];
             multi: true,
             deps: [ConfigurationService]
         },
+        MapProjectConversionService,
         MapProjectReferenceService,
         PrintmapsService,
-        ScaleService,
-        TemplateService
+        ScaleService
     ],
     bootstrap: [AppComponent]
 })

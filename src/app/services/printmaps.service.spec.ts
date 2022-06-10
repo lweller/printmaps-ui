@@ -2,7 +2,6 @@ import {PrintmapsService} from "./printmaps.service";
 import {ConfigurationService} from "./configuration.service";
 import {TestBed} from "@angular/core/testing";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {TemplateService} from "./template-service";
 import {ScaleService} from "./scale.service";
 import {LOCALE_ID} from "@angular/core";
 import {
@@ -27,6 +26,7 @@ import {of, throwError} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {DEFAULT_SCALE_STYLE, DEFAULT_TEXT_STYLE, DEFAULT_TRACK_STYLE} from "../model/intern/additional-element-style";
 import {MapProjectState} from "../model/intern/map-project-state";
+import {MapProjectConversionService} from "./map-project-conversion.service";
 
 const BASE_API_URI = "http://api.example.com";
 
@@ -36,6 +36,7 @@ describe("PrintmapsService", () => {
 
     let httpClient: HttpClient;
     let configurationService: ConfigurationService;
+    let mapProjectConversionService: MapProjectConversionService;
 
     const NOW = new Date("1977-03-17 10:31:42");
 
@@ -47,9 +48,9 @@ describe("PrintmapsService", () => {
             providers: [
                 {provide: LOCALE_ID, useValue: "en-US"},
                 PrintmapsService,
-                ConfigurationService,
-                TemplateService,
-                ScaleService
+                {provide: ConfigurationService, useValue: new ConfigurationService()},
+                {provide: MapProjectConversionService, useValue: new MapProjectConversionService()},
+                {provide: ScaleService, useValue: new ScaleService()}
             ]
         });
 
@@ -61,6 +62,8 @@ describe("PrintmapsService", () => {
         spyOnProperty(configurationService, "appConf", "get").and.returnValue({
             printmapsApiBaseUri: BASE_API_URI
         });
+
+        mapProjectConversionService = TestBed.inject(MapProjectConversionService);
     });
 
     afterEach(() => {
@@ -69,7 +72,7 @@ describe("PrintmapsService", () => {
 
     function normalMapProjectUpload() {
         spyOn(httpClient, "post").and.returnValue(of(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1));
-        spyOn(printmapsService, "toMapRenderingJob").and.returnValue(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1);
+        spyOn(mapProjectConversionService, "toMapRenderingJob").and.returnValue(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1);
         spyOn(printmapsService, "buildMapProject").and.returnValue(() => of(SAMPLE_MAP_PROJECT_1));
         spyOn(printmapsService, "uploadUserFile").and.returnValue(of(true));
     }
@@ -240,7 +243,7 @@ describe("PrintmapsService", () => {
                 SAMPLE_MAP_RENDERING_JOB_DEFINITION_1,
                 jasmine.any(Object))
             .and.returnValue(of(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1));
-        spyOn(printmapsService, "toMapRenderingJob")
+        spyOn(mapProjectConversionService, "toMapRenderingJob")
             .withArgs(SAMPLE_NEW_MAP_PROJECT_1)
             .and.returnValue(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1);
         spyOn(printmapsService, "buildMapProject")
@@ -261,7 +264,7 @@ describe("PrintmapsService", () => {
                 SAMPLE_MAP_RENDERING_JOB_DEFINITION_1,
                 jasmine.any(Object))
             .and.returnValue(of(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1));
-        spyOn(printmapsService, "toMapRenderingJob")
+        spyOn(mapProjectConversionService, "toMapRenderingJob")
             .withArgs(SAMPLE_MODIFIED_MAP_PROJECT_1)
             .and.returnValue(SAMPLE_MAP_RENDERING_JOB_DEFINITION_1);
         spyOn(printmapsService, "buildMapProject")
@@ -308,7 +311,7 @@ describe("PrintmapsService", () => {
 
     it("should return corresponding map project after loading state when buildMapProject is applied on a valid map rendering project", async () => {
         // given
-        spyOn(printmapsService, "fromMapRenderingJob")
+        spyOn(mapProjectConversionService, "toMapProject")
             .withArgs(SAMPLE_MAP_PROJECT_1.name, SAMPLE_MAP_RENDERING_JOB_DEFINITION_1)
             .and.returnValue(SAMPLE_MAP_PROJECT_1);
         spyOn(printmapsService, "loadMapProjectState").and.returnValue(of(SAMPLE_MAP_PROJECT_1.state));

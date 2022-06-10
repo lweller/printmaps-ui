@@ -6,9 +6,9 @@ import {
     AdditionalElementTextStyle,
     AdditionalElementTrackStyle
 } from "./additional-element-style";
-import {TemplateService} from "../../services/template-service";
 import {MapProject} from "./map-project";
 import {Ordered} from "../../utils/common.util";
+import {TemplateCompiler} from "../../services/map-project-conversion.service";
 
 export interface AdditionalElement {
     readonly  type: AdditionalElementType;
@@ -44,7 +44,7 @@ export class AdditionalElementTypeProperties implements Ordered {
     constructor(public readonly label: string,
                 public readonly order: number,
                 public readonly disabled: boolean,
-                public toUserObject: (templateService: TemplateService, mapProject: MapProject, AdditionalElement: AdditionalElement) => UserObject
+                public toUserObject: (templateCompiler: TemplateCompiler, mapProject: MapProject, AdditionalElement: AdditionalElement) => UserObject
     ) {
     }
 
@@ -88,16 +88,16 @@ export const ADDITIONAL_ELEMENT_TYPES = new Map<AdditionalElementType, Additiona
     ]
 ]);
 
-function convertAdditionalElementToUserObject(templateService: TemplateService, mapProject: MapProject, element: AdditionalTextElement): UserObject {
+function convertAdditionalElementToUserObject(templateCompiler: TemplateCompiler, mapProject: MapProject, element: AdditionalTextElement): UserObject {
     return {
-        Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateService, mapProject, element),
+        Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateCompiler, mapProject, element),
         WellKnownText: `POINT(${element.location.x} ${element.location.y})`
     };
 }
 
-function convertAdditionalGpxElementToUserObject(templateService: TemplateService, mapProject: MapProject, element: AdditionalGpxElement): UserObject {
+function convertAdditionalGpxElementToUserObject(templateCompiler: TemplateCompiler, mapProject: MapProject, element: AdditionalGpxElement): UserObject {
     return {
-        Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateService, mapProject, element),
+        Style: ADDITIONAL_ELEMENT_TYPE_STYLES.get(element.style.type).toSymbolizer(templateCompiler, mapProject, element),
         SRS: "+init=epsg:4326",
         Type: "ogr",
         Layer: "tracks",

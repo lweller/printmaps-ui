@@ -9,9 +9,6 @@ import {initialState} from "../model/intern/printmaps-ui-state";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
 import {PrintmapsService} from "../services/printmaps.service";
 import {ConfigurationService} from "../services/configuration.service";
-import {TemplateService} from "../services/template-service";
-import {HttpClient} from "@angular/common/http";
-import {ScaleService} from "../services/scale.service";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../selectors/main.selectors";
 import {AdditionalElementType} from "../model/intern/additional-element";
@@ -48,14 +45,15 @@ function setup() {
     TestBed.configureTestingModule({
         providers: [
             MainEffects,
-            ConfigurationService,
-            PrintmapsService,
-            MapProjectReferenceService,
             provideMockActions(() => actions$),
             provideMockStore({initialState}),
-            {provide: HttpClient, useValue: undefined},
-            {provide: TemplateService, useValue: undefined},
-            {provide: ScaleService, useValue: undefined}
+            {provide: ConfigurationService, useValue: new ConfigurationService()},
+            {
+                provide: PrintmapsService,
+                useValue: new PrintmapsService("en-US", undefined, undefined,
+                    undefined, undefined)
+            },
+            {provide: MapProjectReferenceService, useValue: new MapProjectReferenceService(undefined)}
         ]
     });
 

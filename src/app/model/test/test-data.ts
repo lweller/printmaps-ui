@@ -2,6 +2,7 @@ import {v4 as uuid} from "uuid";
 import {
     AdditionalElementType,
     AdditionalGpxElement,
+    AdditionalScaleElement,
     AdditionalTextElement,
     AnyAdditionalElement
 } from "../intern/additional-element";
@@ -17,6 +18,7 @@ import {
     MapStyle
 } from "../api/map-rendering-job-definition";
 import {MapRenderingJobState} from "../api/map-rendering-job-state";
+import {UserObject} from "../api/user-object";
 
 export const SAMPLE_COORDINATES_1 = {latitude: 46, longitude: 12};
 export const SAMPLE_COORDINATES_1_UPDATED = {latitude: 46.01, longitude: 12.02};
@@ -86,6 +88,11 @@ export const SAMPLE_NEW_MAP_PROJECT_1: MapProject = {
 
 export const SAMPLE_MARGIN_ELEMENT_ID = uuid();
 
+export const SAMPLE_MARGIN_USER_OBJECT: UserObject = {
+    Style: "<!--{\"ID\":\"" + SAMPLE_MARGIN_ELEMENT_ID + "\",\"Type\":\"margins\"}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />",
+    WellKnownText: "POLYGON((0 0, 0 297, 210 297, 210 0, 0 0), (8 8, 8 289, 202 289, 202 8, 8 8))"
+};
+
 export const SAMPLE_MAP_RENDERING_JOB_DEFINITION_1: MapRenderingJobDefinition = {
     Data: {
         Type: "maps",
@@ -100,10 +107,7 @@ export const SAMPLE_MAP_RENDERING_JOB_DEFINITION_1: MapRenderingJobDefinition = 
             PrintWidth: 210,
             PrintHeight: 297,
             HideLayers: "",
-            UserObjects: [{
-                Style: "<!--{\"ID\":\"" + SAMPLE_MARGIN_ELEMENT_ID + "\",\"Type\":\"margins\"}--><PolygonSymbolizer fill='white' fill-opacity='1.0' />",
-                WellKnownText: "POLYGON((0 0, 0 297, 210 297, 210 0, 0 0), (8 8, 8 289, 202 289, 202 8, 8 8))"
-            }]
+            UserObjects: [SAMPLE_MARGIN_USER_OBJECT]
         }
     }
 };
@@ -201,8 +205,10 @@ export const SAMPLE_MAP_PROJECT_2: MapProject = {
     modifiedLocally: false
 };
 
+export const SAMPLE_ADDITIONAL_TEXT_ELEMENT_ID = uuid();
+
 export const SAMPLE_ADDITIONAL_TEXT_ELEMENT: AdditionalTextElement = {
-    id: uuid(),
+    id: SAMPLE_ADDITIONAL_TEXT_ELEMENT_ID,
     type: AdditionalElementType.TEXT_BOX,
     text: "Some Text...",
     location: {x: 50, y: 50},
@@ -218,8 +224,40 @@ export const SAMPLE_ADDITIONAL_TEXT_ELEMENT: AdditionalTextElement = {
     }
 };
 
+export const SAMPLE_ADDITIONAL_ATTRIBUTION_ELEMENT_ID = uuid();
+
+export const SAMPLE_ADDITIONAL_ATTRIBUTION_ELEMENT: AdditionalTextElement = {
+    id: SAMPLE_ADDITIONAL_ATTRIBUTION_ELEMENT_ID,
+    type: AdditionalElementType.ATTRIBUTION,
+    text: "${attribution}",
+    location: {x: 40, y: 7},
+    style: {
+        type: AdditionalElementStyleType.TEXT,
+        fontStyle: FontStyle.NORMAL,
+        fontColor: {
+            rgbHexValue: "#000000",
+            opacity: 1
+        },
+        textOrientation: 0,
+        fontSize: 12
+    }
+};
+
+export const SAMPLE_ADDITIONAL_SCALE_ELEMENT_ID = uuid();
+
+export const SAMPLE_ADDITIONAL_SCALE_ELEMENT: AdditionalScaleElement = {
+    id: SAMPLE_ADDITIONAL_SCALE_ELEMENT_ID,
+    type: AdditionalElementType.SCALE,
+    location: {x: 160, y: 10},
+    style: {
+        type: AdditionalElementStyleType.SCALE
+    }
+};
+
+export const SAMPLE_ADDITIONAL_GPX_ELEMENT_ID = uuid();
+
 export const SAMPLE_ADDITIONAL_GPX_ELEMENT: AdditionalGpxElement = {
-    id: uuid(),
+    id: SAMPLE_ADDITIONAL_GPX_ELEMENT_ID,
     type: AdditionalElementType.GPX_TRACK,
     style: {
         type: AdditionalElementStyleType.TRACK,
@@ -252,4 +290,29 @@ export const SAMPLE_ADDITIONAL_GPX_ELEMENT_WITH_UNDEFINED_DATA: AdditionalGpxEle
         data: undefined,
         modified: 0
     }
+};
+
+export const SAMPLE_GPX_TRACK_USER_OBJECT: UserObject = {
+    Style: "<!--{\"ID\":\"" + SAMPLE_ADDITIONAL_GPX_ELEMENT_ID + "\",\"Type\":\"gpx-track\",\"File\":\"test.gpx\"}--><LineSymbolizer stroke='#000000' stroke-width='2' stroke-opacity='1' stroke-linecap='round' stroke-linejoin='round' smooth='1' />",
+    SRS: "+init=epsg:4326",
+    Type: "ogr",
+    Layer: "tracks",
+    File: "test.gpx"
+};
+
+export const SAMPLE_SCALE_USER_OBJECT: UserObject = {
+    Style: "<!--{\"ID\":\"" + SAMPLE_ADDITIONAL_SCALE_ELEMENT_ID + "\",\"Type\":\"scale\"}--><MarkersSymbolizer file='scale_" + SAMPLE_ADDITIONAL_SCALE_ELEMENT_ID + ".svg' allow-overlap='true' placement='point' />",
+    WellKnownText: "POINT(160 10)"
+};
+
+export const SAMPLE_TEXT_BOX_USER_OBJECT = {
+    Style: "<!--{\"ID\":\"" + SAMPLE_ADDITIONAL_TEXT_ELEMENT_ID + "\",\"Type\":\"text-box\",\"Text\":\"Some Text...\"}--><TextSymbolizer fontset-name='fontset-0' size='12' fill='#000000' opacity='1' orientation='0' allow-overlap='true'>'Some Text...'</TextSymbolizer>",
+    WellKnownText: "POINT(50 50)"
+};
+
+export const SAMPLE_ATTRIBUTION = "© Copyright...";
+
+export const SAMPLE_ATTRIBUTION_USER_OBJECT = {
+    Style: "<!--{\"ID\":\"" + SAMPLE_ADDITIONAL_ATTRIBUTION_ELEMENT_ID + "\",\"Type\":\"attribution\",\"Text\":\"${attribution}\"}--><TextSymbolizer fontset-name='fontset-0' size='12' fill='#000000' opacity='1' orientation='0' allow-overlap='true'>'" + SAMPLE_ATTRIBUTION + "'</TextSymbolizer>",
+    WellKnownText: "POINT(40 7)"
 };
