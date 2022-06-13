@@ -1,4 +1,6 @@
 import {Injectable} from "@angular/core";
+import {Scale, SCALES} from "../model/intern/scale";
+import {round} from "lodash";
 
 export interface Glyph {
     character: string,
@@ -154,10 +156,10 @@ interface Bounds {
 
 type Alignment = "left" | "center" | "right";
 
-class Text {
-    private glyphs: Glyph[];
+export class Text {
+    public readonly glyphs: Glyph[];
 
-    constructor(private text: string) {
+    constructor(public readonly text: string) {
         this.glyphs = Array.from(text).map(char => GLYPHS.get(char));
     }
 
@@ -203,19 +205,19 @@ class Text {
     }
 }
 
-class ScaleMark {
+export class ScaleMark {
     constructor(
-        private measureLabel: Text,
-        private unitLabel: Text,
-        private xOffset: number,
-        private yOffset: number,
-        private secondary: boolean
+        public readonly measureLabel: Text,
+        public readonly unitLabel: Text,
+        public readonly xOffsetInMM: number,
+        public readonly yOffsetInMM: number,
+        public readonly secondary: boolean
     ) {
     }
 
     get bounds(): Bounds {
-        let measureLabelBounds = this.measureLabel.computeBounds(this.secondary ? 0.05 : 0.07, this.xOffset, this.yOffset + (this.secondary ? 1.5 : 0), "center");
-        let unitLabelBounds = this.unitLabel?.computeBounds(this.secondary ? 0.05 : 0.07, measureLabelBounds.maxX + 1.2, this.yOffset + (this.secondary ? 1.5 : 0), "left");
+        let measureLabelBounds = this.measureLabel.computeBounds(this.secondary ? 0.05 : 0.07, this.xOffsetInMM, this.yOffsetInMM + (this.secondary ? 1.5 : 0), "center");
+        let unitLabelBounds = this.unitLabel?.computeBounds(this.secondary ? 0.05 : 0.07, measureLabelBounds.maxX + 1.2, this.yOffsetInMM + (this.secondary ? 1.5 : 0), "left");
         return {
             minX: Math.min(measureLabelBounds.minX, unitLabelBounds?.minX ?? measureLabelBounds.minX),
             maxX: Math.max(measureLabelBounds.maxX, unitLabelBounds?.maxX ?? measureLabelBounds.maxX),
@@ -225,24 +227,17 @@ class ScaleMark {
     }
 
     public toSvg(): string {
-        let measureLabelBounds = this.measureLabel.computeBounds(this.secondary ? 0.05 : 0.07, this.xOffset, this.yOffset + (this.secondary ? 1.5 : 0), "center");
-        return `<path style="stroke:#000000;stroke-width: 0.15" d="m${this.xOffset} 2 v${this.secondary ? -1 : -2}"/>`
-            + this.measureLabel.toSvg(this.secondary ? 0.05 : 0.07, this.xOffset, this.yOffset + (this.secondary ? 1.5 : 0), "center")
-            + this.unitLabel?.toSvg(this.secondary ? 0.05 : 0.07, measureLabelBounds.maxX + 1.2, this.yOffset + (this.secondary ? 1.5 : 0), "left") ?? "";
+        let measureLabelBounds = this.measureLabel.computeBounds(this.secondary ? 0.05 : 0.07, this.xOffsetInMM, this.yOffsetInMM + (this.secondary ? 1.5 : 0), "center");
+        return `<path style="stroke:#000000;stroke-width: 0.15" d="m${this.xOffsetInMM} 2 v${this.secondary ? -1 : -2}"/>`
+            + this.measureLabel.toSvg(this.secondary ? 0.05 : 0.07, this.xOffsetInMM, this.yOffsetInMM + (this.secondary ? 1.5 : 0), "center")
+            + this.unitLabel?.toSvg(this.secondary ? 0.05 : 0.07, measureLabelBounds.maxX + 1.2, this.yOffsetInMM + (this.secondary ? 1.5 : 0), "left") ?? "";
     }
 }
 
 @Injectable()
 export class ScaleService {
-    private static buildScaleMarkText(position: number, unitLengthInM: number): Text {
-        let text = (unitLengthInM >= 250
-            ? Math.abs(unitLengthInM * position / 1000)
-            : Math.abs(unitLengthInM * position)).toString();
-        return new Text(text);
-    }
-
-    private static formatReductionFactor(reductionFactor: number): string {
-        return reductionFactor
+    private static formatReductionFactor(scale: Scale): string {
+        return SCALES.get(scale).reductionFactor
             .toString()
             .split("")
             .reverse()
@@ -253,31 +248,59 @@ export class ScaleService {
             .join("'");
     }
 
-    public buildScaleSvg(unitLengthInM: number, reductionFactor: number): string {
-        let unit = unitLengthInM >= 250 ? "km" : "m";
-        let xOffset = unitLengthInM * 1000 / reductionFactor;
-        let yOffset = -2;
-        let scaleMarks: ScaleMark[] = [];
-        for (let index = -1; index <= 4; index++) {
-            scaleMarks.push(new ScaleMark(
-                ScaleService.buildScaleMarkText(index, unitLengthInM),
-                index == 4 ? new Text(unit) : undefined,
-                index * xOffset,
-                yOffset,
-                false));
-        }
-        scaleMarks.push(new ScaleMark(ScaleService.buildScaleMarkText(-0.5, unitLengthInM), undefined, -0.5 * xOffset, yOffset, true));
-        let scaleText = new Text(`1:${ScaleService.formatReductionFactor(reductionFactor)}`);
+    public buildScaleSvg(scale: Scale): string {
+        let scaleMarks = this.buildScaleMarks(scale);
+        let scaleMarksMinX = scaleMarks.reduce((result, scaleMark) => Math.min(result, scaleMark.xOffsetInMM), Number.MAX_VALUE);
+        let scaleMarksMaxX = scaleMarks.reduce((result, scaleMark) => Math.max(result, scaleMark.xOffsetInMM), 0);
+        let scaleMarksCenterX = (scaleMarksMinX + scaleMarksMaxX) / 2;
+        let scaleText = new Text(`1:${ScaleService.formatReductionFactor(scale)}`);
         let bounds = scaleMarks.map(mark => mark.bounds);
-        bounds.push(scaleText.computeBounds(0.14, unitLengthInM * 1500 / reductionFactor, 5.5, "center"));
+        bounds.push(scaleText.computeBounds(0.14, scaleMarksCenterX, 5.5, "center"));
         let minX = bounds.reduce((result, bound) => Math.min(result, bound.minX), Number.MAX_VALUE) - 2;
         let maxX = bounds.reduce((result, bound) => Math.max(result, bound.maxX), 0) + 2;
         let minY = bounds.reduce((result, bound) => Math.min(result, bound.minY), Number.MAX_VALUE) - 2;
         let maxY = bounds.reduce((result, bound) => Math.max(result, bound.maxY), 0) + 2;
-        return `<?xml version="1.0" encoding="UTF-8"?>\n<svg width="${maxX - minX}mm" height="${maxY - minY}mm" viewBox="${minX} ${minY} ${maxX - minX} ${maxY - minY}" xmlns=\"http://www.w3.org/2000/svg\">`
+        return `<?xml version="1.0" encoding="UTF-8"?>\n<svg width="${round(maxX - minX, 3)}mm" height="${round(maxY - minY, 3)}mm" viewBox="${round(minX, 3)} ${round(minY, 3)} ${round(maxX - minX, 3)} ${round(maxY - minY, 3)}" xmlns=\"http://www.w3.org/2000/svg\">`
             + scaleMarks.reduce((result, scaleMark) => result + scaleMark.toSvg() + "\n", "")
-            + `<path style="stroke:#000000;stroke-width: 0.15" d="m${-unitLengthInM * 1000 / reductionFactor} 1.925 h${unitLengthInM * 5000 / reductionFactor}" />`
-            + scaleText.toSvg(0.1, unitLengthInM * 1500 / reductionFactor, 5, "center")
+            + `<path style="stroke:#000000;stroke-width: 0.15" d="m${scaleMarksMinX} 1.925 h${scaleMarksMaxX}" />`
+            + scaleText.toSvg(0.1, scaleMarksCenterX, 5, "center")
             + "\n</svg>";
+    }
+
+    buildScaleMarks(scale: Scale): ScaleMark[] {
+        let reductionFactor = SCALES.get(scale).reductionFactor;
+        let magnitude = Math.pow(10, Math.ceil(Math.log10(10 * reductionFactor)));
+        let baseUnitLengthInMapMM = magnitude / reductionFactor;
+        let scaleUnitLengthInRealMM;
+        if (baseUnitLengthInMapMM >= 50) {
+            scaleUnitLengthInRealMM = magnitude / 5;
+        } else if (baseUnitLengthInMapMM >= 30) {
+            scaleUnitLengthInRealMM = magnitude / 4;
+        } else if (baseUnitLengthInMapMM >= 15) {
+            scaleUnitLengthInRealMM = magnitude / 2;
+        } else {
+            scaleUnitLengthInRealMM = magnitude;
+        }
+        let unitLength = scaleUnitLengthInRealMM >= 250000 ? "km" : "m";
+        let scaleUnitLengthForLabel = scaleUnitLengthInRealMM >= 250000 ? scaleUnitLengthInRealMM / 1000000 : scaleUnitLengthInRealMM / 1000;
+        let xOffset = scaleUnitLengthInRealMM / reductionFactor;
+        let yOffset = -2;
+        let scaleMarks: ScaleMark[] = [];
+        for (let index = -1; index <= 4; index++) {
+            scaleMarks.push(new ScaleMark(
+                new Text(Math.abs(scaleUnitLengthForLabel * index).toString()),
+                index == 4 ? new Text(unitLength) : undefined,
+                index * xOffset,
+                yOffset,
+                false));
+        }
+        scaleMarks.push(new ScaleMark(
+            new Text(Math.abs(scaleUnitLengthForLabel * -0.5).toString()),
+            undefined,
+            -0.5 * xOffset,
+            yOffset,
+            true));
+        return scaleMarks.sort((scaleMark1, scaleMark2) =>
+            scaleMark1.xOffsetInMM - scaleMark2.xOffsetInMM);
     }
 }

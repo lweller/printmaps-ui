@@ -8,7 +8,7 @@ import {MapRenderingJobState} from "../model/api/map-rendering-job-state";
 import {fromMapRenderingJobState, MapProjectState} from "../model/intern/map-project-state";
 import {MapProjectReference} from "../model/intern/map-project-reference";
 import {ConfigurationService} from "./configuration.service";
-import {Scale, SCALES} from "../model/intern/scale";
+import {Scale} from "../model/intern/scale";
 import {
     AdditionalElementType,
     AdditionalGpxElement,
@@ -226,21 +226,11 @@ export class PrintmapsService {
     }
 
     private toUserFiles(mapProject: MapProject): UserFile[] {
-        let reductionFactor = SCALES.get(mapProject.scale).reductionFactor;
-        let scaleRatio = Math.pow(10, Math.ceil(Math.log10(10 * reductionFactor))) / reductionFactor;
-        let unitLengthInM;
-        if (scaleRatio >= 30) {
-            unitLengthInM = scaleRatio * reductionFactor / 4000;
-        } else if (scaleRatio >= 15) {
-            unitLengthInM = scaleRatio * reductionFactor / 2000;
-        } else {
-            unitLengthInM = scaleRatio * reductionFactor / 1000;
-        }
         return mapProject.additionalElements
             .filter(addAdditionalElement => addAdditionalElement.type == AdditionalElementType.SCALE)
             .map(element => ({
                 name: `scale_${element.id}.svg`,
-                content: this.scaleService.buildScaleSvg(unitLengthInM, SCALES.get(mapProject.scale).reductionFactor)
+                content: this.scaleService.buildScaleSvg(mapProject.scale)
             }))
             .concat(
                 mapProject.additionalElements
