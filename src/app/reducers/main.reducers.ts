@@ -23,7 +23,7 @@ const reducer = createReducer(initialState,
         (state, {id}) => ({
             ...state,
             currentMapProject: state.currentMapProject?.id == id ? undefined : state.currentMapProject,
-            mapProjectReferences: state.mapProjectReferences.filter(mapProjectReference => mapProjectReference.id != id)
+            mapProjectReferences: state.mapProjectReferences?.filter(mapProjectReference => mapProjectReference.id != id)
         })),
 
     on(UiActions.mapProjectUploaded,
@@ -37,10 +37,8 @@ const reducer = createReducer(initialState,
                     modifiedLocally: false
                 },
             mapProjectReferences: [
-                ...state.mapProjectReferences,
-                ...(state.mapProjectReferences.filter(other => other.id == mapProjectReference.id).length == 0
-                    ? [mapProjectReference]
-                    : [])
+                ...(state.mapProjectReferences?.filter(other => other.id != mapProjectReference.id) ?? []),
+                mapProjectReference
             ]
         })),
 
@@ -54,7 +52,7 @@ const reducer = createReducer(initialState,
                     modifiedLocally: true
                 }
                 : state.currentMapProject,
-            mapProjectReferences: state.mapProjectReferences.map(
+            mapProjectReferences: state.mapProjectReferences?.map(
                 mapProjectReference =>
                     mapProjectReference.id == state.currentMapProject?.id
                         ? {...mapProjectReference, name: name}

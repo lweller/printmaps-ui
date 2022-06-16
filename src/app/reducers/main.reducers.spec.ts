@@ -661,7 +661,7 @@ describe("printmapsUiReducer", () => {
             });
         expect(result.mapProjectReferences)
             .withContext("PrintmapsUiState.mapProjectReferences")
-            .toEqual([]);
+            .toBeUndefined();
     });
 
     it("should append additional element to current map project , mark it as modified and mark the element as selected when additionalElementAdded action is applied on state with a map project currently selected", () => {
