@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {distinctUntilChanged, filter} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter} from "rxjs/operators";
 import {cloneDeep, isEqual} from "lodash";
 import {MapProjectReference} from "../../model/intern/map-project-reference";
 import * as UiActions from "../../actions/main.actions";
@@ -27,22 +27,18 @@ export class MapProjectListPaneComponent {
         this.registerIcons();
         store
             .select(mapProjectReferences)
+            .pipe(distinctUntilChanged(isEqual))
             .subscribe(nextMapProjectReferences =>
                 this.mapProjectReferences = cloneDeep(nextMapProjectReferences)
             );
         store
             .select(selectedMapProjectReference)
-            .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue))
-            )
-            .subscribe(nextSelectedMapProjectReference => {
-                this.selectedMapProjectReference = cloneDeep(nextSelectedMapProjectReference);
-            });
+            .pipe(debounceTime(10))
+            .subscribe(nextSelectedMapProjectReference =>
+                this.selectedMapProjectReference = cloneDeep(nextSelectedMapProjectReference)
+            );
         this.selectedMapProjectReference$
             .pipe(
-                distinctUntilChanged((previousValue, nextValue) =>
-                    isEqual(previousValue, nextValue)),
                 filter(nextSelectedMapProjectReference =>
                     nextSelectedMapProjectReference && nextSelectedMapProjectReference.state != MapProjectState.NONEXISTENT)
             )

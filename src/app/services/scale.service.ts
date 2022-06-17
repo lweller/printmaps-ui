@@ -262,7 +262,7 @@ export class ScaleService {
         let maxY = bounds.reduce((result, bound) => Math.max(result, bound.maxY), 0) + 2;
         return `<?xml version="1.0" encoding="UTF-8"?>\n<svg width="${round(maxX - minX, 3)}mm" height="${round(maxY - minY, 3)}mm" viewBox="${round(minX, 3)} ${round(minY, 3)} ${round(maxX - minX, 3)} ${round(maxY - minY, 3)}" xmlns=\"http://www.w3.org/2000/svg\">`
             + scaleMarks.reduce((result, scaleMark) => result + scaleMark.toSvg() + "\n", "")
-            + `<path style="stroke:#000000;stroke-width: 0.15" d="m${scaleMarksMinX} 1.925 h${scaleMarksMaxX}" />`
+            + `<path style="stroke:#000000;stroke-width: 0.15" d="m${scaleMarksMinX} 1.925 h${scaleMarksMaxX - scaleMarksMinX}" />`
             + scaleText.toSvg(0.1, scaleMarksCenterX, 5, "center")
             + "\n</svg>";
     }

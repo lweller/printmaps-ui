@@ -23,7 +23,7 @@ import {ScaleService} from "./scale.service";
 import {GeoCoordinates} from "../model/intern/geo-coordinates";
 import {MapProjectConversionService} from "./map-project-conversion.service";
 
-const REQUEST_OPTIONS = {
+export const REQUEST_OPTIONS = {
     headers: new HttpHeaders({
         "Accept": "application/vnd.api+json; charset=utf-8",
         "Content-Type": "application/vnd.api+json; charset=utf-8"
@@ -171,7 +171,10 @@ export class PrintmapsService {
             })
         };
 
-        return this.http.post<HttpResponse<any>>(endpointUrl, formData, requestOptions)
+        return this.http.post<HttpResponse<any>>(endpointUrl, formData, {
+            ...requestOptions,
+            observe: "response"
+        })
             .pipe(
                 map(response => response.status == 201),
                 catchError(() => of(false))
@@ -203,21 +206,26 @@ export class PrintmapsService {
 
     deleteMapRenderingJob(id: string): Observable<boolean> {
         let endpointUrl = `${this.baseUrl}/delete/${id}`;
-        return this.http.post<HttpResponse<any>>(endpointUrl, REQUEST_OPTIONS)
+        return this.http.post<HttpResponse<any>>(endpointUrl, undefined, {
+            ...REQUEST_OPTIONS,
+            observe: "response"
+        })
             .pipe(
                 map(response => response.status == 204),
-                catchError(() => of(false))
+                catchError((error: HttpErrorResponse) => of(error?.status == 400))
             );
     }
 
     launchMapRenderingJob(id: string): Observable<boolean> {
         let endpointUrl = `${this.baseUrl}/mapfile`;
-        return this.http.post<HttpResponse<any>>(endpointUrl, toMapRenderingJobExecution(id), REQUEST_OPTIONS)
+        return this.http.post<HttpResponse<any>>(endpointUrl, toMapRenderingJobExecution(id), {
+            ...REQUEST_OPTIONS,
+            observe: "response"
+        })
             .pipe(
                 map(response => response.status == 202),
                 catchError(() => of(false))
             );
-
     }
 
     downloadRenderedMapFile(id: string): Observable<boolean> {

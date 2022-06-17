@@ -47,8 +47,13 @@ export const createMapProject = createAction(
     createActionType(SOURCE, "CREATE_MAP_PROJECT")
 );
 
-export const mapProjectSelected = createAction(
+export const mapProjectCreated = createAction(
     createActionType(SOURCE, "MAP_PROJECT_CREATED"),
+    props<{ mapProject: MapProject }>()
+);
+
+export const mapProjectSelected = createAction(
+    createActionType(SOURCE, "MAP_PROJECT_SELECTED"),
     props<{ mapProject: MapProject }>()
 );
 
@@ -74,7 +79,7 @@ export const mapProjectDeleted = createAction(
 export type UploadMapProjectFollowUpAction = "launchRendering";
 
 export const ensureMapProjectIsUploadedAndDispatch = createAction(
-    createActionType(SOURCE, "UPLOAD_MAP_PROJECT"),
+    createActionType(SOURCE, "ENSURE_MAP_PROJECT_UPLOADED_AND_DISPATCH"),
     props<{ mapProject?: MapProject, followUpAction?: UploadMapProjectFollowUpAction }>()
 );
 

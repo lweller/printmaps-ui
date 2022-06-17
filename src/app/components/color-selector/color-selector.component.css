@@ -14,11 +14,11 @@
     z-index: 1;
 }
 
-.color-field {
+.color-field-sample {
     z-index: 2;
 }
 
-.color-field-border {
+.color-field {
     z-index: 3;
     border-color: #7f7f7f;
 }

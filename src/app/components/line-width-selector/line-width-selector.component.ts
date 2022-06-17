@@ -6,7 +6,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {AbstractBaseMatFormFieldComponent} from "../common/abstract-base-mat-form-field.component";
 
 @Component({
-    selector: "line-width-selector.component",
+    selector: "line-width-selector",
     templateUrl: "./line-width-selector.component.html",
     styleUrls: ["./line-width-selector.component.css"],
     providers: [{provide: MatFormFieldControl, useExisting: LineWidthSelector}]

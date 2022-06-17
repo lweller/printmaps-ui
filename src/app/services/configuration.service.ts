@@ -26,7 +26,7 @@ export class ConfigurationService {
         return timer(this.appConf.autoUploadIntervalInSeconds * 1000);
     }
 
-    public returnAfterPollingDelay(id: string): Observable<string> {
+    public returnAfterPollingDelay<T>(id: T): Observable<T> {
         return of(id).pipe(delay(this.appConf.mapStatePollingIntervalInSeconds * 1000));
     }
 

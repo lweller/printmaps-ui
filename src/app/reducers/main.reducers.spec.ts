@@ -61,6 +61,35 @@ describe("printmapsUiReducer", () => {
             .toEqual([]);
     });
 
+    it("should add map project reference to list of projects when mapProjectCreated action is applied on initial state", () => {
+        // when
+        const result = printmapsUiReducer(initialState,
+            UiActions.mapProjectCreated({
+                mapProject: SAMPLE_MAP_PROJECT_1
+            }));
+
+        // then
+        expect(result.mapProjectReferences)
+            .withContext("PrintmapsUiState.mapProjectReferences")
+            .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_1]);
+    });
+
+    it("should append map project reference to list of projects when mapProjectCreated action is applied on state without this map project reference", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                mapProjectReferences: [SAMPLE_MAP_PROJECT_REFERENCE_2]
+            },
+            UiActions.mapProjectCreated({
+                mapProject: SAMPLE_MAP_PROJECT_1
+            }));
+
+        // then
+        expect(result.mapProjectReferences)
+            .withContext("PrintmapsUiState.mapProjectReferences")
+            .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_2, SAMPLE_MAP_PROJECT_REFERENCE_1]);
+    });
+
     it("should update current map project when mapProjectSelected action is applied on initial state", () => {
         // when
         const result = printmapsUiReducer(initialState, UiActions.mapProjectSelected({
@@ -174,36 +203,7 @@ describe("printmapsUiReducer", () => {
             .toEqual(SAMPLE_MODIFIED_MAP_PROJECT);
     });
 
-    it("should add map project reference to list of projects when mapProjectUploaded action is applied on initial state", () => {
-        // when
-        const result = printmapsUiReducer(initialState,
-            UiActions.mapProjectUploaded({
-                mapProjectReference: SAMPLE_MAP_PROJECT_REFERENCE_1
-            }));
-
-        // then
-        expect(result.mapProjectReferences)
-            .withContext("PrintmapsUiState.mapProjectReferences")
-            .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_1]);
-    });
-
-    it("should append map project reference to list of projects when mapProjectUploaded action is applied on state without this map project reference", () => {
-        // when
-        const result = printmapsUiReducer({
-                ...initialState,
-                mapProjectReferences: [SAMPLE_MAP_PROJECT_REFERENCE_2]
-            },
-            UiActions.mapProjectUploaded({
-                mapProjectReference: SAMPLE_MAP_PROJECT_REFERENCE_1
-            }));
-
-        // then
-        expect(result.mapProjectReferences)
-            .withContext("PrintmapsUiState.mapProjectReferences")
-            .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_2, SAMPLE_MAP_PROJECT_REFERENCE_1]);
-    });
-
-    it("should not re-add mar project reference to list of projects when mapProjectUploaded action is applied on state already containing this map project reference", () => {
+    it("should not re-add map project reference to list of projects when mapProjectUploaded action is applied on state already containing this map project reference", () => {
         // when
         const result = printmapsUiReducer({
                 ...initialState,
@@ -217,6 +217,44 @@ describe("printmapsUiReducer", () => {
         expect(result.mapProjectReferences)
             .withContext("PrintmapsUiState.mapProjectReferences")
             .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_1]);
+    });
+
+    it("should not change order of map project references when mapProjectUploaded action is applied on state already containing this map project reference", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                mapProjectReferences: [SAMPLE_MAP_PROJECT_REFERENCE_1, SAMPLE_MAP_PROJECT_REFERENCE_2]
+            },
+            UiActions.mapProjectUploaded({
+                mapProjectReference: SAMPLE_MAP_PROJECT_REFERENCE_1
+            }));
+
+        // then
+        expect(result.mapProjectReferences)
+            .withContext("PrintmapsUiState.mapProjectReferences")
+            .toEqual([SAMPLE_MAP_PROJECT_REFERENCE_1, SAMPLE_MAP_PROJECT_REFERENCE_2]);
+    });
+
+    it("should update map project reference in list of projects when mapProjectUploaded action is applied on state with this map project reference", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                mapProjectReferences: [SAMPLE_MAP_PROJECT_REFERENCE_1, SAMPLE_MAP_PROJECT_REFERENCE_2]
+            },
+            UiActions.mapProjectUploaded({
+                mapProjectReference: {
+                    ...SAMPLE_MAP_PROJECT_REFERENCE_1,
+                    state: MapProjectState.WAITING_FOR_RENDERING
+                }
+            }));
+
+        // then
+        expect(result.mapProjectReferences)
+            .withContext("PrintmapsUiState.mapProjectReferences")
+            .toContain({
+                ...SAMPLE_MAP_PROJECT_REFERENCE_1,
+                state: MapProjectState.WAITING_FOR_RENDERING
+            });
     });
 
     it("should update name of map project, mark it as modified and update also its reference when updateMapName action is applied on state with this project currently selected and containing this map project reference", () => {

@@ -39,6 +39,13 @@ export class MainEffects {
             )
     );
 
+    private static mapProjectCreatedAndSelected(mapProject: MapProject) {
+        return [
+            UiActions.mapProjectCreated({mapProject: mapProject}),
+            UiActions.mapProjectSelected({mapProject: mapProject})
+        ];
+    }
+
     createMapProject = createEffect(
         () => this.actions
             .pipe(
@@ -47,7 +54,7 @@ export class MainEffects {
                 map(([_, mapCenter]) => mapCenter),
                 filter(mapCenter => !!mapCenter),
                 concatMap(mapCenter => this.printmapsService.createMapProject(mapCenter)),
-                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
+                concatMap(mapProject => MainEffects.mapProjectCreatedAndSelected(mapProject))
             )
     );
 
@@ -59,7 +66,7 @@ export class MainEffects {
                 map(([_, mapProject]) => mapProject),
                 filter(mapProject => !!mapProject),
                 concatMap(mapProject => this.printmapsService.cloneMapProject(mapProject)),
-                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
+                concatMap(mapProject => MainEffects.mapProjectCreatedAndSelected(mapProject))
             )
     );
 
@@ -209,19 +216,21 @@ export class MainEffects {
                 groupBy(id => id),
                 map(group =>
                     group.pipe(
-                        expand(id => this.configurationService.returnAfterPollingDelay(id)),
-                        switchMap(id => zip(this.printmapsService.loadMapProjectState(id), of(id))),
-                        map((mapProjectStateAndId, index) => [mapProjectStateAndId, index] as [[MapProjectState, string], number]),
-                        takeWhile(([[mapProjectState, _id], index]) =>
-                                (index == 0
-                                    || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
-                                    || mapProjectState == MapProjectState.RENDERING),
-                            true),
-                        map(([mapProjectStateAndId]) => mapProjectStateAndId),
-                        distinctUntilChanged(
-                            ([previousMapProjectState], [currentMapProjectState]) => previousMapProjectState == currentMapProjectState),
-                        map(([mapProjectState, id]) =>
-                            UiActions.mapProjectStateUpdated({id: id, mapProjectState: mapProjectState}))
+                        switchMap(id => of(id).pipe(
+                            expand(id => this.configurationService.returnAfterPollingDelay(id)),
+                            switchMap(id => zip(this.printmapsService.loadMapProjectState(id), of(id))),
+                            map((mapProjectStateAndId, index) => [mapProjectStateAndId, index] as [[MapProjectState, string], number]),
+                            takeWhile(([[mapProjectState, _id], index]) =>
+                                    (index == 0
+                                        || mapProjectState == MapProjectState.WAITING_FOR_RENDERING
+                                        || mapProjectState == MapProjectState.RENDERING),
+                                true),
+                            map(([mapProjectStateAndId]) => mapProjectStateAndId),
+                            distinctUntilChanged(
+                                ([previousMapProjectState], [currentMapProjectState]) => previousMapProjectState == currentMapProjectState),
+                            map(([mapProjectState, id]) =>
+                                UiActions.mapProjectStateUpdated({id: id, mapProjectState: mapProjectState}))
+                        ))
                     )
                 ),
                 mergeAll()

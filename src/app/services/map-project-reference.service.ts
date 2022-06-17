@@ -52,7 +52,6 @@ export class MapProjectReferenceService {
                     state: mapProjectState
                 })),
                 toArray(),
-                tap(() => console.log("Successfully loaded map project references.")),
                 catchError(error => {
                     tap(() => console.log("Error while loading map project references."));
                     this.resetLocalStore();
@@ -69,7 +68,6 @@ export class MapProjectReferenceService {
         return defer(() => MapProjectReferenceService.updateSchemaVersion())
             .pipe(
                 map(() => localStorage.setItem(MAP_PROJECT_REFERENCES, JSON.stringify(mapProjectReferences))),
-                tap(() => console.log("Successfully saved map project references.")),
                 mapTo(true)
             );
     }

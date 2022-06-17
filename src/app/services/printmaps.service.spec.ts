@@ -521,6 +521,7 @@ describe("PrintmapsService", () => {
         // given
         spyOn(httpClient, "post")
             .withArgs(BASE_API_URI + "/delete/" + SAMPLE_MAP_PROJECT_ID_1,
+                undefined,
                 jasmine.any(Object))
             .and.returnValue(of(new HttpResponse({status: 204})));
 
@@ -535,6 +536,7 @@ describe("PrintmapsService", () => {
         // given
         spyOn(httpClient, "post")
             .withArgs(BASE_API_URI + "/delete/" + SAMPLE_MAP_PROJECT_ID_1,
+                undefined,
                 jasmine.any(Object))
             .and.returnValue(of(new HttpResponse({status: 200})));
 
@@ -549,6 +551,7 @@ describe("PrintmapsService", () => {
         // given
         spyOn(httpClient, "post")
             .withArgs(BASE_API_URI + "/delete/" + SAMPLE_MAP_PROJECT_ID_1,
+                undefined,
                 jasmine.any(Object))
             .and.returnValue(throwError(new HttpErrorResponse({status: 400})));
 
@@ -556,7 +559,7 @@ describe("PrintmapsService", () => {
         const result = await printmapsService.deleteMapRenderingJob(SAMPLE_MAP_PROJECT_ID_1).toPromise();
 
         // then
-        expect(result).withContext("result of deletion").toBeFalse();
+        expect(result).withContext("result of deletion").toBeTrue();
     });
 
     it("should map rendering job execution post to /mapfile and return true if status of http response is 202 when launchMapRenderingJob method is called with the ID of an existing map project", async () => {

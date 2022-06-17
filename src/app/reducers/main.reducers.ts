@@ -3,6 +3,7 @@ import {round} from "lodash";
 import * as UiActions from "../actions/main.actions";
 import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state";
 import {getScaleProperties} from "../model/intern/scale";
+import {toMapProjectReference} from "../model/intern/map-project";
 
 const reducer = createReducer(initialState,
 
@@ -12,10 +13,24 @@ const reducer = createReducer(initialState,
             mapProjectReferences: mapProjectReferences ?? []
         })),
 
+    on(UiActions.mapProjectCreated,
+        (state, {mapProject}) => ({
+            ...state,
+            mapProjectReferences: (state.mapProjectReferences ?? []).some(other => other.id == mapProject.id)
+                ? state.mapProjectReferences
+                    .map(other => other.id == mapProject.id ? toMapProjectReference(mapProject) : other)
+                : [
+                    ...(state.mapProjectReferences ?? []),
+                    toMapProjectReference(mapProject)
+                ]
+        })
+    ),
+
     on(UiActions.mapProjectSelected,
         (state, {mapProject}) => ({
             ...state,
-            currentMapProject: mapProject
+            currentMapProject: mapProject,
+            mapCenter: mapProject?.center ?? state.mapCenter
         })
     ),
 
@@ -36,10 +51,8 @@ const reducer = createReducer(initialState,
                     id: state?.currentMapProject?.id ? state.currentMapProject.id : mapProjectReference.id,
                     modifiedLocally: false
                 },
-            mapProjectReferences: [
-                ...(state.mapProjectReferences?.filter(other => other.id != mapProjectReference.id) ?? []),
-                mapProjectReference
-            ]
+            mapProjectReferences:
+                state.mapProjectReferences?.map(other => other.id == mapProjectReference.id ? mapProjectReference : other)
         })),
 
     on(UiActions.updateMapName,

@@ -74,7 +74,7 @@ function singleton(action: TypedAction<any>): TestObservable {
     return cold("a", {a: action});
 }
 
-describe("init", () => {
+describe("init effect", () => {
 
     beforeEach(() => {
         setup();
@@ -95,13 +95,13 @@ describe("init", () => {
     });
 });
 
-describe("createMapProject", () => {
+describe("createMapProject effect", () => {
 
     beforeEach(() => {
         setup();
     });
 
-    it("should dispatch mapProjectSelected action with a new project based on currently selected coordinates when createMapProject action is dispatched", () => {
+    it("should dispatch mapProjectCreated and mapProjectSelected action with a new project based on currently selected coordinates when createMapProject action is dispatched", () => {
         // given
         store.overrideSelector(selectedMapCenter, SAMPLE_COORDINATES_1);
         spyOn(printmapsService, "createMapProject").and.returnValue(of(SAMPLE_MAP_PROJECT_1));
@@ -112,7 +112,10 @@ describe("createMapProject", () => {
         // then
         expect(effects.createMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_1})));
+            .toBeObservable(cold("(ab)", {
+                a: UiActions.mapProjectCreated({mapProject: SAMPLE_MAP_PROJECT_1}),
+                b: UiActions.mapProjectSelected({mapProject: SAMPLE_MAP_PROJECT_1})
+            }));
         expect(printmapsService.createMapProject)
             .withContext("method printmapsService.createMapProject()")
             .toHaveBeenCalled();
@@ -135,7 +138,7 @@ describe("createMapProject", () => {
     });
 });
 
-describe("copyMapProject", () => {
+describe("copyMapProject effect", () => {
 
     beforeEach(() => {
         setup();
@@ -158,7 +161,10 @@ describe("copyMapProject", () => {
         // then
         expect(effects.copyMapProject)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.mapProjectSelected({mapProject: SAMPLE_CLONED_MAP_PROJECT})));
+            .toBeObservable(cold("(ab)", {
+                a: UiActions.mapProjectCreated({mapProject: SAMPLE_CLONED_MAP_PROJECT}),
+                b: UiActions.mapProjectSelected({mapProject: SAMPLE_CLONED_MAP_PROJECT})
+            }));
         expect(printmapsService.cloneMapProject)
             .withContext("method printmapsService.cloneMapProject()")
             .toHaveBeenCalled();
@@ -181,7 +187,7 @@ describe("copyMapProject", () => {
     });
 });
 
-describe("addAdditionalElement", () => {
+describe("addAdditionalElement effect", () => {
 
     beforeEach(() => {
         setup();
@@ -221,7 +227,7 @@ describe("addAdditionalElement", () => {
     });
 });
 
-describe("deleteMapProject", () => {
+describe("deleteMapProject effect", () => {
 
     beforeEach(() => {
         setup();
@@ -330,7 +336,7 @@ describe("deleteMapProject", () => {
     });
 });
 
-describe("loadMapProject", () => {
+describe("loadMapProject effect", () => {
 
     beforeEach(() => {
         setup();
@@ -422,7 +428,7 @@ describe("loadMapProject", () => {
     });
 });
 
-describe("loadMapProjectReferences", () => {
+describe("loadMapProjectReferences effect", () => {
 
     beforeEach(() => {
         setup();
@@ -464,7 +470,7 @@ describe("loadMapProjectReferences", () => {
     });
 });
 
-describe("ensureMapProjectIsUploadedAndDispatch", () => {
+describe("ensureMapProjectIsUploadedAndDispatch effect", () => {
 
     beforeEach(() => {
         setup();
@@ -561,7 +567,7 @@ describe("ensureMapProjectIsUploadedAndDispatch", () => {
     });
 });
 
-describe("mapProjectUploaded", () => {
+describe("mapProjectUploaded effect", () => {
 
     beforeEach(() => {
         setup();
@@ -605,7 +611,7 @@ describe("mapProjectUploaded", () => {
     });
 });
 
-describe("launchMapProjectRendering", () => {
+describe("launchMapProjectRendering effect", () => {
     beforeEach(() => {
         setup();
     });
@@ -693,7 +699,7 @@ describe("launchMapProjectRendering", () => {
     });
 });
 
-describe("downloadRenderedMapProject", () => {
+describe("downloadRenderedMapProject effect", () => {
     beforeEach(() => {
         setup();
     });
@@ -776,7 +782,7 @@ describe("downloadRenderedMapProject", () => {
         });
 });
 
-describe("autoSaveMapProjectReferences", () => {
+describe("autoSaveMapProjectReferences effect", () => {
     beforeEach(() => {
         setup();
     });
@@ -819,7 +825,7 @@ describe("autoSaveMapProjectReferences", () => {
     });
 });
 
-describe("autoUploadMapProject", () => {
+describe("autoUploadMapProject effect", () => {
     beforeEach(() => {
         setup();
         spyOn(configurationService, "autoUploadDebounceTimer").and.returnValue(cold("--a", {a: 1}));
@@ -931,12 +937,10 @@ describe("autoUploadMapProject", () => {
     });
 });
 
-describe("refreshMapProjectState", () => {
+describe("refreshMapProjectState effect", () => {
     beforeEach(() => {
         setup();
-        spyOn(configurationService, "returnAfterPollingDelay")
-            .withArgs(SAMPLE_MAP_PROJECT_ID_1).and.returnValue(cold("-a|", {a: SAMPLE_MAP_PROJECT_ID_1}))
-            .withArgs(SAMPLE_MAP_PROJECT_ID_2).and.returnValue(cold("-a|", {a: SAMPLE_MAP_PROJECT_ID_2}));
+        spyOn(configurationService, "returnAfterPollingDelay").and.callFake((value => cold("--a|", {a: value})));
     });
 
     it("should retrieve current state of map rendering job and dispatch a mapProjectStateUpdated when refreshMapProjectState action is dispatched", () => {
@@ -976,7 +980,7 @@ describe("refreshMapProjectState", () => {
             });
 
             // when
-            dispatch(cold("ab", {
+            dispatch(cold("a-b", {
                     a: UiActions.refreshMapProjectState({id: SAMPLE_MAP_PROJECT_ID_1}),
                     b: UiActions.refreshMapProjectState({id: SAMPLE_MAP_PROJECT_ID_2})
                 })
@@ -985,7 +989,7 @@ describe("refreshMapProjectState", () => {
             // then
             expect(effects.refreshMapProjectState)
                 .withContext("dispatched actions")
-                .toBeObservable(cold("abcdef", {
+                .toBeObservable(cold("a-b-c-d-e-f", {
                     a: UiActions.mapProjectStateUpdated({
                         id: SAMPLE_MAP_PROJECT_ID_1,
                         mapProjectState: MapProjectState.WAITING_FOR_RENDERING
@@ -1015,4 +1019,37 @@ describe("refreshMapProjectState", () => {
                 .withContext("method printmapsService.loadMapProjectState()")
                 .toHaveBeenCalledTimes(10);
         });
+
+    it("should continue to refresh the state when two refreshMapProjectState actions are dispatched in a row and first still returns with not redering (i.e. a upload followed by a launch rendering action)", () => {
+        // given
+        spyOn(printmapsService, "loadMapProjectState").and.returnValues(
+            of(MapProjectState.NOT_RENDERED),
+            of(MapProjectState.RENDERING),
+            of(MapProjectState.READY_FOR_DOWNLOAD)
+        );
+
+        // when
+        dispatch(cold("aa", {a: UiActions.refreshMapProjectState({id: SAMPLE_MAP_PROJECT_ID_1})}));
+
+        // then
+        expect(effects.refreshMapProjectState)
+            .withContext("dispatched actions")
+            .toBeObservable(cold("ab-c", {
+                a: UiActions.mapProjectStateUpdated({
+                    id: SAMPLE_MAP_PROJECT_ID_1,
+                    mapProjectState: MapProjectState.NOT_RENDERED
+                }),
+                b: UiActions.mapProjectStateUpdated({
+                    id: SAMPLE_MAP_PROJECT_ID_1,
+                    mapProjectState: MapProjectState.RENDERING
+                }),
+                c: UiActions.mapProjectStateUpdated({
+                    id: SAMPLE_MAP_PROJECT_ID_1,
+                    mapProjectState: MapProjectState.READY_FOR_DOWNLOAD
+                })
+            }));
+        expect(printmapsService.loadMapProjectState)
+            .withContext("method printmapsService.loadMapProjectState()")
+            .toHaveBeenCalledTimes(3);
+    });
 });
