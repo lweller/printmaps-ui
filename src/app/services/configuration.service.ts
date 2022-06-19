@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Configuration} from "../model/intern/configuration";
-import {Observable, of, timer} from "rxjs";
+import {EMPTY, Observable, of, timer} from "rxjs";
 import {environment} from "../../environments/environment";
-import {delay} from "rxjs/operators";
+import {catchError, delay, tap} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
 
 export function configurationServiceInitializerFactory(configurationService: ConfigurationService): Function {
     return () => configurationService.load();
@@ -15,9 +16,12 @@ export class ConfigurationService {
     private configuration: Configuration;
     private loaded = false;
 
+    constructor(private readonly http: HttpClient) {
+    }
+
     public get appConf() {
-        if (!this.load()) {
-            throw new Error("Configuration not loaded yet.");
+        if (!this.loaded) {
+            throw Error("Configuration not loaded yet.");
         }
         return this.configuration;
     }
@@ -26,31 +30,29 @@ export class ConfigurationService {
         return timer(this.appConf.autoUploadIntervalInSeconds * 1000);
     }
 
-    public returnAfterPollingDelay<T>(id: T): Observable<T> {
+    public deferUntilNextMapStatePolling(id: string): Observable<string> {
         return of(id).pipe(delay(this.appConf.mapStatePollingIntervalInSeconds * 1000));
     }
 
-    public load(): Promise<Configuration> {
+    public load(): Observable<Configuration> {
         let configFile = environment.production ? "/conf/config.json" : "/local/config.json";
         if (this.loaded) {
-            return of(this.configuration).toPromise();
+            return of(this.configuration);
         } else {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open("GET", configFile);
-                xhr.addEventListener("readystatechange", () => {
-                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                        console.log(`Successfully loaded configuration from '${configFile}'.`);
-                        this.configuration = JSON.parse(xhr.responseText);
-                        this.loaded = true;
-                        resolve(this.configuration);
-                    } else if (xhr.readyState === XMLHttpRequest.DONE) {
+            return this.http.get<Configuration>(configFile)
+                .pipe(
+                    tap(configuration => this.cacheLoadedConfiguration(configFile, configuration)),
+                    catchError(() => {
                         console.log(`Failed to load configuration. Check that a valid '${configFile}' file is provided.`);
-                        reject();
-                    }
-                });
-                xhr.send(null);
-            });
+                        return EMPTY;
+                    })
+                );
         }
+    }
+
+    private cacheLoadedConfiguration(configFile: string, configuration: Configuration) {
+        console.log(`Successfully loaded configuration from '${configFile}'.`);
+        this.configuration = configuration;
+        this.loaded = true;
     }
 }

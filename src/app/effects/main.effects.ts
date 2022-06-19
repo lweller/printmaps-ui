@@ -18,7 +18,7 @@ import {Store} from "@ngrx/store";
 import {PrintmapsService} from "../services/printmaps.service";
 import * as UiActions from "../actions/main.actions";
 import {UploadMapProjectFollowUpAction} from "../actions/main.actions";
-import {EMPTY, of, zip} from "rxjs";
+import {EMPTY, identity, of, zip} from "rxjs";
 import {MapProjectReferenceService} from "../services/map-project-reference.service";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {ConfigurationService} from "../services/configuration.service";
@@ -213,11 +213,11 @@ export class MainEffects {
             .pipe(
                 ofType(UiActions.refreshMapProjectState),
                 map(action => action.id),
-                groupBy(id => id),
+                groupBy(identity),
                 map(group =>
                     group.pipe(
-                        switchMap(id => of(id).pipe(
-                            expand(id => this.configurationService.returnAfterPollingDelay(id)),
+                        switchMap(groupedId => of(groupedId).pipe(
+                            expand(id => this.configurationService.deferUntilNextMapStatePolling(id)),
                             switchMap(id => zip(this.printmapsService.loadMapProjectState(id), of(id))),
                             map((mapProjectStateAndId, index) => [mapProjectStateAndId, index] as [[MapProjectState, string], number]),
                             takeWhile(([[mapProjectState, _id], index]) =>

@@ -47,7 +47,7 @@ function setup() {
             MainEffects,
             provideMockActions(() => actions$),
             provideMockStore({initialState}),
-            {provide: ConfigurationService, useValue: new ConfigurationService()},
+            {provide: ConfigurationService, useValue: new ConfigurationService(undefined)},
             {
                 provide: PrintmapsService,
                 useValue: new PrintmapsService("en-US", undefined, undefined,
@@ -940,7 +940,7 @@ describe("autoUploadMapProject effect", () => {
 describe("refreshMapProjectState effect", () => {
     beforeEach(() => {
         setup();
-        spyOn(configurationService, "returnAfterPollingDelay").and.callFake((value => cold("--a|", {a: value})));
+        spyOn(configurationService, "deferUntilNextMapStatePolling").and.callFake((value => cold("--a|", {a: value})));
     });
 
     it("should retrieve current state of map rendering job and dispatch a mapProjectStateUpdated when refreshMapProjectState action is dispatched", () => {

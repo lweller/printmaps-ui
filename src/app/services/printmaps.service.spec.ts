@@ -48,7 +48,7 @@ describe("PrintmapsService", () => {
             providers: [
                 {provide: LOCALE_ID, useValue: "en-US"},
                 PrintmapsService,
-                {provide: ConfigurationService, useValue: new ConfigurationService()},
+                {provide: ConfigurationService, useValue: new ConfigurationService(undefined)},
                 {provide: MapProjectConversionService, useValue: new MapProjectConversionService()},
                 {provide: ScaleService, useValue: new ScaleService()}
             ]
