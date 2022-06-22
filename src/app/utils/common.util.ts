@@ -1,4 +1,5 @@
 import {KeyValue} from "@angular/common";
+import {cloneDeep} from "lodash";
 
 export interface Ordered {
     order: number;
@@ -12,4 +13,14 @@ export function allValuesOf<T>(enumType: T) {
     return Object.keys(enumType)
         .filter(key => isNaN(Number(key)))
         .map(key => enumType[key]);
+}
+
+export function compareById<T extends { id: string }>(value1: T, value2: T) {
+    return value1.id == value2.id;
+}
+
+export function updateListById<T extends { id: string }>(originalList: T[], newList: T[]): T[] {
+    return newList?.map(newValue => originalList
+            ?.find(originalValue => compareById(originalValue, newValue))
+        ?? cloneDeep(newValue)) ?? [];
 }

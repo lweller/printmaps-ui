@@ -4,13 +4,16 @@
         <app-button-box fxFlex="1 1"></app-button-box>
     </div>
     <mat-card fxFlex="1 1" style="overflow-y:scroll; padding: 0">
-        <div *ngIf="mapProjectReferences?.length == 0" style="padding: 10px">
+        <div *ngIf="!mapProjectReferences || mapProjectReferences?.length == 0" style="padding: 10px">
             <span i18n>No map projects have been created yet.</span>
         </div>
-        <mat-selection-list (ngModelChange)="updateSelectedMapProjectReference($event)"
-                            *ngIf="mapProjectReferences?.length > 0"
-                            [multiple]="false" [ngModel]="[selectedMapProjectReference?.id]" fxFlexFill>
-            <mat-list-option *ngFor="let mapProjectReference of mapProjectReferences" [value]="mapProjectReference.id">
+        <mat-selection-list *ngIf="mapProjectReferences?.length > 0"
+                            [(ngModel)]="selectedMapProjectReferences"
+                            (ngModelChange)="mapProjectReferenceSelected($event)"
+                            [compareWith]="compareMapProjectReferences"
+                            [multiple]="false"
+                            fxFlexFill>
+            <mat-list-option *ngFor="let mapProjectReference of mapProjectReferences" [value]="mapProjectReference">
                 <mat-icon mat-list-icon matTooltip="{{mapProjectStateTooltip(mapProjectReference.state)}}"
                           style="width:18px"
                           svgIcon="map-project-state:{{mapProjectReference.state}}"></mat-icon>

@@ -1,16 +1,13 @@
 import {Component} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {debounceTime, distinctUntilChanged, filter} from "rxjs/operators";
-import {cloneDeep, isEqual} from "lodash";
+import {cloneDeep, isEmpty} from "lodash";
 import {MapProjectReference} from "../../model/intern/map-project-reference";
 import * as UiActions from "../../actions/main.actions";
 import {MatIconRegistry} from "@angular/material/icon";
 import {DomSanitizer} from "@angular/platform-browser";
 import {MapProjectState, mapProjectStateTooltip} from "../../model/intern/map-project-state";
-import {MatDialog} from "@angular/material/dialog";
-import {Subjectize} from "subjectize";
-import {ReplaySubject} from "rxjs";
 import {mapProjectReferences, selectedMapProjectReference} from "../../selectors/main.selectors";
+import {compareById, updateListById} from "../../utils/common.util";
 
 @Component({
     selector: "app-map-project-list-pane",
@@ -19,47 +16,29 @@ import {mapProjectReferences, selectedMapProjectReference} from "../../selectors
 })
 export class MapProjectListPaneComponent {
     mapProjectReferences: MapProjectReference[] = [];
-    selectedMapProjectReference: MapProjectReference = undefined;
-    @Subjectize("selectedMapProjectReference") selectedMapProjectReference$ = new ReplaySubject<MapProjectReference>(1);
+    selectedMapProjectReferences: MapProjectReference[] = [];
 
-    constructor(private store: Store<any>, private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer,
-                private dialog: MatDialog) {
+    constructor(private store: Store<any>, private iconRegistry: MatIconRegistry, private sanitizer: DomSanitizer) {
         this.registerIcons();
-        store
-            .select(mapProjectReferences)
-            .pipe(distinctUntilChanged(isEqual))
+        store.select(mapProjectReferences)
             .subscribe(nextMapProjectReferences =>
-                this.mapProjectReferences = cloneDeep(nextMapProjectReferences)
+                this.mapProjectReferences = updateListById(this.mapProjectReferences, nextMapProjectReferences)
             );
-        store
-            .select(selectedMapProjectReference)
-            .pipe(debounceTime(10))
+        store.select(selectedMapProjectReference)
             .subscribe(nextSelectedMapProjectReference =>
-                this.selectedMapProjectReference = cloneDeep(nextSelectedMapProjectReference)
+                this.selectedMapProjectReferences = nextSelectedMapProjectReference
+                    ? [cloneDeep(nextSelectedMapProjectReference)]
+                    : []
             );
-        this.selectedMapProjectReference$
-            .pipe(
-                filter(nextSelectedMapProjectReference =>
-                    nextSelectedMapProjectReference && nextSelectedMapProjectReference.state != MapProjectState.NONEXISTENT)
-            )
-            .subscribe(nextSelectedMapProjectReference =>
-                this.store.dispatch(UiActions.loadMapProject({mapProjectReference: nextSelectedMapProjectReference})));
-        this.selectedMapProjectReference$
-            .pipe(
-                filter(nextSelectedMapProjectReference =>
-                    nextSelectedMapProjectReference?.state == MapProjectState.NONEXISTENT)
-            )
-            .subscribe(nextSelectedMapProjectReference =>
-                this.dialog.open(NonexistentMapProjectEvictionConfirmDialog, {disableClose: true})
-                    .afterClosed()
-                    .subscribe(() =>
-                        this.store.dispatch(UiActions.deleteMapProject({id: nextSelectedMapProjectReference.id}))));
     }
 
-    updateSelectedMapProjectReference(selectedMapProjectReferenceIds: string) {
-        this.selectedMapProjectReference = this.mapProjectReferences
-            ?.filter(mapProjectReference => mapProjectReference.id == selectedMapProjectReferenceIds)[0];
+    mapProjectReferenceSelected(mapProjectReference: MapProjectReference) {
+        if (!isEmpty(mapProjectReference)) {
+            this.store.dispatch(UiActions.loadMapProject({mapProjectReference: mapProjectReference[0]}));
+        }
     }
+
+    compareMapProjectReferences = compareById;
 
     public mapProjectStateTooltip(state: MapProjectState) {
         return mapProjectStateTooltip(state);
@@ -71,12 +50,4 @@ export class MapProjectListPaneComponent {
                 this.sanitizer.bypassSecurityTrustResourceUrl(`./assets/map-project-state/${mapProjectState}.svg`));
         }
     }
-}
-
-@Component({
-    selector: "app-nonexistent-map-project-eviction-confirm-dialog",
-    templateUrl: "./nonexistent-map-project-eviction-confirm-dialog.component.html",
-    styles: []
-})
-export class NonexistentMapProjectEvictionConfirmDialog {
 }

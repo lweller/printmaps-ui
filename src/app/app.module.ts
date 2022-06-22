@@ -17,10 +17,7 @@ import {MetaReducer, StoreModule} from "@ngrx/store";
 import {MainEffects} from "./effects/main.effects";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
-import {
-    MapProjectListPaneComponent,
-    NonexistentMapProjectEvictionConfirmDialog
-} from "./components/map-project-list-pane/map-project-list-pane.component";
+import {MapProjectListPaneComponent} from "./components/map-project-list-pane/map-project-list-pane.component";
 import {MapPaneComponent} from "./components/map-pane/map-pane.component";
 import {MapComponent} from "./components/map/map.component";
 import {
@@ -63,6 +60,9 @@ import {
 import {MaterialFileInputModule} from "ngx-material-file-input";
 import {PRINTMAPS_UI_STATE_ID} from "./selectors/main.selectors";
 import {MapProjectConversionService} from "./services/map-project-conversion.service";
+import {
+    NonexistentMapProjectEvictionConfirmDialog
+} from "./components/dialogs/nonexistent-map-project-eviction-confirm-dialog.component";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);

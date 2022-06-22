@@ -28,6 +28,10 @@ import {
     SAMPLE_MAP_PROJECT_REFERENCE_1,
     SAMPLE_MAP_PROJECT_REFERENCE_2
 } from "../model/test/test-data";
+import {MatDialog} from "@angular/material/dialog";
+import {
+    NonexistentMapProjectEvictionConfirmDialog
+} from "../components/dialogs/nonexistent-map-project-eviction-confirm-dialog.component";
 
 let actions$: Observable<Action>;
 
@@ -36,6 +40,7 @@ let store: MockStore;
 let mapProjectReferenceService: MapProjectReferenceService;
 let printmapsService: PrintmapsService;
 let configurationService: ConfigurationService;
+let dialog: MatDialog;
 
 let effects: MainEffects;
 
@@ -53,7 +58,15 @@ function setup() {
                 useValue: new PrintmapsService("en-US", undefined, undefined,
                     undefined, undefined)
             },
-            {provide: MapProjectReferenceService, useValue: new MapProjectReferenceService(undefined)}
+            {provide: MapProjectReferenceService, useValue: new MapProjectReferenceService(undefined)},
+            {
+                provide: MatDialog,
+                useValue: {
+                    open: () => ({
+                        afterClosed: () => of(true)
+                    })
+                }
+            }
         ]
     });
 
@@ -64,6 +77,7 @@ function setup() {
     configurationService = TestBed.inject(ConfigurationService);
     printmapsService = TestBed.inject(PrintmapsService);
     mapProjectReferenceService = TestBed.inject(MapProjectReferenceService);
+    dialog = TestBed.inject(MatDialog);
 }
 
 function dispatch(action: TypedAction<any> | Observable<TypedAction<any>>) {
@@ -425,6 +439,25 @@ describe("loadMapProject effect", () => {
         expect(printmapsService.loadMapProject)
             .withContext("method printmapsService.loadMapProject()")
             .toHaveBeenCalledOnceWith(SAMPLE_MAP_PROJECT_REFERENCE_1);
+    });
+
+    it("should dispatch deleteMapProject after showing a dialog informing about non-existence of map project when loadMapProject is dispatched for a map project with state nonexistent", () => {
+        // given
+        spyOn(dialog, "open").and.callThrough();
+
+        // when
+        dispatch(UiActions.loadMapProject({
+            mapProjectReference: {
+                ...SAMPLE_MAP_PROJECT_REFERENCE_1,
+                state: MapProjectState.NONEXISTENT
+            }
+        }));
+
+        //then
+        expect(effects.loadMapProject)
+            .withContext("dispatched actions")
+            .toBeObservable(singleton(UiActions.deleteMapProject({id: SAMPLE_MAP_PROJECT_ID_1})));
+        expect(dialog.open).toHaveBeenCalledWith(NonexistentMapProjectEvictionConfirmDialog, {disableClose: true});
     });
 });
 

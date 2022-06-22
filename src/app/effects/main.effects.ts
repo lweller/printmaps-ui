@@ -24,6 +24,10 @@ import {MapProjectState} from "../model/intern/map-project-state";
 import {ConfigurationService} from "../services/configuration.service";
 import {currentMapProject, mapProjectReferences, selectedMapCenter} from "../selectors/main.selectors";
 import {MapProject, toMapProjectReference} from "../model/intern/map-project";
+import {MatDialog} from "@angular/material/dialog";
+import {
+    NonexistentMapProjectEvictionConfirmDialog
+} from "../components/dialogs/nonexistent-map-project-eviction-confirm-dialog.component";
 
 // noinspection JSUnusedGlobalSymbols
 @Injectable()
@@ -103,8 +107,14 @@ export class MainEffects {
                 filter(mapProjectReference => !!mapProjectReference),
                 distinctUntilChanged((previousMapProjectReference, currentMapProjectReference) =>
                     previousMapProjectReference.id == currentMapProjectReference.id),
-                switchMap(mapProjectReference => this.printmapsService.loadMapProject(mapProjectReference)),
-                map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject}))
+                switchMap(mapProjectReference =>
+                    mapProjectReference.state == MapProjectState.NONEXISTENT
+                        ? this.dialog.open(NonexistentMapProjectEvictionConfirmDialog, {disableClose: true})
+                            .afterClosed()
+                            .pipe(map(() => UiActions.deleteMapProject({id: mapProjectReference.id})))
+                        : this.printmapsService.loadMapProject(mapProjectReference)
+                            .pipe(map(mapProject => UiActions.mapProjectSelected({mapProject: mapProject})))
+                )
             )
     );
 
@@ -242,7 +252,8 @@ export class MainEffects {
         private readonly actions: Actions,
         private readonly configurationService: ConfigurationService,
         private readonly mapProjectReferenceService: MapProjectReferenceService,
-        private readonly printmapsService: PrintmapsService
+        private readonly printmapsService: PrintmapsService,
+        private readonly dialog: MatDialog
     ) {
     }
 }
