@@ -21,6 +21,7 @@ import {
     SAMPLE_ADDITIONAL_ELEMENT,
     SAMPLE_APP_CONF,
     SAMPLE_COORDINATES_1,
+    SAMPLE_DEFAULT_COORDINATES,
     SAMPLE_MAP_PROJECT_1,
     SAMPLE_MAP_PROJECT_2,
     SAMPLE_MAP_PROJECT_ID_1,
@@ -105,7 +106,7 @@ describe("init effect", () => {
         // then
         expect(effects.init)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.updateCenterCoordinates({center: SAMPLE_COORDINATES_1})));
+            .toBeObservable(singleton(UiActions.updateCenterCoordinates({center: SAMPLE_DEFAULT_COORDINATES})));
     });
 });
 

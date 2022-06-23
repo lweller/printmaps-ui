@@ -20,6 +20,7 @@ import {
 import {MapRenderingJobState} from "../api/map-rendering-job-state";
 import {UserObject} from "../api/user-object";
 
+export const SAMPLE_DEFAULT_COORDINATES = {latitude: 42, longitude: 17};
 export const SAMPLE_COORDINATES_1 = {latitude: 46, longitude: 12};
 export const SAMPLE_COORDINATES_1_UPDATED = {latitude: 46.01, longitude: 12.02};
 export const SAMPLE_COORDINATES_1_UPDATED_MAX_NORTH = {latitude: 85, longitude: 12};
@@ -30,7 +31,7 @@ export const SAMPLE_COORDINATES_1_UPDATED_OVER_PRECISE = {latitude: 46.000000000
 
 
 export const SAMPLE_APP_CONF = {
-    defaultCoordinates: SAMPLE_COORDINATES_1
+    defaultCoordinates: SAMPLE_DEFAULT_COORDINATES
 };
 
 export const SAMPLE_ADDITIONAL_ELEMENT: AnyAdditionalElement = {

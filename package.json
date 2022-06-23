@@ -72,6 +72,7 @@
     "karma-jasmine-html-reporter": "^1.6.0",
     "karma-junit-reporter": "^2.0.1",
     "mocha": "^8.4.0",
+    "ng-mocks": "^14.0.1",
     "ngx-i18nsupport": "^0.17.1",
     "puppeteer": "^14.1.0",
     "querystringify": "~2.2.0",
