@@ -148,7 +148,7 @@ describe("MapProjectListPaneComponent", () => {
         expect(store.dispatch).withContext("store dispatch method").not.toHaveBeenCalled();
     });
 
-    it("should update list and select new item when a new map reference corresponding to the current map project is added and", async () => {
+    it("should update list and select new item when a new map reference corresponding to the current map project is added", async () => {
         // given
         mapProjectReferencesSelector.setResult([SAMPLE_MAP_PROJECT_REFERENCE_1]);
         currentMapProjectSelector.setResult(SAMPLE_MAP_PROJECT_1);

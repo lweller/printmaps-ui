@@ -1,5 +1,5 @@
 import {KeyValue} from "@angular/common";
-import {cloneDeep} from "lodash";
+import {cloneDeep, isEqual} from "lodash";
 
 export interface Ordered {
     order: number;
@@ -21,6 +21,6 @@ export function compareById<T extends { id: string }>(value1: T, value2: T) {
 
 export function updateListById<T extends { id: string }>(originalList: T[], newList: T[]): T[] {
     return newList?.map(newValue => originalList
-            ?.find(originalValue => compareById(originalValue, newValue))
+            ?.find(originalValue => isEqual(originalValue, newValue))
         ?? cloneDeep(newValue)) ?? [];
 }
