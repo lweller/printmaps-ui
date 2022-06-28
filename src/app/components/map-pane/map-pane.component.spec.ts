@@ -92,7 +92,7 @@ describe("MapPaneComponent", () => {
         // then
         expect(store.dispatch)
             .withContext("store dispatch method")
-            .toHaveBeenCalledWith(UiActions.updateCenterCoordinates({center: {latitude: 39, longitude: -15}}));
+            .toHaveBeenCalledWith(UiActions.updateCenterCoordinates({latitude: 39, longitude: -15}));
     });
 
     it("should dispatch no action when selected area changed in map but no map project is currently selected", () => {
@@ -118,8 +118,8 @@ describe("MapPaneComponent", () => {
         expect(store.dispatch)
             .withContext("store dispatch method")
             .toHaveBeenCalledWith(UiActions.updateSelectedArea({
-                widthInM: 2000,
-                heightInM: 3000,
+                widthInMm: 80,
+                heightInMm: 120,
                 scale: SAMPLE_MAP_PROJECT_1.scale,
                 leftMarginInMm: SAMPLE_MAP_PROJECT_1.leftMarginInMm,
                 topMarginInMm: SAMPLE_MAP_PROJECT_1.topMarginInMm,

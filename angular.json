@@ -29,6 +29,7 @@
               "src/local"
             ],
             "styles": [
+              "src/styles.css",
               "src/theming.scss"
             ],
             "scripts": [],

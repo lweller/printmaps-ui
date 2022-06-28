@@ -3,6 +3,8 @@ import {AdditionalElementType, AdditionalGpxElement} from "../model/intern/addit
 import {MapProjectState} from "../model/intern/map-project-state";
 import {toMapProjectReference} from "../model/intern/map-project";
 import {PrintmapsUiState} from "../model/intern/printmaps-ui-state";
+import {PaperOrientation} from "../model/intern/paper-orientation";
+import {PAPER_FORMAT_SIZES, PaperFormat} from "../model/intern/paper-format";
 
 export const PRINTMAPS_UI_STATE_ID = "ch.wellernet.printmaps.ui-state";
 
@@ -33,6 +35,56 @@ export const selectedMapProjectReference = createSelector(
     currentMapProject,
     mapProject => toMapProjectReference(mapProject)
 );
+
+export const currentMapProjectGeneralProperties = createSelector(currentMapProject,
+    mapProject => mapProject
+        ? {
+            description: {name: mapProject.name},
+            options: mapProject.options
+        }
+        : undefined
+);
+
+export const currentMapProjectCenter = createSelector(currentMapProject,
+    (mapProject) => mapProject?.center);
+
+export const currentMapProjectFormat = createSelector(currentMapProject,
+    (mapProject) => mapProject
+        ? {
+            format: Array.from(PAPER_FORMAT_SIZES.entries())
+                .filter(([, computePaperSize]) => !!computePaperSize)
+                .filter(([, computePaperSize]) => {
+                    let portraitPaperSize = computePaperSize(PaperOrientation.PORTRAIT);
+                    return portraitPaperSize.widthInMm == Math.min(mapProject.widthInMm, mapProject.heightInMm)
+                        && portraitPaperSize.heightInMm == Math.max(mapProject.widthInMm, mapProject.heightInMm);
+                })
+                .map(([format]) => format)[0] ?? PaperFormat.CUSTOM,
+            orientation: mapProject.widthInMm <= mapProject.heightInMm
+                ? PaperOrientation.PORTRAIT
+                : PaperOrientation.LANDSCAPE
+        }
+        : undefined
+);
+
+export const currentMapProjectSize = createSelector(currentMapProject,
+    (mapProject) => mapProject
+        ? {widthInMm: mapProject.widthInMm, heightInMm: mapProject.heightInMm}
+        : undefined
+);
+
+export const currentMapProjectMargins = createSelector(currentMapProject,
+    (mapProject) => mapProject
+        ? {
+            topMarginInMm: mapProject.topMarginInMm,
+            bottomMarginInMm: mapProject.bottomMarginInMm,
+            leftMarginInMm: mapProject.leftMarginInMm,
+            rightMarginInMm: mapProject.rightMarginInMm
+        }
+        : undefined
+);
+
+export const currentMapProjectScale = createSelector(currentMapProject,
+    (mapProject) => mapProject?.scale);
 
 export const currentAdditionalElements = createSelector(currentMapProject,
     (mapProject) => mapProject?.additionalElements ?? []);

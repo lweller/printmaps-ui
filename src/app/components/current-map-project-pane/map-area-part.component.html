@@ -1,0 +1,76 @@
+<div [formGroup]="form">
+    <div fxFill fxLayout="row" fxLayoutGap="10px" formGroupName="center">
+        <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+            <mat-label i18n>Map Center Latitude</mat-label>
+            <input type="number" matInput decimals="9" max="85" min="-85" negative="9" numeric required
+                   formControlName="latitude" (keydown.enter)="$event.target.blur()">
+            <span matSuffix>°</span>
+        </mat-form-field>
+        <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+            <mat-label i18n>Map Center Longitude</mat-label>
+            <input type="number" matInput decimals="9" max="180" min="-180" negative="9" numeric required
+                   formControlName="longitude" (keydown.enter)="$event.target.blur()">
+            <span matSuffix>°</span>
+        </mat-form-field>
+    </div>
+    <ng-container formGroupName="paperFormat">
+        <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
+            <mat-label i18n>Page Format</mat-label>
+            <enum-select formControlName="format" [type]="PaperFormat"
+                         [labels]="PAPER_FORMAT_LABELS"></enum-select>
+        </mat-form-field>
+        <mat-form-field fxFlexFill>
+            <mat-label i18n>Page Orientation</mat-label>
+            <enum-select formControlName="orientation" [type]="PaperOrientation"
+                         [labels]="PAPER_ORIENTATION_LABELS"></enum-select>
+        </mat-form-field>
+    </ng-container>
+    <div formGroupName="paperSize" fxFill fxLayout="row" fxLayoutGap="10px">
+        <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+            <mat-label i18n>Page Width</mat-label>
+            <input type="number" matInput decimals="0" min="50" max="3000" numeric required
+                   formControlName="widthInMm" (keydown.enter)="$event.target.blur()">
+            <span matSuffix>mm</span>
+        </mat-form-field>
+        <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+            <mat-label i18n>Page Height</mat-label>
+            <input type="number" matInput decimals="0" min="50" max="2500" numeric required
+                   formControlName="heightInMm" (keydown.enter)="$event.target.blur()">
+            <span matSuffix>mm</span>
+        </mat-form-field>
+    </div>
+    <ng-container formGroupName="margins">
+        <div fxFill fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+                <mat-label i18n>Top Margin</mat-label>
+                <input type="number" matInput decimals="0" min="0" max="1000" numeric required
+                       formControlName="topMarginInMm" (keydown.enter)="$event.target.blur()">
+                <span matSuffix>mm</span>
+            </mat-form-field>
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+                <mat-label i18n>Bottom Margin</mat-label>
+                <input type="number" matInput decimals="0" min="0" max="1000" numeric required
+                       formControlName="bottomMarginInMm" (keydown.enter)="$event.target.blur()">
+                <span matSuffix>mm</span>
+            </mat-form-field>
+        </div>
+        <div fxFill fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+                <mat-label i18n>Left Margin</mat-label>
+                <input type="number" matInput decimals="0" min="0" max="1000" numeric required
+                       formControlName="leftMarginInMm" (keydown.enter)="$event.target.blur()">
+                <span matSuffix>mm</span>
+            </mat-form-field>
+            <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
+                <mat-label i18n>Right Margin</mat-label>
+                <input type="number" matInput decimals="0" min="0" max="1000" numeric required
+                       formControlName="rightMarginInMm" (keydown.enter)="$event.target.blur()">
+                <span matSuffix>mm</span>
+            </mat-form-field>
+        </div>
+    </ng-container>
+    <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
+        <mat-label i18n>Map Scale</mat-label>
+        <enum-select formControlName="scale" [type]="Scale" [labels]="scaleLabel"></enum-select>
+    </mat-form-field>
+</div>

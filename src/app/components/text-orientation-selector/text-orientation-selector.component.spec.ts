@@ -40,6 +40,7 @@ describe("TextOrientationSelector", () => {
         fixture = TestBed.createComponent(TextOrientationSelector);
         loader = TestbedHarnessEnvironment.loader(fixture);
         component = fixture.componentInstance;
+        component.formControl = TestBed.inject(FormBuilder).control(undefined);
         buttonToggleGroup = await loader.getHarness(MatButtonToggleGroupHarness);
         inputField = await loader.getHarness(MatInputHarness);
     });

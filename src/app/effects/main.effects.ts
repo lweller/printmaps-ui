@@ -37,9 +37,8 @@ export class MainEffects {
         () => this.actions
             .pipe(
                 ofType(UiActions.init),
-                map(() => UiActions.updateCenterCoordinates({
-                    center: this.configurationService.appConf.defaultCoordinates
-                }))
+                map(() =>
+                    UiActions.updateCenterCoordinates(this.configurationService.appConf.defaultCoordinates))
             )
     );
 

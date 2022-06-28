@@ -2,6 +2,12 @@ import {
     currentAdditionalElements,
     currentAdditionalGpxElements,
     currentMapProject,
+    currentMapProjectCenter,
+    currentMapProjectFormat,
+    currentMapProjectGeneralProperties,
+    currentMapProjectMargins,
+    currentMapProjectScale,
+    currentMapProjectSize,
     isCurrentMapProjectCopiable,
     isCurrentMapProjectDeletable,
     isCurrentMapProjectDownloadable,
@@ -21,8 +27,11 @@ import {
     SAMPLE_ADDITIONAL_GPX_ELEMENT,
     SAMPLE_ADDITIONAL_TEXT_ELEMENT,
     SAMPLE_MAP_PROJECT_1,
+    SAMPLE_MAP_PROJECT_2,
     SAMPLE_MAP_PROJECT_REFERENCE_1
 } from "../model/test/test-data";
+import {PaperFormat} from "../model/intern/paper-format";
+import {PaperOrientation} from "../model/intern/paper-orientation";
 
 const SAMPLE_GEO_COORDINATES: GeoCoordinates = {
     latitude: 46,
@@ -193,6 +202,173 @@ describe("selectedMapProjectReference", () => {
 
         // then
         expect(result).toEqual(SAMPLE_MAP_PROJECT_REFERENCE_1);
+    });
+});
+
+describe("currentMapProjectGeneralProperties", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectGeneralProperties.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return corresponding values when current project is defined", () => {
+        // when
+        let result = currentMapProjectGeneralProperties.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual({
+            description: {
+                name: SAMPLE_MAP_PROJECT_1.name
+            },
+            options: SAMPLE_MAP_PROJECT_1.options
+        });
+    });
+});
+
+describe("currentMapProjectCenter", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectCenter.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return corresponding values when current project is defined", () => {
+        // when
+        let result = currentMapProjectCenter.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual(SAMPLE_MAP_PROJECT_1.center);
+    });
+});
+
+describe("currentMapProjectFormat", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectFormat.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return predefined paper size when current project is defined with corresponding width and height", () => {
+        // when
+        let result = currentMapProjectFormat.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual({
+            format: PaperFormat.A4,
+            orientation: PaperOrientation.PORTRAIT
+        });
+    });
+
+    it("should return custom paper size when current project is defined with width and height not corresponding to a predefined size", () => {
+        // when
+        let result = currentMapProjectFormat.projector(SAMPLE_MAP_PROJECT_2);
+
+        // then
+        expect(result).toEqual({
+            format: PaperFormat.CUSTOM,
+            orientation: PaperOrientation.PORTRAIT
+        });
+    });
+
+    it("should return portrait orientation when current project is defined with same width and height", () => {
+        // when
+        // noinspection JSSuspiciousNameCombination
+        let result = currentMapProjectFormat.projector({
+            ...SAMPLE_MAP_PROJECT_2,
+            widthInMm: SAMPLE_MAP_PROJECT_2.widthInMm,
+            heightInMm: SAMPLE_MAP_PROJECT_2.widthInMm
+        });
+
+        // then
+        expect(result).toEqual({
+            format: PaperFormat.CUSTOM,
+            orientation: PaperOrientation.PORTRAIT
+        });
+    });
+
+    it("should return landscape orientation when current project is defined with width greater than height", () => {
+        // when
+        // noinspection JSSuspiciousNameCombination
+        let result = currentMapProjectFormat.projector({
+            ...SAMPLE_MAP_PROJECT_2,
+            widthInMm: SAMPLE_MAP_PROJECT_2.heightInMm,
+            heightInMm: SAMPLE_MAP_PROJECT_2.widthInMm
+        });
+
+        // then
+        expect(result).toEqual({
+            format: PaperFormat.CUSTOM,
+            orientation: PaperOrientation.LANDSCAPE
+        });
+    });
+});
+
+describe("currentMapProjectSize", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectSize.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return corresponding values when current project is defined", () => {
+        // when
+        let result = currentMapProjectSize.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual({
+            widthInMm: SAMPLE_MAP_PROJECT_1.widthInMm,
+            heightInMm: SAMPLE_MAP_PROJECT_1.heightInMm
+        });
+    });
+});
+
+describe("currentMapProjectMargins", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectMargins.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return corresponding values when current project is defined", () => {
+        // when
+        let result = currentMapProjectMargins.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual({
+            topMarginInMm: SAMPLE_MAP_PROJECT_1.topMarginInMm,
+            bottomMarginInMm: SAMPLE_MAP_PROJECT_1.bottomMarginInMm,
+            leftMarginInMm: SAMPLE_MAP_PROJECT_1.leftMarginInMm,
+            rightMarginInMm: SAMPLE_MAP_PROJECT_1.rightMarginInMm
+        });
+    });
+});
+
+describe("currentMapProjectScale", () => {
+    it("should return an undefined value when current project is undefined", () => {
+        // when
+        let result = currentMapProjectScale.projector(undefined);
+
+        // then
+        expect(result).toBeUndefined();
+    });
+
+    it("should return corresponding values when current project is defined", () => {
+        // when
+        let result = currentMapProjectScale.projector(SAMPLE_MAP_PROJECT_1);
+
+        // then
+        expect(result).toEqual(SAMPLE_MAP_PROJECT_1.scale);
     });
 });
 

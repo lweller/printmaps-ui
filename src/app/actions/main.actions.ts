@@ -7,6 +7,8 @@ import {MapProjectReference} from "../model/intern/map-project-reference";
 import {MapProjectState} from "../model/intern/map-project-state";
 import {GeoCoordinates} from "../model/intern/geo-coordinates";
 import {AdditionalElementType, AnyAdditionalElement} from "../model/intern/additional-element";
+import {PaperFormat} from "../model/intern/paper-format";
+import {PaperOrientation} from "../model/intern/paper-orientation";
 
 const SOURCE = "Printmaps UI";
 
@@ -25,12 +27,22 @@ export const mapProjectReferencesLoaded = createAction(
 
 export const updateCenterCoordinates = createAction(
     createActionType(SOURCE, "UPDATE_CENTER_COORDINATES"),
-    props<{ center: GeoCoordinates }>()
+    props<GeoCoordinates>()
 );
 
 export const updateSelectedArea = createAction(
     createActionType(SOURCE, "UPDATE_SELECTED_AREA"),
-    props<{ widthInM: number, heightInM: number, topMarginInMm: number, bottomMarginInMm: number, leftMarginInMm: number, rightMarginInMm: number, scale: Scale }>()
+    props<Partial<{
+            widthInMm: number,
+            heightInMm: number,
+            topMarginInMm: number,
+            bottomMarginInMm: number,
+            leftMarginInMm: number,
+            rightMarginInMm: number,
+            format: PaperFormat,
+            orientation: PaperOrientation,
+            scale: Scale
+    }>>()
 );
 
 export const updateMapName = createAction(
@@ -40,7 +52,7 @@ export const updateMapName = createAction(
 
 export const updateMapOptions = createAction(
     createActionType(SOURCE, "UPDATE_MAP_OPTIONS"),
-    props<{ options: MapOptions }>()
+    props<MapOptions>()
 );
 
 export const createMapProject = createAction(

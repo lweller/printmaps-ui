@@ -21,6 +21,8 @@ import {cases} from "jasmine-parameterized";
 import {Scale} from "../model/intern/scale";
 import {FileFormat, MapStyle} from "../model/api/map-rendering-job-definition";
 import {MapProjectState} from "../model/intern/map-project-state";
+import {PaperFormat} from "../model/intern/paper-format";
+import {PaperOrientation} from "../model/intern/paper-orientation";
 
 describe("printmapsUiReducer", () => {
 
@@ -311,9 +313,7 @@ describe("printmapsUiReducer", () => {
                 ...initialState,
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
-            UiActions.updateCenterCoordinates({
-                center: SAMPLE_COORDINATES_1_UPDATED
-            }));
+            UiActions.updateCenterCoordinates(SAMPLE_COORDINATES_1_UPDATED));
 
         // then
         expect(result.mapCenter)
@@ -334,9 +334,7 @@ describe("printmapsUiReducer", () => {
                 ...initialState,
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
-            UiActions.updateCenterCoordinates({
-                center: SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_NORTH
-            }));
+            UiActions.updateCenterCoordinates(SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_NORTH));
 
         // then
         expect(result.mapCenter)
@@ -357,9 +355,7 @@ describe("printmapsUiReducer", () => {
                 ...initialState,
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
-            UiActions.updateCenterCoordinates({
-                center: SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_SOUTH
-            }));
+            UiActions.updateCenterCoordinates(SAMPLE_COORDINATES_1_UPDATED_TOO_MUCH_SOUTH));
 
         // then
         expect(result.mapCenter)
@@ -380,9 +376,7 @@ describe("printmapsUiReducer", () => {
                 ...initialState,
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
-            UiActions.updateCenterCoordinates({
-                center: SAMPLE_COORDINATES_1_UPDATED_OVER_PRECISE
-            }));
+            UiActions.updateCenterCoordinates(SAMPLE_COORDINATES_1_UPDATED_OVER_PRECISE));
 
         // then
         expect(result.mapCenter)
@@ -400,9 +394,7 @@ describe("printmapsUiReducer", () => {
     it("should update only coordinates of map center when updateCenterCoordinates action is applied on state with no project currently selected", () => {
         // when
         const result = printmapsUiReducer(initialState,
-            UiActions.updateCenterCoordinates({
-                center: SAMPLE_COORDINATES_1_UPDATED
-            }));
+            UiActions.updateCenterCoordinates(SAMPLE_COORDINATES_1_UPDATED));
 
         // then
         expect(result.mapCenter)
@@ -420,40 +412,8 @@ describe("printmapsUiReducer", () => {
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
             UiActions.updateSelectedArea({
-                widthInM: 3200,
-                heightInM: 4750,
-                topMarginInMm: 10,
-                bottomMarginInMm: 10,
-                leftMarginInMm: 10,
-                rightMarginInMm: 10,
-                scale: Scale.RATIO_1_25000
-            }));
-
-        // then
-        expect(result.currentMapProject)
-            .withContext("PrintmapsUiState.currentMapProject")
-            .toEqual({
-                ...SAMPLE_MAP_PROJECT_1,
-                modifiedLocally: true,
                 widthInMm: 148,
                 heightInMm: 210,
-                topMarginInMm: 10,
-                bottomMarginInMm: 10,
-                leftMarginInMm: 10,
-                rightMarginInMm: 10,
-                scale: Scale.RATIO_1_25000
-            });
-    });
-
-    it("should update current map with rounded dimensions project and mark it as modified when updateSelectedArea action is applied on state with a project currently selected", () => {
-        // when
-        const result = printmapsUiReducer({
-                ...initialState,
-                currentMapProject: SAMPLE_MAP_PROJECT_1
-            },
-            UiActions.updateSelectedArea({
-                widthInM: 3201,
-                heightInM: 4751,
                 topMarginInMm: 10,
                 bottomMarginInMm: 10,
                 leftMarginInMm: 10,
@@ -484,8 +444,8 @@ describe("printmapsUiReducer", () => {
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
             UiActions.updateSelectedArea({
-                widthInM: 75025,
-                heightInM: 62525,
+                widthInMm: 3001,
+                heightInMm: 2501,
                 topMarginInMm: 0,
                 bottomMarginInMm: 0,
                 leftMarginInMm: 0,
@@ -516,8 +476,8 @@ describe("printmapsUiReducer", () => {
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
             UiActions.updateSelectedArea({
-                widthInM: 1225,
-                heightInM: 1225,
+                widthInMm: 49,
+                heightInMm: 49,
                 topMarginInMm: 0,
                 bottomMarginInMm: 0,
                 leftMarginInMm: 0,
@@ -541,12 +501,107 @@ describe("printmapsUiReducer", () => {
             });
     });
 
+    it("should update current map to predefined paper size when updateSelectedArea action with with an explicit format is applied on state with a project currently selected", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                currentMapProject: SAMPLE_MAP_PROJECT_1
+            },
+            UiActions.updateSelectedArea({format: PaperFormat.A3}));
+
+        // then
+        expect(result.currentMapProject)
+            .withContext("PrintmapsUiState.currentMapProject")
+            .toEqual({
+                ...SAMPLE_MAP_PROJECT_1,
+                modifiedLocally: true,
+                widthInMm: 297,
+                heightInMm: 420
+            });
+    });
+
+    it("should update current map to predefined paper size when updateSelectedArea action with with an explicit format and custom width and height is applied on state with a project currently selected", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                currentMapProject: SAMPLE_MAP_PROJECT_1
+            },
+            UiActions.updateSelectedArea({widthInMm: 200, heightInMm: 300, format: PaperFormat.A3}));
+
+        // then
+        expect(result.currentMapProject)
+            .withContext("PrintmapsUiState.currentMapProject")
+            .toEqual({
+                ...SAMPLE_MAP_PROJECT_1,
+                modifiedLocally: true,
+                widthInMm: 297,
+                heightInMm: 420
+            });
+    });
+
+    it("should update current map with swapped width and height when updateSelectedArea action with with an explicit orientation is applied on state with a project currently selected", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                currentMapProject: SAMPLE_MAP_PROJECT_1
+            },
+            UiActions.updateSelectedArea({orientation: PaperOrientation.LANDSCAPE}));
+
+        // then
+        expect(result.currentMapProject)
+            .withContext("PrintmapsUiState.currentMapProject")
+            .toEqual({
+                ...SAMPLE_MAP_PROJECT_1,
+                modifiedLocally: true,
+                widthInMm: 297,
+                heightInMm: 210
+            });
+    });
+
+    it("should update current map with swapped width and height when updateSelectedArea action with with an explicit orientation and new custom format is applied on state with a project currently selected", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                currentMapProject: SAMPLE_MAP_PROJECT_1
+            },
+            UiActions.updateSelectedArea({widthInMm: 200, heightInMm: 300, orientation: PaperOrientation.LANDSCAPE}));
+
+        // then
+        expect(result.currentMapProject)
+            .withContext("PrintmapsUiState.currentMapProject")
+            .toEqual({
+                ...SAMPLE_MAP_PROJECT_1,
+                modifiedLocally: true,
+                widthInMm: 300,
+                heightInMm: 200
+            });
+    });
+
+    it("should update current map with swapped width and height when updateSelectedArea action with with an explicit orientation and new custom format is applied on state with a project currently selected", () => {
+        // when
+        const result = printmapsUiReducer({
+                ...initialState,
+                currentMapProject: SAMPLE_MAP_PROJECT_1
+            },
+            UiActions.updateSelectedArea({widthInMm: 200, heightInMm: 300, orientation: PaperOrientation.LANDSCAPE}));
+
+        // then
+        expect(result.currentMapProject)
+            .withContext("PrintmapsUiState.currentMapProject")
+            .toEqual({
+                ...SAMPLE_MAP_PROJECT_1,
+                modifiedLocally: true,
+                widthInMm: 300,
+                heightInMm: 200
+            });
+    });
+
     it("should update nothing when updateSelectedArea action is applied on state with no project currently selected", () => {
         // when
         const result = printmapsUiReducer(initialState,
             UiActions.updateSelectedArea({
-                widthInM: 5250,
-                heightInM: 7425,
+                widthInMm: 148,
+                heightInMm: 210,
                 topMarginInMm: 10,
                 bottomMarginInMm: 10,
                 leftMarginInMm: 10,
@@ -572,9 +627,7 @@ describe("printmapsUiReducer", () => {
                 ...initialState,
                 currentMapProject: SAMPLE_MAP_PROJECT_1
             },
-            UiActions.updateMapOptions({
-                options: SAMPLE_OPTIONS
-            }));
+            UiActions.updateMapOptions(SAMPLE_OPTIONS));
 
         // then
         expect(result.currentMapProject)
@@ -594,10 +647,7 @@ describe("printmapsUiReducer", () => {
         };
 
         // when
-        const result = printmapsUiReducer(initialState,
-            UiActions.updateMapOptions({
-                options: SAMPLE_OPTIONS
-            }));
+        const result = printmapsUiReducer(initialState, UiActions.updateMapOptions(SAMPLE_OPTIONS));
 
         // then
         expect(result)

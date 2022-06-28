@@ -106,7 +106,7 @@ describe("init effect", () => {
         // then
         expect(effects.init)
             .withContext("dispatched actions")
-            .toBeObservable(singleton(UiActions.updateCenterCoordinates({center: SAMPLE_DEFAULT_COORDINATES})));
+            .toBeObservable(singleton(UiActions.updateCenterCoordinates(SAMPLE_DEFAULT_COORDINATES)));
     });
 });
 

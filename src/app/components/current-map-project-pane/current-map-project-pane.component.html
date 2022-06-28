@@ -10,143 +10,21 @@
     </div>
     <mat-card fxFlex="1 0" style="overflow-y:scroll;padding:10px">
         <mat-accordion fxFlexFill multi>
-            <mat-expansion-panel #generalPropertiesPart (afterExpand)="scrollTo(generalPropertiesPart)"
+            <mat-expansion-panel #generalPropertiesPart
+                                 (afterExpand)="scrollTo(generalPropertiesPart)"
                                  [(expanded)]="generalPropertiesPartExpanded">
                 <mat-expansion-panel-header>
                     <mat-panel-title i18n>General properties</mat-panel-title>
                 </mat-expansion-panel-header>
-                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
-                    <mat-label i18n>Project Name</mat-label>
-                    <input (keydown.enter)="$event.target.blur()" (ngModelChange)="dispatchNameUpdate($event)"
-                           [ngModel]="mapProject.name" matInput
-                           required>
-                </mat-form-field>
-                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
-                    <mat-label i18n>Output File Format</mat-label>
-                    <mat-select (ngModelChange)="dispatchFileFormatUpdate($event)"
-                                [ngModel]="mapProject.options.fileFormat">
-                        <mat-option *ngFor="let entry of fileFormats | keyvalue: order" [value]=entry.key
-                                    class="mat-body">
-                            {{entry.value}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
-                    <mat-label i18n>Map Style</mat-label>
-                    <mat-select (ngModelChange)="dispatchMapStyleUpdate($event)"
-                                [ngModel]="mapProject.options.mapStyle">
-                        <mat-option *ngFor="let entry of mapStyles | keyvalue: order" [value]=entry.key
-                                    class="mat-body">
-                            {{entry.value}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-general-properties-part></app-general-properties-part>
             </mat-expansion-panel>
-            <mat-expansion-panel #mapAreaPart (afterExpand)="scrollTo(mapAreaPart)" [(expanded)]="mapAreaPartExpanded">
+            <mat-expansion-panel #mapAreaPart
+                                 (afterExpand)="scrollTo(mapAreaPart)"
+                                 [(expanded)]="mapAreaPartExpanded">
                 <mat-expansion-panel-header>
                     <mat-panel-title i18n>Map Area</mat-panel-title>
                 </mat-expansion-panel-header>
-                <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Map Center Latitude</mat-label>
-                        <input #latitudeField (cuechange)="latitudeField.blur()" (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchCenterLatitudeUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.center.latitude"
-                               decimals="9" matInput max="85" min="-85" negative="9" numeric required>
-                        <span matSuffix>°</span>
-                    </mat-form-field>
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Map Center Longitude</mat-label>
-                        <input #longitudeField (cuechange)="longitudeField.blur()"
-                               (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchCenterLongitudeUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.center.longitude"
-                               decimals="9" matInput max="180" min="-180" negative="9" numeric required>
-                        <span matSuffix>°</span>
-                    </mat-form-field>
-                </div>
-                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
-                    <mat-label i18n>Page Format</mat-label>
-                    <mat-select (ngModelChange)="dispatchFormatUpdate($event)"
-                                [ngModel]="printAreaFormat">
-                        <mat-option *ngFor="let entry of paperFormats | keyvalue" [value]=entry.key class="mat-body">
-                            {{entry.value}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field fxFlexFill>
-                    <mat-label i18n>Page Orientation</mat-label>
-                    <mat-select (ngModelChange)="dispatchOrientationUpdate($event)"
-                                [ngModel]="printAreaOrientation">
-                        <mat-option *ngFor="let entry of paperOrientations | keyvalue: order" [value]=entry.key
-                                    class="mat-body">
-                            {{entry.value}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Page Width</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaWidthUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.widthInMm"
-                               decimals="0" matInput max="3000" min="50" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Page Height</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaHeightUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.heightInMm"
-                               decimals="0" matInput max="2500" min="50" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                </div>
-                <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Top Margin</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaTopMarginUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.topMarginInMm"
-                               decimals="0" matInput max="1000" min="0" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Bottom Margin</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaBottomMarginUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.bottomMarginInMm"
-                               decimals="0" matInput max="1000" min="0" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                </div>
-                <div fxFill fxLayout="row" fxLayoutGap="10px">
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Left Margin</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaLeftMarginUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.leftMarginInMm"
-                               decimals="0" matInput max="1000" min="0" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                    <mat-form-field [hideRequiredMarker]="true" fxFlex="calc(50%-5px)">
-                        <mat-label i18n>Right Margin</mat-label>
-                        <input (keydown.enter)="$event.target.blur()"
-                               (ngModelChange)="dispatchSelectedAreaRightMarginUpdate($event)"
-                               [ngModelOptions]="{updateOn: 'blur'}" [ngModel]="mapProject.rightMarginInMm"
-                               decimals="0" matInput max="1000" min="0" numeric required>
-                        <span matSuffix>mm</span>
-                    </mat-form-field>
-                </div>
-                <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
-                    <mat-label i18n>Map Scale</mat-label>
-                    <mat-select (ngModelChange)="dispatchScaleUpdate($event)"
-                                [ngModel]="mapProject.scale">
-                        <mat-option *ngFor="let entry of scales | keyvalue" [value]=entry.key class="mat-body">
-                            {{entry.value}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <app-map-area-part></app-map-area-part>
             </mat-expansion-panel>
             <mat-expansion-panel #additionalElementsPart (afterExpand)="scrollTo(additionalElementsPart)"
                                  [(expanded)]="additionalElementsPartExpanded">
@@ -167,7 +45,7 @@
                 </mat-expansion-panel-header>
                 <mat-menu #elementTypes="matMenu">
                     <button (click)="addAdditionalElement(entry.key)"
-                            *ngFor="let entry of additionalElementTypes | keyvalue: order"
+                            *ngFor="let entry of additionalElementTypes | keyvalue"
                             [disabled]="entry.value.disabled" mat-menu-item>{{entry.value}}</button>
                 </mat-menu>
                 <app-additional-element-list></app-additional-element-list>

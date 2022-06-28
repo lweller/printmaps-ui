@@ -2,8 +2,9 @@ import {Action, createReducer, on} from "@ngrx/store";
 import {round} from "lodash";
 import * as UiActions from "../actions/main.actions";
 import {initialState, PrintmapsUiState} from "../model/intern/printmaps-ui-state";
-import {getScaleProperties} from "../model/intern/scale";
 import {toMapProjectReference} from "../model/intern/map-project";
+import {PAPER_FORMAT_SIZES, PaperFormat, PaperSize} from "../model/intern/paper-format";
+import {PaperOrientation} from "../model/intern/paper-orientation";
 
 const reducer = createReducer(initialState,
 
@@ -74,10 +75,10 @@ const reducer = createReducer(initialState,
         })),
 
     on(UiActions.updateCenterCoordinates,
-        (state, {center}) => {
+        (state, {latitude, longitude}) => {
             let roundedCoordinates = {
-                latitude: Math.min(Math.max(round(center.latitude, 9), -85), 85),
-                longitude: Math.min(Math.max(round(center.longitude, 9), -180), 180)
+                latitude: Math.min(Math.max(round(latitude, 9), -85), 85),
+                longitude: Math.min(Math.max(round(longitude, 9), -180), 180)
             };
             return {
                 ...state,
@@ -93,32 +94,49 @@ const reducer = createReducer(initialState,
         }),
 
     on(UiActions.updateSelectedArea,
-        (state, {widthInM, heightInM, topMarginInMm, bottomMarginInMm, leftMarginInMm, rightMarginInMm, scale}) =>
+        (state, {
+            widthInMm,
+            heightInMm,
+            topMarginInMm,
+            bottomMarginInMm,
+            leftMarginInMm,
+            rightMarginInMm,
+            format,
+            orientation,
+            scale
+        }) =>
             ({
                 ...state,
                 currentMapProject: state.currentMapProject
                     ? {
                         ...state.currentMapProject,
-                        widthInMm: Math.min(Math.max(round(widthInM / getScaleProperties(scale).reductionFactor * 1000) + leftMarginInMm * 1 + rightMarginInMm * 1, 50), 3000),
-                        heightInMm: Math.min(Math.max(round(heightInM / getScaleProperties(scale).reductionFactor * 1000) + topMarginInMm * 1 + bottomMarginInMm * 1, 50), 2500),
-                        topMarginInMm: topMarginInMm,
-                        bottomMarginInMm: bottomMarginInMm,
-                        leftMarginInMm: leftMarginInMm,
-                        rightMarginInMm: rightMarginInMm,
-                        scale: scale,
-                        modifiedLocally: true
+                        ...computePaperSize(format, orientation, {
+                            widthInMm: widthInMm ?? state.currentMapProject.widthInMm,
+                            heightInMm: heightInMm ?? state.currentMapProject.heightInMm
+                        }),
+                        ...{
+                            topMarginInMm: topMarginInMm ?? state.currentMapProject.topMarginInMm,
+                            bottomMarginInMm: bottomMarginInMm ?? state.currentMapProject.bottomMarginInMm,
+                            leftMarginInMm: leftMarginInMm ?? state.currentMapProject.leftMarginInMm,
+                            rightMarginInMm: rightMarginInMm ?? state.currentMapProject.rightMarginInMm,
+                            scale: scale ?? state.currentMapProject.scale,
+                            modifiedLocally: true
+                        }
                     }
                     : state.currentMapProject
             })
     ),
 
     on(UiActions.updateMapOptions,
-        (state, {options}) => ({
+        (state, {fileFormat, mapStyle}) => ({
             ...state,
             currentMapProject: state.currentMapProject
                 ? {
                     ...state.currentMapProject,
-                    options: options,
+                    options: {
+                        fileFormat: fileFormat,
+                        mapStyle: mapStyle
+                    },
                     modifiedLocally: true
                 }
                 : state.currentMapProject
@@ -201,4 +219,37 @@ const reducer = createReducer(initialState,
 
 export function printmapsUiReducer(state: PrintmapsUiState | undefined, action: Action) {
     return reducer(state, action);
+}
+
+function computePaperSize(format: PaperFormat, orientation: PaperOrientation, paperSize: PaperSize): PaperSize {
+    orientation = orientation ??
+        (paperSize.widthInMm <= paperSize.heightInMm ? PaperOrientation.PORTRAIT : PaperOrientation.LANDSCAPE);
+    let formatForOrientation = PAPER_FORMAT_SIZES.get(format);
+    switch (true) {
+        case !!formatForOrientation:
+            return formatForOrientation(orientation);
+        case orientation == PaperOrientation.PORTRAIT:
+            return {
+                widthInMm: roundWidth(Math.min(paperSize.widthInMm, paperSize.heightInMm)),
+                heightInMm: roundHeight(Math.max(paperSize.widthInMm, paperSize.heightInMm))
+            };
+        case orientation == PaperOrientation.LANDSCAPE:
+            return {
+                widthInMm: roundWidth(Math.max(paperSize.widthInMm, paperSize.heightInMm)),
+                heightInMm: roundHeight(Math.min(paperSize.widthInMm, paperSize.heightInMm))
+            };
+        default:
+            return {
+                widthInMm: roundWidth(paperSize.widthInMm),
+                heightInMm: roundHeight((paperSize.heightInMm))
+            };
+    }
+}
+
+function roundWidth(widthInMm: number) {
+    return Math.min(Math.max(widthInMm, 50), 3000);
+}
+
+function roundHeight(heightInMm: number) {
+    return Math.min(Math.max(heightInMm, 50), 2500);
 }

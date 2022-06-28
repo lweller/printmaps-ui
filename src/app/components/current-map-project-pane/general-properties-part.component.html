@@ -1,0 +1,18 @@
+<div [formGroup]="form">
+    <ng-container formGroupName="description">
+        <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
+            <mat-label i18n>Project Name</mat-label>
+            <input matInput required formControlName="name" (keydown.enter)="$event.target.blur()">
+        </mat-form-field>
+    </ng-container>
+    <ng-container formGroupName="options">
+        <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
+            <mat-label i18n>Output File Format</mat-label>
+            <enum-select formControlName="fileFormat" [type]="FileFormat"></enum-select>
+        </mat-form-field>
+        <mat-form-field [hideRequiredMarker]="true" fxFlexFill>
+            <mat-label i18n>Map Style</mat-label>
+            <enum-select formControlName="mapStyle" [type]="MapStyle"></enum-select>
+        </mat-form-field>
+    </ng-container>
+</div>

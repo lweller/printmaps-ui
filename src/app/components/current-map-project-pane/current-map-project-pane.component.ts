@@ -2,11 +2,7 @@ import {Component, ViewChild} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {cloneDeep, isEqual} from "lodash";
 import * as UiActions from "../../actions/main.actions";
-import {FILE_FORMATS, FileFormat, MAP_STYLES, MapStyle} from "../../model/api/map-rendering-job-definition";
 import {MapProject} from "../../model/intern/map-project";
-import {getPaperFormatProperties, PAPER_FORMATS, PaperFormat} from "../../model/intern/paper-format";
-import {PAPER_ORIENTATIONS, PaperOrientation} from "../../model/intern/paper-orientation";
-import * as s from "../../model/intern/scale";
 import {distinctUntilChanged, filter} from "rxjs/operators";
 import {MapProjectState} from "../../model/intern/map-project-state";
 import {MatIconRegistry} from "@angular/material/icon";
@@ -15,7 +11,6 @@ import {ADDITIONAL_ELEMENT_TYPES, AdditionalElementType} from "../../model/inter
 import {MatExpansionPanel} from "@angular/material/expansion";
 import {AdditionalElementListComponent} from "../additional-element-list/additional-element-list.component";
 import {MatDialog} from "@angular/material/dialog";
-import {order} from "../../utils/common.util";
 import {currentMapProject, selectedAdditionalElementId} from "../../selectors/main.selectors";
 
 @Component({
@@ -24,11 +19,6 @@ import {currentMapProject, selectedAdditionalElementId} from "../../selectors/ma
     styles: []
 })
 export class CurrentMapProjectPaneComponent {
-    readonly scales = s.SCALES;
-    readonly paperFormats = PAPER_FORMATS;
-    readonly paperOrientations = PAPER_ORIENTATIONS;
-    readonly fileFormats = FILE_FORMATS;
-    readonly mapStyles = MAP_STYLES;
     readonly additionalElementTypes = ADDITIONAL_ELEMENT_TYPES;
 
     mapProject: MapProject = undefined;
@@ -37,8 +27,6 @@ export class CurrentMapProjectPaneComponent {
     generalPropertiesPartExpanded = false;
     mapAreaPartExpanded = true;
     additionalElementsPartExpanded = false;
-
-    order = order;
 
     @ViewChild(AdditionalElementListComponent) additionalElementList: AdditionalElementListComponent;
 
@@ -51,7 +39,7 @@ export class CurrentMapProjectPaneComponent {
                 distinctUntilChanged((previousValue, nextValue) => isEqual(previousValue, nextValue))
             )
             .subscribe(nextValue => {
-                if (this.mapProject?.id && this.mapProject?.modifiedLocally && this.mapProject?.id != nextValue.id) {
+                if (this.mapProject?.id && this.mapProject?.modifiedLocally && this.mapProject?.id != nextValue?.id) {
                     store.dispatch(UiActions.ensureMapProjectIsUploadedAndDispatch({mapProject: this.mapProject}));
                 }
                 this.mapProject = cloneDeep(nextValue);
@@ -62,131 +50,6 @@ export class CurrentMapProjectPaneComponent {
                 distinctUntilChanged((previousValue, nextValue) => isEqual(previousValue, nextValue))
             )
             .subscribe(nextValue => this.selectedAdditionalElementId = cloneDeep(nextValue));
-    }
-
-    get printAreaFormat() {
-        let formatEntry = Array.from(this.paperFormats.entries())
-            .find(entry =>
-                (entry[1].length1 == this.mapProject.widthInMm
-                    && entry[1].length2 == this.mapProject.heightInMm)
-                || (entry[1].length2 == this.mapProject.widthInMm
-                    && entry[1].length1 == this.mapProject.heightInMm));
-        return formatEntry ? formatEntry[0] : PaperFormat.CUSTOM;
-    }
-
-    get printAreaOrientation() {
-        return this.mapProject.widthInMm <= this.mapProject.heightInMm
-            ? PaperOrientation.PORTRAIT
-            : PaperOrientation.LANDSCAPE;
-    }
-
-    dispatchCenterLatitudeUpdate(latitude: number) {
-        this.mapProject.center.latitude = latitude;
-        this.dispatchCenterCoordinatesUpdate();
-    }
-
-    dispatchCenterLongitudeUpdate(longitude: number) {
-        this.mapProject.center.longitude = longitude;
-        this.dispatchCenterCoordinatesUpdate();
-    }
-
-    dispatchCenterCoordinatesUpdate() {
-        this.store.dispatch(UiActions.updateCenterCoordinates({center: this.mapProject.center}));
-    }
-
-    dispatchFormatUpdate(format: PaperFormat) {
-        if (format == PaperFormat.CUSTOM) {
-            return;
-        }
-        let orientation = this.printAreaOrientation;
-        let formatProperties = getPaperFormatProperties(format);
-        this.mapProject.widthInMm = formatProperties.width(orientation);
-        this.mapProject.heightInMm = formatProperties.height(orientation);
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchOrientationUpdate(orientation: PaperOrientation) {
-        let width = this.mapProject.widthInMm;
-        let height = this.mapProject.heightInMm;
-        if (orientation == PaperOrientation.PORTRAIT) {
-            this.mapProject.widthInMm = Math.min(width, height);
-            this.mapProject.heightInMm = Math.max(width, height);
-        } else {
-            this.mapProject.widthInMm = Math.max(width, height);
-            this.mapProject.heightInMm = Math.min(width, height);
-        }
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaWidthUpdate(width: number) {
-        this.mapProject.widthInMm = width;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaHeightUpdate(height: number) {
-        this.mapProject.heightInMm = height;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaTopMarginUpdate(margin: number) {
-        this.mapProject.topMarginInMm = margin;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaBottomMarginUpdate(margin: number) {
-        this.mapProject.bottomMarginInMm = margin;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaLeftMarginUpdate(margin: number) {
-        this.mapProject.leftMarginInMm = margin;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaRightMarginUpdate(margin: number) {
-        this.mapProject.rightMarginInMm = margin;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchScaleUpdate(scale: s.Scale) {
-        this.mapProject.scale = scale;
-        this.dispatchSelectedAreaUpdate();
-    }
-
-    dispatchSelectedAreaUpdate() {
-        let factor = s.getScaleProperties(this.mapProject.scale).reductionFactor / 1000;
-        this.store.dispatch(UiActions.updateSelectedArea({
-            widthInM: (this.mapProject.widthInMm - this.mapProject.leftMarginInMm - this.mapProject.rightMarginInMm) * factor,
-            heightInM: (this.mapProject.heightInMm - this.mapProject.topMarginInMm - this.mapProject.bottomMarginInMm) * factor,
-            topMarginInMm: this.mapProject.topMarginInMm,
-            bottomMarginInMm: this.mapProject.bottomMarginInMm,
-            leftMarginInMm: this.mapProject.leftMarginInMm,
-            rightMarginInMm: this.mapProject.rightMarginInMm,
-            scale: this.mapProject.scale
-        }));
-    }
-
-    dispatchNameUpdate(name: string) {
-        this.mapProject.name = name;
-        this.store.dispatch(UiActions.updateMapName({
-            name: name
-        }));
-    }
-
-    dispatchFileFormatUpdate(fileFormat: FileFormat) {
-        this.mapProject.options.fileFormat = fileFormat;
-        this.dispatchMapOptionsUpdate();
-    }
-
-    dispatchMapStyleUpdate(mapStyle: MapStyle) {
-        this.mapProject.options.mapStyle = mapStyle;
-        this.dispatchMapOptionsUpdate();
-    }
-
-    dispatchMapOptionsUpdate() {
-        this.store.dispatch(UiActions.updateMapOptions({
-            options: this.mapProject.options
-        }));
     }
 
     addAdditionalElement(type: AdditionalElementType) {

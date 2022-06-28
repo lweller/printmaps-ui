@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Scale, SCALES} from "../model/intern/scale";
+import {Scale} from "../model/intern/scale";
 import {round} from "lodash";
 
 export interface Glyph {
@@ -237,7 +237,7 @@ export class ScaleMark {
 @Injectable()
 export class ScaleService {
     private static formatReductionFactor(scale: Scale): string {
-        return SCALES.get(scale).reductionFactor
+        return scale
             .toString()
             .split("")
             .reverse()
@@ -268,7 +268,7 @@ export class ScaleService {
     }
 
     buildScaleMarks(scale: Scale): ScaleMark[] {
-        let reductionFactor = SCALES.get(scale).reductionFactor;
+        let reductionFactor = scale;
         let magnitude = Math.pow(10, Math.ceil(Math.log10(10 * reductionFactor)));
         let baseUnitLengthInMapMM = magnitude / reductionFactor;
         let scaleUnitLengthInRealMM;

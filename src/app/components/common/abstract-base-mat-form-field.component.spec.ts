@@ -1,59 +1,31 @@
 import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {
-    ControlValueAccessor,
-    FormBuilder,
-    FormsModule,
-    NgControl,
-    ReactiveFormsModule,
-    Validators
-} from "@angular/forms";
-import {Component, CUSTOM_ELEMENTS_SCHEMA, Inject, Optional, Self} from "@angular/core";
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Component, CUSTOM_ELEMENTS_SCHEMA, Injector} from "@angular/core";
 import {TestbedHarnessEnvironment} from "@angular/cdk/testing/testbed";
 import {HarnessLoader} from "@angular/cdk/testing";
 import {MatInputHarness} from "@angular/material/input/testing";
 import {MatRippleModule} from "@angular/material/core";
-import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
+import {MatFormFieldControl} from "@angular/material/form-field";
 import {AbstractBaseMatFormFieldComponent} from "./abstract-base-mat-form-field.component";
 import {cases} from "jasmine-parameterized";
+import {EventTestBed} from "../../model/test/test-util";
 
 @Component({
-    template: "<input [formControl]=\"formControl\" [value]=\"convertToString(value)\" type=\"number\" matInput numeric>",
-    providers: [{provide: MatFormFieldControl, useExisting: TestComponent}]
+    template: "<input [formControl]=\"control\" type=\"number\" matInput numeric>",
+    providers: [{provide: MatFormFieldControl, useClass: TestComponent}]
 })
 class TestComponent extends AbstractBaseMatFormFieldComponent<number> {
     static readonly DEFAULT_VALUE = 0;
 
-    readonly autofilled: boolean;
-    readonly controlType: string;
-    readonly userAriaDescribedBy: string;
-
-    constructor(
-        formBuilder: FormBuilder,
-        @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-        @Optional() @Self() ngControl: NgControl
-    ) {
-        super(formBuilder.control(
-                TestComponent.DEFAULT_VALUE,
-                [
-                    Validators.required,
-                    Validators.min(0),
-                    Validators.max(359)
-                ]),
-            ngControl);
-    }
-
-    convertFormValue(value: string): number {
-        return parseInt(value);
-    }
-
-    sanitizeValue(value: number | null) {
-        if (isNaN(value)) {
-            return null;
-        }
-        return value;
-    }
-
-    setDescribedByIds(ids: string[]) {
+    constructor(injector: Injector, formBuilder: FormBuilder) {
+        super(injector);
+        this.formControl = formBuilder.control(
+            TestComponent.DEFAULT_VALUE,
+            [
+                Validators.required,
+                Validators.min(0),
+                Validators.max(359)
+            ]);
     }
 }
 
@@ -218,25 +190,3 @@ describe("AbstractBaseComponent", () => {
             .toHaveBeenCalledTimes(1 + someOtherValue.length);
     });
 });
-
-class EventTestBed {
-    public mock = {
-        stateChanges: () => undefined,
-        valueChanges: value => console.log(value)
-    };
-
-    private stateChangesSubscription;
-
-    constructor(private component: MatFormFieldControl<any> & ControlValueAccessor) {
-        spyOn(this.mock, "stateChanges");
-        spyOn(this.mock, "valueChanges").and.callThrough();
-        this.stateChangesSubscription = component.stateChanges.subscribe(this.mock.stateChanges);
-        component.registerOnChange(this.mock.valueChanges);
-    }
-
-    public unregister() {
-        this.stateChangesSubscription?.unsubscribe();
-        this.stateChangesSubscription = null;
-        this.component.registerOnChange(null);
-    }
-}

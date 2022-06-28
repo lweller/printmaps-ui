@@ -1,7 +1,7 @@
 import {v4 as uuid} from "uuid";
 import {Injectable} from "@angular/core";
 import {MapProject} from "../model/intern/map-project";
-import {MAP_STYLES, MapRenderingJobDefinition} from "../model/api/map-rendering-job-definition";
+import {MapRenderingJobDefinition, MapStyle} from "../model/api/map-rendering-job-definition";
 import {
     ADDITIONAL_ELEMENT_TYPES,
     AdditionalElementType,
@@ -10,7 +10,7 @@ import {
     AdditionalTextElement,
     AnyAdditionalElement
 } from "../model/intern/additional-element";
-import {fromReductionFactor, getScaleProperties} from "../model/intern/scale";
+import {fromReductionFactor} from "../model/intern/scale";
 import {UserObject} from "../model/api/user-object";
 import {UserObjectMetadata} from "../model/api/user-object-metadata";
 import {template} from "lodash";
@@ -26,6 +26,18 @@ import {parse} from "wellknown";
 export interface TemplateCompiler {
     compileTextTemplate(mapProject: MapProject, text: string): string;
 }
+
+const DEFAULT_OSM_COPYRIGHT = "© OpenStreetMap contributors (ODbL)";
+const NO_COPY_RIGHT = "no copy right";
+const MAP_STYLES_COPY_RIGHTS = new Map<MapStyle, string>([
+    [MapStyle.OSM_CARTO, DEFAULT_OSM_COPYRIGHT],
+    [MapStyle.OSM_CARTO_MONO, DEFAULT_OSM_COPYRIGHT],
+    [MapStyle.OSM_CARTO_ELE20, DEFAULT_OSM_COPYRIGHT + ", © opensnowmap.org (based on ASTER GDEM, SRTM, EU-DEM)"],
+    [MapStyle.SCHWARZPLAN, DEFAULT_OSM_COPYRIGHT],
+    [MapStyle.SCHWARZPLAN_PLUS, DEFAULT_OSM_COPYRIGHT],
+    [MapStyle.RASTER10, NO_COPY_RIGHT],
+    [MapStyle.TRANSPARENT, NO_COPY_RIGHT]
+]);
 
 @Injectable()
 export class MapProjectConversionService implements TemplateCompiler {
@@ -76,7 +88,7 @@ export class MapProjectConversionService implements TemplateCompiler {
                     Fileformat: mapProject.options.fileFormat,
                     Style: mapProject.options.mapStyle,
                     Projection: "3857",
-                    Scale: getScaleProperties(mapProject.scale).reductionFactor,
+                    Scale: mapProject.scale,
                     Latitude: mapProject.center.latitude,
                     Longitude: mapProject.center.longitude,
                     PrintWidth: mapProject.widthInMm,
@@ -95,7 +107,7 @@ export class MapProjectConversionService implements TemplateCompiler {
     compileTextTemplate(mapProject: MapProject, text: string): string {
         let parameters = {
             project_name: mapProject.name,
-            attribution: MAP_STYLES.get(mapProject.options.mapStyle).attribution
+            attribution: MAP_STYLES_COPY_RIGHTS.get(mapProject.options.mapStyle)
         };
         try {
             return template(text)(parameters);

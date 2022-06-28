@@ -1,6 +1,5 @@
-import {FormBuilder, NgControl, Validators} from "@angular/forms";
-import {AfterViewInit, Component, ElementRef, Inject, Optional, Self, ViewChild, ViewContainerRef} from "@angular/core";
-import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
+import {AfterViewInit, Component, Injector, ViewChild, ViewContainerRef} from "@angular/core";
+import {MatFormFieldControl} from "@angular/material/form-field";
 import {ConnectionPositionPair, Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {takeUntil} from "rxjs/operators";
 import {CdkPortal} from "@angular/cdk/portal";
@@ -32,19 +31,11 @@ export class ColorSelector extends AbstractBaseMatFormFieldComponent<Color> impl
     private colorPickerOverlayRef: OverlayRef;
 
     constructor(
-        private elementRef: ElementRef<HTMLElement>,
         private viewContainerRef: ViewContainerRef,
         private overlay: Overlay,
-        formBuilder: FormBuilder,
-        @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
-        @Optional() @Self() public ngControl: NgControl
+        private injector: Injector
     ) {
-        super(formBuilder.control(
-                ColorSelector.DEFAULT_VALUE,
-                [
-                    Validators.required
-                ]),
-            ngControl);
+        super(injector);
     }
 
     get rgbaValue(): RGBA {
@@ -68,12 +59,6 @@ export class ColorSelector extends AbstractBaseMatFormFieldComponent<Color> impl
         this.unsubscribe.next();
         this.unsubscribe.complete();
         super.ngOnDestroy();
-    }
-
-    setDescribedByIds(ids: string[]) {
-        const controlElement = this.elementRef.nativeElement
-            .querySelector(".color-selector-container")!;
-        controlElement.setAttribute("aria-describedby", ids.join(" "));
     }
 
     public openColorPicker(): void {

@@ -1,5 +1,5 @@
-<div [attr.aria-labelledby]="_formField?.getLabelId()" class="line-width-selector-container" role="group">
-    <mat-button-toggle-group [formControl]="formControl" [value]="formControl.value" fxFlex="0 0 auto">
+<div class="line-width-selector-container" role="group">
+    <mat-button-toggle-group [formControl]="control" fxFlex="0 0 auto">
         <mat-button-toggle *ngFor="let value of values" [value]="value" id="line-width-{{convertToString(value)}}">
             <mat-icon svgIcon="{{iconNamespace}}:{{toIconName(value)}}"></mat-icon>
         </mat-button-toggle>

@@ -7,42 +7,28 @@ export enum PaperFormat {
     CUSTOM = "Custom"
 }
 
-export interface PaperFormatProperties {
-    label: string;
-
-    width(orientation: PaperOrientation): number;
-
-    height(orientation: PaperOrientation): number;
+export interface PaperSize {
+    widthInMm: number,
+    heightInMm: number
 }
 
-class PaperFormatPropertiesImpl implements PaperFormatProperties {
-    constructor(public label: string, public length1: number, public length2: number) {
-    }
-
-    width(orientation: PaperOrientation) {
-        return orientation === PaperOrientation.PORTRAIT
-            ? Math.min(this.length1, this.length2)
-            : Math.max(this.length1, this.length2);
-    }
-
-    height(orientation: PaperOrientation) {
-        return orientation === PaperOrientation.PORTRAIT
-            ? Math.max(this.length1, this.length2)
-            : Math.min(this.length1, this.length2);
-    }
-
-    toString() {
-        return this.label;
-    }
+function paperSize(length1: number, length2: number): (orientation: PaperOrientation) => PaperSize {
+    return orientation => ({
+        widthInMm: orientation === PaperOrientation.PORTRAIT ? Math.min(length1, length2) : Math.max(length1, length2),
+        heightInMm: orientation === PaperOrientation.PORTRAIT ? Math.max(length1, length2) : Math.min(length1, length2)
+    });
 }
 
-export const PAPER_FORMATS = new Map<PaperFormat, PaperFormatPropertiesImpl>([
-    [PaperFormat.A5, new PaperFormatPropertiesImpl("A5", 148, 210)],
-    [PaperFormat.A4, new PaperFormatPropertiesImpl("A4", 210, 297)],
-    [PaperFormat.A3, new PaperFormatPropertiesImpl("A3", 297, 420)],
-    [PaperFormat.CUSTOM, new PaperFormatPropertiesImpl($localize`Custom`, undefined, undefined)]
+export const PAPER_FORMAT_LABELS = new Map<PaperFormat, string>([
+    [PaperFormat.A5, "A5"],
+    [PaperFormat.A4, "A4"],
+    [PaperFormat.A3, "A3"],
+    [PaperFormat.CUSTOM, $localize`Custom`]
 ]);
 
-export function getPaperFormatProperties(paperFormat: PaperFormat): PaperFormatProperties {
-    return PAPER_FORMATS.get(paperFormat);
-}
+export const PAPER_FORMAT_SIZES = new Map<PaperFormat, (orientation: PaperOrientation) => PaperSize>([
+    [PaperFormat.A5, paperSize(148, 210)],
+    [PaperFormat.A4, paperSize(210, 297)],
+    [PaperFormat.A3, paperSize(297, 420)],
+    [PaperFormat.CUSTOM, undefined]
+]);

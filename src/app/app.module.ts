@@ -63,6 +63,9 @@ import {MapProjectConversionService} from "./services/map-project-conversion.ser
 import {
     NonexistentMapProjectEvictionConfirmDialog
 } from "./components/dialogs/nonexistent-map-project-eviction-confirm-dialog.component";
+import {GeneralPropertiesPartComponent} from "./components/current-map-project-pane/general-properties-part.component";
+import {MapAreaPartComponent} from "./components/current-map-project-pane/map-area-part.component";
+import {EnumSelectComponent} from "./components/common/enum-select.component";
 
 registerLocaleData(localeEn);
 registerLocaleData(localeDe);
@@ -78,10 +81,13 @@ export const metaReducers: MetaReducer[] = [];
         LineWidthSelector,
         TextOrientationSelector,
         ColorSelector,
+        EnumSelectComponent,
         ButtonBoxComponent,
         MapPaneComponent,
         MapProjectListPaneComponent,
         CurrentMapProjectPaneComponent,
+        GeneralPropertiesPartComponent,
+        MapAreaPartComponent,
         RemoveAttributionConfirmDialog,
         MapComponent,
         NonexistentMapProjectEvictionConfirmDialog,

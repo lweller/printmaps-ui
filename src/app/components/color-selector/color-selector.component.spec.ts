@@ -32,6 +32,7 @@ describe("ColorSelector", () => {
         }).compileComponents();
         fixture = TestBed.createComponent(ColorSelector);
         component = fixture.componentInstance;
+        component.formControl = TestBed.inject(FormBuilder).control(undefined);
         spyOn(component, "openColorPicker");
         colorField = fixture.nativeElement.querySelector(".color-field");
         colorFieldSample = fixture.nativeElement.querySelector(".color-field-sample");

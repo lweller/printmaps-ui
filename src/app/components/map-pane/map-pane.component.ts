@@ -1,14 +1,16 @@
 import {AfterViewInit, Component, ViewChild} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {currentAdditionalGpxElements, currentMapProject} from "../../selectors/main.selectors";
-import {getScaleProperties, Scale} from "../../model/intern/scale";
+import {Scale} from "../../model/intern/scale";
 import * as UiActions from "../../actions/main.actions";
 import * as L from "leaflet";
 import {ConfigurationService} from "../../services/configuration.service";
 import {MapComponent} from "../map/map.component";
 import {AdditionalGpxElement} from "../../model/intern/additional-element";
 import {MapProject} from "../../model/intern/map-project";
-import {filter} from "rxjs/operators";
+import {filter, withLatestFrom} from "rxjs/operators";
+import {round} from "lodash";
+import {Subject} from "rxjs";
 
 @Component({
     selector: "app-map-pane",
@@ -19,11 +21,13 @@ export class MapPaneComponent implements AfterViewInit {
     @ViewChild("map") map: MapComponent;
 
     private currentMapProjectSelected: boolean;
-    private scale: Scale;
     private topMarginInMm: number;
     private bottomMarginInMm: number;
     private leftMarginInMm: number;
     private rightMarginInMm: number;
+
+    private scale$ = new Subject<Scale>();
+
 
     constructor(private readonly configurationService: ConfigurationService, private readonly store: Store) {
     }
@@ -41,38 +45,39 @@ export class MapPaneComponent implements AfterViewInit {
             .pipe(filter(centerCoordinates => !!centerCoordinates))
             .subscribe((centerCoordinates: L.LatLng) =>
                 this.store.dispatch(UiActions.updateCenterCoordinates({
-                    center: {
-                        latitude: centerCoordinates.lat,
-                        longitude: centerCoordinates.lng
-                    }
+                    latitude: centerCoordinates.lat,
+                    longitude: centerCoordinates.lng
                 }))
             );
         this.map.selectedAreaChange
-            .pipe(filter(selectedAreaInM => this.currentMapProjectSelected && !!selectedAreaInM))
-            .subscribe((selectedAreaInM: L.Dimension) =>
-                this.store.dispatch(UiActions.updateSelectedArea({
-                    widthInM: selectedAreaInM.width,
-                    heightInM: selectedAreaInM.height,
-                    topMarginInMm: this.topMarginInMm,
-                    bottomMarginInMm: this.bottomMarginInMm,
-                    leftMarginInMm: this.leftMarginInMm,
-                    rightMarginInMm: this.rightMarginInMm,
-                    scale: this.scale
-                }))
+            .pipe(
+                withLatestFrom(this.scale$),
+                filter(([selectedAreaInM, scale]) => !!scale && this.currentMapProjectSelected && !!selectedAreaInM)
+            )
+            .subscribe(([selectedAreaInM, scale]) => {
+                let factor = scale / 1000;
+                    this.store.dispatch(UiActions.updateSelectedArea({
+                        widthInMm: round(selectedAreaInM.width / factor),
+                        heightInMm: round(selectedAreaInM.height / factor),
+                        topMarginInMm: this.topMarginInMm,
+                        bottomMarginInMm: this.bottomMarginInMm,
+                        leftMarginInMm: this.leftMarginInMm,
+                        rightMarginInMm: this.rightMarginInMm,
+                        scale: scale
+                    }));
+                }
             );
     }
 
     private mapProjectSelected(mapProject: MapProject) {
         this.map.centerCoordinates = L.latLng(mapProject.center.latitude, mapProject.center.longitude);
-        this.scale = mapProject.scale;
-        this.map.reductionFactor = getScaleProperties(this.scale)?.reductionFactor;
-        let factor = getScaleProperties(this.scale)?.reductionFactor / 1000;
+        this.scale$.next(mapProject.scale);
+        this.map.reductionFactor = mapProject.scale;
+        let factor = this.map.reductionFactor / 1000;
         this.map.enableAreaSelection = true;
         this.map.selectedArea = {
-            width: (mapProject.widthInMm - mapProject.leftMarginInMm
-                - mapProject.rightMarginInMm) * factor,
-            height: (mapProject.heightInMm - mapProject.topMarginInMm
-                - mapProject.bottomMarginInMm) * factor
+            width: (mapProject.widthInMm - mapProject.leftMarginInMm - mapProject.rightMarginInMm) * factor,
+            height: (mapProject.heightInMm - mapProject.topMarginInMm - mapProject.bottomMarginInMm) * factor
         };
         this.topMarginInMm = mapProject.topMarginInMm;
         this.bottomMarginInMm = mapProject.bottomMarginInMm;
@@ -87,7 +92,7 @@ export class MapPaneComponent implements AfterViewInit {
             let defaultCoordinates = this.configurationService.appConf.defaultCoordinates;
             this.map.centerCoordinates = L.latLng(defaultCoordinates.latitude, defaultCoordinates.longitude);
         }
-        this.scale = undefined;
+        this.scale$.next();
         this.map.reductionFactor = undefined;
         this.map.enableAreaSelection = false;
         this.map.selectedArea = undefined;

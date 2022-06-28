@@ -191,8 +191,8 @@ export const SAMPLE_MAP_PROJECT_REFERENCE_2: MapProjectReference = {
 export const SAMPLE_MAP_PROJECT_2: MapProject = {
     ...SAMPLE_MAP_PROJECT_REFERENCE_2,
     center: SAMPLE_COORDINATES_1,
-    widthInMm: 210,
-    heightInMm: 297,
+    widthInMm: 200,
+    heightInMm: 300,
     topMarginInMm: 8,
     bottomMarginInMm: 8,
     leftMarginInMm: 8,

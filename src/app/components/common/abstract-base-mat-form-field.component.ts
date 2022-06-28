@@ -1,41 +1,69 @@
-import {ControlValueAccessor, FormControl, NgControl, ValidationErrors} from "@angular/forms";
-import {Component, HostBinding, Input, OnDestroy} from "@angular/core";
-import {MatFormFieldControl} from "@angular/material/form-field";
+import {ControlContainer, ControlValueAccessor, FormControl, NgControl, ValidationErrors} from "@angular/forms";
+import {Component, ElementRef, HostBinding, InjectFlags, Injector, Input, OnDestroy} from "@angular/core";
+import {MAT_FORM_FIELD, MatFormField, MatFormFieldControl} from "@angular/material/form-field";
 import {Subject, Subscription} from "rxjs";
 import {distinct, tap} from "rxjs/operators";
+import {isEqual} from "lodash";
 
 @Component({template: ""})
-export abstract class AbstractBaseMatFormFieldComponent<T> implements MatFormFieldControl<T>, ControlValueAccessor, OnDestroy {
+export abstract class AbstractBaseMatFormFieldComponent<T>
+    implements MatFormFieldControl<T>, ControlValueAccessor, OnDestroy {
+
     private static nextId = 0;
+
     @HostBinding() readonly id = `component-${AbstractBaseMatFormFieldComponent.nextId++}`;
-    readonly placeholder = undefined;
-    readonly stateChanges = new Subject<void>();
     @HostBinding("class.floating") shouldLabelFloat = true;
-    focused = false;
-    public ngControl: NgControl;
+
+    @Input() formControl: FormControl;
+    @Input() formControlName: string;
+
+    get control() {
+        return this.formControl || <FormControl>this.controlContainer?.control?.get(this.formControlName);
+    }
+
+    set control(formControl: FormControl) {
+        this.formControl = formControl;
+    }
+
+    readonly stateChanges = new Subject<void>();
+
+    readonly placeholder = undefined;
+    readonly focused = false;
+
     private onChangeSubscription: Subscription;
 
-    protected constructor(
-        public formControl: FormControl,
-        ngControl: NgControl
-    ) {
-        this.ngControl = ngControl;
+    public readonly ngControl: NgControl;
+    private readonly controlContainer: ControlContainer;
+    private readonly elementRef: ElementRef<HTMLElement>;
+    private readonly formField: MatFormField;
+
+    protected constructor(injector: Injector) {
+        this.ngControl = injector.get(NgControl, null, InjectFlags.Self & InjectFlags.Optional);
+        this.controlContainer = injector.get(ControlContainer, null);
+        this.elementRef = injector.get(ElementRef);
+        this.formField = injector.get(MAT_FORM_FIELD, null, InjectFlags.Optional);
         if (this.ngControl != null) {
             this.ngControl.valueAccessor = this;
         }
+        if (this.formField) {
+            this.setDescribedByIds([this.formField.getLabelId()]);
+        }
+        this.formControlName = this.elementRef.nativeElement.getAttribute("formControlName");
     }
 
     @Input()
     get value(): T {
-        return this.formControl.value;
+        return this.control.value;
     }
 
     set value(value: T | null) {
-        this.formControl.patchValue(value);
+        if (!isEqual(value, this.value)) {
+            this.control.setValue(value);
+        }
     }
 
     get empty() {
-        return !this.formControl.value;
+        return !this.control.value;
     }
 
     private _required = false;
@@ -63,11 +91,11 @@ export abstract class AbstractBaseMatFormFieldComponent<T> implements MatFormFie
     }
 
     get errorState(): boolean {
-        return !!this.formControl.errors;
+        return !!this.control.errors;
     }
 
     get errors(): ValidationErrors | null {
-        return this.formControl.errors;
+        return this.control.errors;
     }
 
     ngOnDestroy() {
@@ -79,14 +107,8 @@ export abstract class AbstractBaseMatFormFieldComponent<T> implements MatFormFie
         return value?.toString() ?? "";
     }
 
-    onTouched = () => {
-        // This is intentional
-    };
-
-    abstract setDescribedByIds(ids: string[]);
-
-    onContainerClick(): void {
-        // This is intentional
+    setDescribedByIds(ids: string[]) {
+        this.elementRef.nativeElement.setAttribute("aria-describedby", ids.join(" "));
     }
 
     writeValue(value: T): void {
@@ -97,15 +119,22 @@ export abstract class AbstractBaseMatFormFieldComponent<T> implements MatFormFie
         this.onChangeSubscription?.unsubscribe();
         if (callbackFunction) {
             this.onChangeSubscription =
-                this.formControl.valueChanges
-                    .pipe(distinct(), tap(() => this.stateChanges.next()))
+                this.control.valueChanges
+                    .pipe(
+                        distinct(),
+                        tap(() => this.stateChanges.next())
+                    )
                     .subscribe(callbackFunction);
         }
     }
 
+    onTouched = () => undefined;
+
     registerOnTouched(callbackFunction: any): void {
         this.onTouched = callbackFunction;
     }
+
+    onContainerClick = () => undefined;
 
     setDisabledState(disabled: boolean): void {
         this.disabled = disabled;

@@ -1,5 +1,5 @@
-<div [attr.aria-labelledby]="_formField?.getLabelId()" class="font-style-selector-container" role="group">
-    <mat-button-toggle-group [formControl]="formControl" [value]="formControl.value">
+<div class="font-style-selector-container" role="group">
+    <mat-button-toggle-group [formControl]="control">
         <mat-button-toggle *ngFor="let value of values" id="font-style-{{convertToString(value)}}" value="{{value}}">
             <mat-icon svgIcon="{{iconNamespace}}:{{value}}"></mat-icon>
         </mat-button-toggle>

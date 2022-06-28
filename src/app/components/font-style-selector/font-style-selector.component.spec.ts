@@ -37,6 +37,7 @@ describe("FontStyleSelector", () => {
         fixture = TestBed.createComponent(FontStyleSelector);
         loader = TestbedHarnessEnvironment.loader(fixture);
         component = fixture.componentInstance;
+        component.formControl = TestBed.inject(FormBuilder).control(undefined);
         buttonToggleGroup = await loader.getHarness(MatButtonToggleGroupHarness);
     });
 
